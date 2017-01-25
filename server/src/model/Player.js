@@ -35,7 +35,7 @@ Player.prototype.pioche = function(board) {
 	event.type = GameEvent.PIOCHE_CARD;
 	var card = this.deck.pop();
 	this.hand.push(card);
-	event.data = {player:player,card:card};
+	event.data = {player:this,card:card};
 	this.notify(event);
 	setTimeout(board.nextPhase.bind(board), 2000);
 };
@@ -50,14 +50,51 @@ Player.prototype.getCardById = function(cardId) {
 };
 
 Player.prototype.poseTerrain = function(card) {
+	console.log("pose terrain");
+	if(this.hasPoseTerrain) {
+		event.type = GameEvent.ERROR;
+		event.data = "vous ne pouvez poser qu'un terrain par tour";
+		this.notify(event);
+		return;
+	}
 	this.hasPoseTerrain = true;
 	this.terrains.push(card);
 	this.hand.removeByValue(card);
+	event.type = GameEvent.POSE_CARD;
+	event.data = {player:player,card:card};
+	this.notify(event);
 };
 
 Player.prototype.poseCreature= function(board, card) {
+	console.log("pose creature");
+	if(board.containsTypeInStack(TypeCard.CREATURE)) {
+		event.type = GameEvent.ERROR;
+		event.data = "une creature est deja dans la pile";
+		this.notify(event);
+		return;
+	}
 	board.stack.push(card);
 	this.hand.removeByValue(card);	
+	event.type = GameEvent.STACK_CARD;
+	event.data = {player:player,card:card};
+	this.notify(event);
+	board.letPlayerDoSth();
+};
+
+Player.prototype.poseCard = function(board, card) {
+	console.log("pose carte");
+	var event = {};
+	if(!board.isPlayerActif(player)) {
+		event.type = GameEvent.ERROR;
+		event.data = "vous n'avez pas la main";
+		this.notify(event);
+	}
+	else if(card.typeC == TypeCard.TERRAIN && !player.hasPoseTerrain) {
+		this.poseTerrain(card);
+	}
+	else if(card.typeC == TypeCard.CREATURE){
+		this.poseCreature(board, card);
+	}
 };
 
 module.exports = Player;

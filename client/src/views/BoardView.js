@@ -39,7 +39,7 @@ BoardView.prototype.initPlayers = function(players) {
 		}
 	}
 	for(var i=0;i<players.length;i++) {
-		var newPlayer = new PlayerView();
+		var newPlayer = new PlayerView(this.game);
 		for(var j=0;j<players[i].deck.length;j++) {
 			var card = players[i].deck[j];
 			var newCard = new CardView(this.game, card, this.model, this);
@@ -133,34 +133,6 @@ BoardView.prototype.muliganeAnim = function(player, cards) {
 	}}.bind(this,cards,player.name), 3000);
 };
 
-BoardView.prototype.poseCardsAnim = function(player, card) {
-	var cardView = card.observers[0];
-	cardView.select();
-	if(player.name == this.myName) {
-		if(card.typeC == TypeCard.TERRAIN) {
-			this.game.add.tween(cardView).to({y: 300},2000,Phaser.Easing.Linear.None,true);
-		}
-		if(card.typeC != TypeCard.TERRAIN) {
-			this.game.add.tween(cardView).to({y: 270},2000,Phaser.Easing.Linear.None,true);
-		}
-	}
-	else {
-		if(player.typeC == TypeCard.TERRAIN) 
-			this.game.add.tween(cardView).to({y: 150},2000,Phaser.Easing.Linear.None,true);
-		if(player.typeC != TypeCard.TERRAIN) 
-			this.game.add.tween(cardView).to({y: 200},2000,Phaser.Easing.Linear.None,true);
-	}
-	cardView.show(true);
-	this.getPlayerByName(player.name).hand.removeByValue(cardView);
-};
-
-BoardView.prototype.piocheCardAnim = function(player, card) {
-	var cardView = card.observers[0];
-	this.game.add.tween(cardView).to({x: 150},2000,Phaser.Easing.Linear.None,true);
-	cardView.show(true);
-	this.getPlayerByName(player.name).deck.pop();
-};
-
 BoardView.prototype.onReceive = function(event) {
 	switch(event.type) {
 		case GameEvent.DISTRIBUTION:
@@ -178,12 +150,6 @@ BoardView.prototype.onReceive = function(event) {
 				cardView.inputEnabled = true;
 				cardView.events.onInputUp.add(cardView.onClick, cardView);
 			}		
-			break;
-		case GameEvent.POSE_CARD:
-			this.poseCardsAnim(event.data.player, event.data.card);
-			break;
-		case GameEvent.PIOCHE_CARD:
-			this.piocheCardAnim(event.data.player, event.data.card);
 			break;
 		case GameEvent.RETIRER_CARD:
 			break;

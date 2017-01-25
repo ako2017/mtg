@@ -26,7 +26,7 @@ Board.prototype.isFull = function() {
 
 Board.prototype.run = function() {
 	setTimeout(this.distribution.bind(this), 1000);
-	setInterval(this.distribution.bind(this), 10000);
+	setInterval(this.update.bind(this), 10000);
 };
 
 Board.prototype.update = function() {
@@ -57,43 +57,7 @@ Board.prototype.allDistribDone = function() {
 }
 
 Board.prototype.poseCard = function(player, card) {
-	console.log("pose carte");
-	var event = {};
-	if(!this.isPlayerActif(player)) {
-		event.type = GameEvent.ERROR;
-		event.data = "vous n'avez pas la main";
-		this.notify(event);
-		return;
-	}
-	if(card.typeC == TypeCard.TERRAIN && !player.hasPoseTerrain) {
-		console.log("pose terrain");
-		player.poseTerrain(card);
-		event.type = GameEvent.POSE_CARD;
-		event.data = {player:player,card:card};
-		this.notify(event);
-		return;
-	}
-	if(card.typeC == TypeCard.TERRAIN && player.hasPoseTerrain) {
-		event.type = GameEvent.ERROR;
-		event.data = "vous ne pouvez poser qu'un terrain par tour";
-		this.notify(event);
-		return;
-	}
-	if(card.typeC == TypeCard.CREATURE){
-		if(this.containsTypeInStack(TypeCard.CREATURE)) {
-			event.type = GameEvent.ERROR;
-			event.data = "une creature est deja dans la pile";
-			this.notify(event);
-			return;
-		}
-		console.log("pose creature");
-		player.poseCreature(this, creature);
-		event.type = GameEvent.STACK_CARD;
-		event.data = {player:player,card:card};
-		this.notify(event);
-		this.letPlayerDoSth();
-		return;
-	}
+	player.poseCard();
 };
 
 Board.prototype.letPlayerDoSth = function() {

@@ -1,5 +1,5 @@
 //  Here is a custom game object
-PlayerView = function (game, board, controller, name) {
+PlayerView = function (game) {
 	this.game = game;
 	this.hand = [];
 	this.battlefield = [];
@@ -54,7 +54,7 @@ PlayerView.prototype.onReceive = function(event) {
 			this.poseCardsAnim(event.data.player, event.data.card);
 			break;
 		case GameEvent.PIOCHE_CARD:
-			this.piocheCardAnim(event.data.player, event.data.card);
+			this.piocheCardAnim(event.data.card);
 			break;
 		case GameEvent.ERROR:
 			alert(event.data);
