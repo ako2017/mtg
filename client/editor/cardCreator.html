@@ -1,0 +1,222 @@
+<!DOCTYPE html> 
+<html> 
+    <head> 
+        <title>MtG Card Creator v1.0</title> 
+        <meta name="viewport" content="width=device-width, initial-scale=1"> 
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+		<script  src="localstoragedb.min.js"></script>
+		<script>
+			$(document).ready(function() {
+				db = new localStorageDB("mtg_db", localStorage);
+				//db.dropTable("card_table");
+				//db.commit();
+				if(!db.tableExists("card_table")) {
+					db.createTable("card_table", ["ext_ref", "numero", "data"]);
+					db.commit();
+				}	
+				generateLine();
+			});
+			
+			function addzeros(number, length) {
+				var num = '' + number;
+				while (num.length < length) {
+					num = '0' + num;
+				}
+				return num;
+			};
+			
+			function save() {
+				var card = {
+					type:$("#type").val(),
+					extension:$("#extension").val(),
+					numero:$("#numero").val(),
+					visible:$("#visible").is(':checked'),
+					vol:$("#vol").is(':checked'),
+					celerite:$("#celerite").is(':checked'),
+					vigilance:$("#vigilance").is(':checked'),
+					force:$("#force").val(),
+					endurance:$("#endurance").val(),
+					col1:$("#col1").val(),
+					col2:$("#col2").val(),
+					col3:$("#col3").val(),
+					col4:$("#col4").val(),
+					col5:$("#col5").val(),
+					col6:$("#col6").val(),
+					capacities : []
+				};
+				$(".capacity").each(function(){
+					var capacity = {
+						trigger:$(this).find(".trigger").val(),
+						action:$(this).find(".action").val(),
+						col1:$(this).find(".col1").val(),
+						col2:$(this).find(".col2").val(),
+						col3:$(this).find(".col3").val(),
+						col4:$(this).find(".col4").val(),
+						col5:$(this).find(".col5").val(),
+						col6:$(this).find(".col6").val(),
+						engagement:$(this).find(".engagement").is(':checked'),
+						quand:$(this).find(".quand").val(),
+						cible:$(this).find(".cible").val(),
+						selection:$(this).find(".selection").val(),
+					};
+					card.capacities.push(capacity);
+				});
+				db.insertOrUpdate("card_table",{ext_ref: card.extension,numero: card.numero}, {ext_ref: card.extension, numero: card.numero, data: JSON.stringify(card)});
+				db.commit();
+				generateLine();
+			};
+			
+			function deleteLine(id) {
+				db.deleteRows("card_table", {ID: id});
+				db.commit();
+				generateLine();
+			};
+			
+			function edit(id) {
+				var queryResult = db.query('card_table', {ID: id});
+				var card = JSON.parse(queryResult[0].data);
+				$("#type").val(card.type);
+				$("#extension").val(card.extension);
+				$("#numero").val(card.numero);
+				$("#visible").prop( "checked", card.visible);
+				$("#vol").prop( "checked", card.vol);
+				$("#celerite").prop( "checked", card.celerite);
+				$("#vigilance").prop( "checked", card.vigilance);
+				$("#force").val(card.force);
+				$("#endurance").val(card.endurance);
+					
+					
+				$("#col1").val(card.col1);
+				$("#col2").val(card.col2);
+				$("#col3").val(card.col3);
+				$("#col4").val(card.col4);
+				$("#col5").val(card.col5);
+				$("#col6").val(card.col6);
+				
+				$("#capacities").empty();
+				
+				$("#cardPic").attr("src","../assets/extensions/" + card.extension + "/" + addzeros(card.numero,3) + ".jpg");
+				
+				$.each(card.capacities,function(i,row) {
+					addCapacity(row);
+				});
+			};
+			
+			function load() {
+				var queryResult = db.query('card_table', {ext_ref: "1"});
+			};
+			
+			
+			function extractLocalStorage() {
+				var i = 0,
+				oJson = {},
+				sKey;
+				for (; sKey = window.localStorage.key(i); i++) {
+					oJson[sKey] = window.localStorage.getItem(sKey);
+				}
+				console.log(oJson);
+			};
+			var capaId=0;
+			function addCapacity(capacity) {
+				var checked = capacity?capacity.engagement:false;
+				capaId++;
+				var capacity = '<div class="capacity" id="capa'+capaId+'">'+
+								'Trigger:<input type="text" class="trigger" value="'+(capacity?capacity.trigger:'')+'"><br>'+
+								'Action:<input type="text" size="100" class="action"value="'+(capacity?capacity.action:'')+'"><br>'+
+								'Cout:blanc<input class="col1" type="text" maxlength="1" size="1" value="'+(capacity?capacity.col1:'0')+'">'+
+								'	 bleu<input class="col2" type="text" maxlength="1" size="1" value="'+(capacity?capacity.col2:'0')+'">'+
+								'	 noir<input class="col3" type="text" maxlength="1" size="1" value="'+(capacity?capacity.col3:'0')+'">'+
+								'	 rouge<input class="col4" type="text" maxlength="1" size="1" value="'+(capacity?capacity.col4:'0')+'">'+
+								'	 vert<input class="col5" type="text" maxlength="1" size="1" value="'+(capacity?capacity.col5:'0')+'">'+
+								'	 incolore<input class="col6" type="text" maxlength="1" size="1" value="'+(capacity?capacity.col6:'0')+'">'+
+								'Engagement:<input class="engagement" type="checkbox"'+ (checked?'checked':'') +'><br>'+
+								'Quand:<input class="quand" type="text" value="'+(capacity?capacity.quand:'')+'"><br>'+
+								'Cible:<input class="cible" type="text" maxlength="1" size="1" value="'+(capacity?capacity.cible:'')+'">Selection:<input class="selection" type="text" value="'+(capacity?capacity.selection:'')+'"><br>'+
+								'<button type="button" onclick="deleteCapacity('+capaId+');">SUPPRIMER</button>'+
+								'</div>';
+				$("#capacities").append(capacity);
+			};
+			
+			function deleteCapacity(id) {
+				$("#capa"+id).remove();
+			}
+			
+			function generateLine() {
+				$("#header").empty();
+				var queryResult = db.queryAll("card_table");
+				var line = '<tr >'+
+							'<td></td>'+
+							'<td>ID</td>'+
+							'<td>ext_ref</td>'+
+							'<td>numero</td>'+
+							'</tr>';
+				$.each(queryResult,function(i,row) {
+					line = line + '<tr>'+
+					   '<td><button type="button" onclick="edit('+row.ID+');">EDIT</button>	<button type="button" onclick="deleteLine('+row.ID+');">DELETE</button></td>'+
+					   '<td>'+row.ID+'</td>'+
+					   '<td>'+row.ext_ref+'</td>'+
+					   '<td>'+row.numero+'</td>'+
+						'</tr>';
+				});
+				$("#header").append(line);
+			};
+			
+			
+		</script>
+    </head> 
+
+    <body bgcolor="grey">
+		<table><tr><td>
+		<form>
+			Type:<select id="type">
+					<option value="0">ARTEFACT</option> 
+					<option value="1" selected>CREATURE</option> 
+					<option value="2">ENCHANTEMENT</option> 
+					<option value="3">TERRAIN</option> 
+					<option value="4">PLANES_WALKER</option> 
+					<option value="5">EPHEMERE</option> 
+					<option value="6">RITUEL</option>  
+			</select>
+			Extension:<select id="extension">
+					<option value="0">Les Khans de Tarkir</option> 
+					<option value="1">Destin reforgé</option> 
+					<option value="2">Les dragons de Tarkir</option> 
+					<option value="3">La bataille de Zendikar</option> 
+					<option value="4">Le serment des Sentinelles</option> 
+					<option value="5">Ténèbres sur Innistrad</option> 
+					<option value="6">La lune hermétique</option> 
+					<option value="7">Kaladesh</option> 
+					<option value="8">Les Khans de Tarkir</option> 
+			</select>
+			Numéro:<input id="numero" type="text" maxlength="3" size="3">
+			visible:<input id="visible" type="checkbox" checked><br>
+			Vol:<input id="vol" type="checkbox">
+			Célérité:<input id="celerite" type="checkbox">
+			Vigilance:<input id="vigilance" type="checkbox"><br>		
+			Force:<input id="force" type="text" maxlength="1" size="1" value="0">
+			Endurance:<input id="endurance" type="text" maxlength="1" size="1" value="0"><br>
+			Cout:blanc<input id="col1" type="text" maxlength="1" size="1" value="0">
+				bleu<input id="col2" type="text" maxlength="1" size="1" value="0">
+				noir<input id="col3" type="text" maxlength="1" size="1" value="0">
+				rouge<input id="col4" type="text" maxlength="1" size="1" value="0">
+				vert<input id="col5" type="text" maxlength="1" size="1" value="0">
+				incolore<input id="col6" type="text" maxlength="1" size="1" value="0">
+			<fieldset>
+				<legend>Capacités: <button type="button" onclick="addCapacity();">+</button></legend>
+				<div id="capacities">
+				</div>
+			</fieldset>
+			<button type="button" onclick="save();">SAVE</button>	
+		</form>	
+		</td>
+		<td>
+		<img id="cardPic" src="00.jpg"/>
+		</td>
+		</tr>
+		</table>
+		<button type="button" onclick="extractLocalStorage();">EXPORT</button>		
+		<table border="1" id="header">  
+		</table>
+    </body>
+
+</html>

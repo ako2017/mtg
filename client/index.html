@@ -1,0 +1,48 @@
+<!DOCTYPE html> 
+<html> 
+    <head> 
+        <title>Magic the Gathering v1.0</title> 
+        <meta name="viewport" content="width=device-width, initial-scale=1"> 
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+		<!--script src="/socket.io/socket.io.js"></script-->
+		
+    	<script src="phaser.min.js"></script>
+		<script  src="editor/localstoragedb.min.js"></script>
+		<script src="../server/src/model/Constantes.js"></script>
+		<script src="../server/src/model/Observable.js"></script>
+		<script src="../server/src/model/StackElement.js"></script>
+		<script src="../server/src/model/Board.js"></script>
+		<script src="../server/src/model/Player.js"></script>
+		<script src="../server/src/model/Card.js"></script>
+		<script src="src/services/CardService.js"></script>
+		<script src="src/views/CardView.js"></script>
+		<script src="src/views/PlayerView.js"></script>
+		<script src="src/views/BoardView.js"></script>
+		<script src="src/controllers/BoardCtrl.js"></script>
+		<script src="src/controllers/IAPlayer.js"></script>
+		
+		<script src="src/Dispatcher.js"></script>
+		<script src="src/PreloadState.js"></script>
+		<script src="src/MainMenuState.js"></script>
+		<script src="src/GameState.js"></script>
+		<script>
+			$(document).ready(function() {
+				var game;
+				var socket;
+				var gameSize;
+
+				game = new Phaser.Game(800,600, Phaser.CANVAS, "game-area");
+				//game = new Phaser.Game(800,600, Phaser.AUTO, "game-area");
+				game.state.add("Preload",preloadState);
+				game.state.add("MainMenu",mainMenuState);
+				game.state.add("Game",gameState);
+				game.state.start("Preload");
+			});
+		</script>
+    </head> 
+
+    <body bgcolor="grey">
+		<div id="game-area"></div>		
+    </body>
+
+</html>
