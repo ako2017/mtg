@@ -17,7 +17,7 @@ Player = function() {
 Player.prototype = new Observable();
 
 Player.prototype.canPayMana = function(mana) {
-	for(var i=0;i<ManaSize;i++) {
+	for(var i=0;i<mana.length;i++) {
 		if(this.mana[i] < mana[i])
 			return false;
 	}
@@ -25,7 +25,7 @@ Player.prototype.canPayMana = function(mana) {
 };
 
 Player.prototype.payMana = function(mana) {
-	for(var i=0;i<ManaSize;i++) {
+	for(var i=0;i<mana.length;i++) {
 		this.mana[i] = this.mana[i] - mana[i];
 	}
 };
@@ -61,13 +61,20 @@ Player.prototype.poseTerrain = function(card) {
 	this.terrains.push(card);
 	this.hand.removeByValue(card);
 	event.type = GameEvent.POSE_CARD;
-	event.data = {player:player,card:card};
+	event.data = {player:this,card:card};
 	this.notify(event);
 };
 
-Player.prototype.poseCreature= function(board, card) {
-	console.log("pose creature");
-	if(board.containsTypeInStack(TypeCard.CREATURE)) {
+Player.prototype.poseCreatureOrEphemere= function(board, card, isEph) {
+	if(!this.canPayMana(card.mana)) {
+		event.type = GameEvent.ERROR;
+		event.data = "vous n'avez pas assez de mana";
+		this.notify(event);
+		
+	}
+	this.payMana(card.mana);
+	console.log("pose creature or ephemere");
+	if(board.containsTypeInStack(TypeCard.CREATURE) && !isEph) {
 		event.type = GameEvent.ERROR;
 		event.data = "une creature est deja dans la pile";
 		this.notify(event);
@@ -76,7 +83,7 @@ Player.prototype.poseCreature= function(board, card) {
 	board.stack.push(card);
 	this.hand.removeByValue(card);	
 	event.type = GameEvent.STACK_CARD;
-	event.data = {player:player,card:card};
+	event.data = {player:this,card:card};
 	this.notify(event);
 	board.letPlayerDoSth();
 };
@@ -93,7 +100,10 @@ Player.prototype.poseCard = function(board, card) {
 		this.poseTerrain(card);
 	}
 	else if(card.typeC == TypeCard.CREATURE){
-		this.poseCreature(board, card);
+		this.poseCreatureOrEphemere(board, card, false);
+	}
+	else if(card.typeC == TypeCard.EPHEMERE){
+		this.poseCreatureOrEphemere(board, card, true);
 	}
 };
 

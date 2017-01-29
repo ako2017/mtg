@@ -9,6 +9,8 @@ Board = function () {
 	this.etape = Etape.IDLE;
 	this.sousEtape = SousEtape.IDLE;
 	this.timer = 0;
+	this.attaquants = [];
+	this.bloqueurs = [];
 	this.mode;
 };
 
@@ -317,5 +319,37 @@ Board.prototype.muligane = function(player) {
 	this.notify(event);
 };
 
+Board.prototype.declareAttaquant = function(player, card) {
+	if(card.isEngaged()) {
+		var event = {};
+		event.type = GameEvent.ERROR;
+		event.data = "carte déja engagée";
+		this.notify(event);
+		return;
+	}
+	else {
+		card.engage();
+		attaquants.push(card);
+	}
+};
+
+Board.prototype.declareBloqueur = function(bloqueur, attaquant) {
+	attaquant.blockedBy = bloqueur;
+};
+
+Board.prototype.getBloqueur = function() {
+	return this.players[(this.playerActif +1) % this.players.length];
+};
+
+Board.prototype.attributionBlessures = function() {
+	if(attaquants.length == 0) {
+		this.nextPhase();
+	}
+	else {
+		var attaquant = this.attaquants.pop();
+		attaquant.attack(this.getBloqueur());
+		setTimeout(this.attributionBlessures.bind(this), 5000);
+	}
+};
 
 module.exports = Board;

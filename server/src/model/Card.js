@@ -20,6 +20,7 @@ Card = function (player) {
 	this.capacities = [];
 	this.marqueurs = [];
 	this._capacities = [0,0,0];
+	this.blockedBy = null;
 };
 
 Card.prototype = new Observable();
@@ -135,6 +136,16 @@ Card.prototype.degage = function() {
 
 Card.prototype.isEngaged = function() {
 	return this.isEngaged;
+};
+
+Card.prototype.attack = function(player) {
+	if(this.blockedBy) {
+		this.blockedBy.damage(this.getForce());
+		this.damage(this.blockedBy.getForce());
+	}
+	else {
+		player.life -= this.getForce();
+	}
 };
 
 module.exports = Card;
