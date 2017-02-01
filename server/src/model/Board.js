@@ -59,7 +59,7 @@ Board.prototype.allDistribDone = function() {
 }
 
 Board.prototype.poseCard = function(player, card) {
-	player.poseCard();
+	player.poseCard(this,card);
 };
 
 Board.prototype.letPlayerDoSth = function() {
@@ -317,24 +317,6 @@ Board.prototype.muligane = function(player) {
 	event.type = GameEvent.MULIGANE;
 	event.data = {player:player,cards:player.hand};
 	this.notify(event);
-};
-
-Board.prototype.declareAttaquant = function(player, card) {
-	if(card.isEngaged()) {
-		var event = {};
-		event.type = GameEvent.ERROR;
-		event.data = "carte déja engagée";
-		this.notify(event);
-		return;
-	}
-	else {
-		card.engage();
-		attaquants.push(card);
-	}
-};
-
-Board.prototype.declareBloqueur = function(bloqueur, attaquant) {
-	attaquant.blockedBy = bloqueur;
 };
 
 Board.prototype.getBloqueur = function() {

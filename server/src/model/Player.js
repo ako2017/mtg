@@ -7,11 +7,11 @@ Player = function() {
 	this.exil = [];
 	this.life = 22;
 	this.mana=[0,0,0,0,0,0];
-	//this.socket;
 	this.name = "";
 	this.doneDistrib = false;
 	this.hasPoseTerrain = false;
 	this.canPioche = true;
+	this.attaquants = [];
 };
 
 Player.prototype = new Observable();
@@ -91,7 +91,7 @@ Player.prototype.poseCreatureOrEphemere= function(board, card, isEph) {
 Player.prototype.poseCard = function(board, card) {
 	console.log("pose carte");
 	var event = {};
-	if(!board.isPlayerActif(player)) {
+	if(!board.isPlayerActif(this)) {
 		event.type = GameEvent.ERROR;
 		event.data = "vous n'avez pas la main";
 		this.notify(event);
@@ -105,6 +105,52 @@ Player.prototype.poseCard = function(board, card) {
 	else if(card.typeC == TypeCard.EPHEMERE){
 		this.poseCreatureOrEphemere(board, card, true);
 	}
+};
+
+Player.prototype.declareAttaquant = function(card) {
+	if(card.isEngaged()) {
+		var event = {};
+		event.type = GameEvent.ERROR;
+		event.data = "carte déja engagée";
+		this.notify(event);
+	}
+	else {
+		card.engage();
+		this.attaquants.push(card);
+		var event = {};
+		event.type = GameEvent.DECLARE_ATTAQUANT;
+		event.data = card;
+		this.notify(event);
+	}
+};
+
+Player.prototype.undeclareAttaquant = function(card) {
+	if(card.isEngaged()) {
+		this.attaquants.removeByValue(card);
+		card.degage();
+		var event = {};
+		event.type = GameEvent.UNDECLARE_ATTAQUANT;
+		event.data = card;
+		this.notify(event);
+	}
+};
+
+Player.prototype.declareBloqueur = function(bloqueur, attaquant) {
+	attaquant.blockedBy = bloqueur;
+	bloqueur.blockCard = attaquant;
+	var event = {};
+	event.type = GameEvent.DECLARE_BLOQUEUR;
+	event.data = attaquant;
+	this.notify(event);
+};
+
+Player.prototype.undeclareBloqueur = function(bloqueur) {
+	bloqueur.blockCard.blockedBy = null;
+	bloqueur.blockCard = null;
+	var event = {};
+	event.type = GameEvent.UNDECLARE_BLOQUEUR;
+	event.data = attaquant;
+	this.notify(event);
 };
 
 module.exports = Player;

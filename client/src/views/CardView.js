@@ -43,7 +43,13 @@ CardView.prototype.select = function() {
 };
 
 CardView.prototype.onClick = function() {
-	this.select();
+	if(this.boardModel.etape == Etape.DECLARATION_ATTAQUANTS) {
+		//this.cardModel.owner.declareAttaquant(this);
+	}
+	else if(this.boardModel.etape == Etape.DECLARATION_BLOQUEURS) {
+		//this.cardModel.owner.declareBloqueur(this);
+		//	this.select();	
+	}
 };
 
 /**

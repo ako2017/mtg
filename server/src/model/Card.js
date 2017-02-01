@@ -121,7 +121,7 @@ Card.prototype.init = function init(data) {
 Card.prototype.engage = function() {
 	this.isEngaged = true;
 	var event = {};
-	event.type = GameEvent.DISTRIBUTION;
+	event.type = GameEvent.ENGAGEMENT;
 	event.data = this.isEngaged;
 	this.notify(event);
 };
@@ -129,7 +129,7 @@ Card.prototype.engage = function() {
 Card.prototype.degage = function() {
 	this.isEngaged = false;
 	var event = {};
-	event.type = GameEvent.DISTRIBUTION;
+	event.type = GameEvent.DEGAGEMENT;
 	event.data = this.isEngaged;
 	this.notify(event);
 };
