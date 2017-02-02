@@ -1,10 +1,11 @@
-CardView = function (game, card, board, boardView) {
+CardView = function(game, card, board, boardView,ownerView) {
 	Phaser.Sprite.call(this, game);
 	this.back = null;
 	this.front = null;
 	this.isSelected = false;
 	this.boardModel = board;
 	this.boardView = boardView;
+	this.ownerView = ownerView;
 	this.init(card);
 };
 
@@ -17,7 +18,7 @@ CardView.prototype.init = function(card) {
 	this.initLabels(card);
 	this.show(false);
 	this.model = card;
-	this.scale.set(0.5 , 0.5);
+	this.scale.set(0.5, 0.5);
 };
 
 CardView.prototype.show = function(isVisible) {
@@ -25,37 +26,38 @@ CardView.prototype.show = function(isVisible) {
 	this.back.visible = !isVisible;
 };
 
-CardView.prototype.initLabels = function(card) {	
+CardView.prototype.initLabels = function(card) {
 	this.addChild(this.back);
 	this.addChild(this.front);
 };
 
 CardView.prototype.select = function() {
 	this.isSelected = !this.isSelected;
-	if(this.boardModel.phase == Phase.PRINCIPALE || this.boardModel.sousEtape == SousEtape.RETIRER_CARD) {
-		if(this.isSelected) {
-			this.scale.set(0.7 , 0.7);
-		}
-		else {
-			this.scale.set(0.5 , 0.5);
-		}
+	if (this.isSelected) {
+		this.ownerView.unselectAllWithout(this);
+		this.y -= 70;
+		this.scale.set(0.7, 0.7);
+	} else {
+		this.y += 70;
+		this.scale.set(0.5, 0.5);
 	}
 };
 
 CardView.prototype.onClick = function() {
-	if(this.boardModel.etape == Etape.DECLARATION_ATTAQUANTS) {
+	if (this.boardModel.etape == Etape.DECLARATION_ATTAQUANTS) {
 		//this.cardModel.owner.declareAttaquant(this);
-	}
-	else if(this.boardModel.etape == Etape.DECLARATION_BLOQUEURS) {
+	} else if (this.boardModel.etape == Etape.DECLARATION_BLOQUEURS) {
 		//this.cardModel.owner.declareBloqueur(this);
 		//	this.select();	
+	} else if (this.boardModel.phase == Phase.PRINCIPALE) {
+		this.select();
 	}
 };
 
 /**
  * Automatically called by World.update
  */
- 
+
 CardView.prototype.update = function() {
 };
 

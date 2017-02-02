@@ -3,10 +3,8 @@
     <head> 
         <title>Magic the Gathering v1.0</title> 
         <meta name="viewport" content="width=device-width, initial-scale=1"> 
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
-		<!--script src="/socket.io/socket.io.js"></script-->
-		
-    	<script src="phaser.min.js"></script>
+		<script src="libs/jquery-3.0.0.min.js"></script>
+    	<script src="libs/phaser.min.js"></script>
 		<script  src="editor/localstoragedb.min.js"></script>
 		<script src="src/model/Constantes.js"></script>
 		<script src="src/model/Observable.js"></script>
@@ -32,7 +30,6 @@
 				var gameSize;
 
 				game = new Phaser.Game(800,600, Phaser.CANVAS, "game-area");
-				//game = new Phaser.Game(800,600, Phaser.AUTO, "game-area");
 				game.state.add("Preload",preloadState);
 				game.state.add("MainMenu",mainMenuState);
 				game.state.add("Game",gameState);

@@ -50,6 +50,6 @@ mainMenuState.prototype = {
 		return player;
 	},
 	gofull:function() {
-        this.game.scale.startFullScreen(false);
+     //   this.game.scale.startFullScreen(false);
 	}
 }

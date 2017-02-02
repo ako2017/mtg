@@ -115,6 +115,7 @@ Card.prototype.init = function init(data) {
 	this.vol = data.vol;
 	this.celerite = data.celerite;
 	this.vigilance = data.vigilance;
+	this.typeC = data.type;
 	
 };
 

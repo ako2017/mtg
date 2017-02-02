@@ -66,11 +66,12 @@ Player.prototype.poseTerrain = function(card) {
 };
 
 Player.prototype.poseCreatureOrEphemere= function(board, card, isEph) {
+	var event = {};
 	if(!this.canPayMana(card.mana)) {
 		event.type = GameEvent.ERROR;
 		event.data = "vous n'avez pas assez de mana";
 		this.notify(event);
-		
+		return;
 	}
 	this.payMana(card.mana);
 	console.log("pose creature or ephemere");

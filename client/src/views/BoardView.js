@@ -42,7 +42,7 @@ BoardView.prototype.initPlayers = function(players) {
 		var newPlayer = new PlayerView(this.game);
 		for(var j=0;j<players[i].deck.length;j++) {
 			var card = players[i].deck[j];
-			var newCard = new CardView(this.game, card, this.model, this);
+			var newCard = new CardView(this.game, card, this.model, this,newPlayer);
 			if(i != this.myId) {
 				newCard.y=this.game.world.centerY -300+j;
 			}
@@ -56,8 +56,9 @@ BoardView.prototype.initPlayers = function(players) {
 			newPlayer.model = players[i];
 			
 			card.addObserver(newCard);
-			players[i].addObserver(newPlayer);
+			
 		}
+		players[i].addObserver(newPlayer);
 		this.players.push(newPlayer);
 	}	
 };
@@ -85,8 +86,11 @@ BoardView.prototype.distributionAnim = function(players) {
 			var cardView = cards[j].observers[0];
 			
 			var posX = 100 + j*80;
-			var poxY = 400;		
-			this.game.add.tween(cardView).to({x: posX},2000,Phaser.Easing.Linear.None,true);
+			var posY = 0;
+			if(i == 1) {
+				posY = 430;
+			}	
+			this.game.add.tween(cardView).to({x: posX,y:posY},2000,Phaser.Easing.Linear.None,true);
 			if(i == 1) {
 				cardView.inputEnabled = true;
 				cardView.events.onInputUp.add(cardView.onClick, cardView);
