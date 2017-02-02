@@ -9,13 +9,10 @@ preloadState.prototype = {
 			this.game.load.image(card.extension + '#' + card.numero, 'assets/extensions/'+card.extension+'/'+addzeros(card.numero,3)+'.jpg');
 		}
 		this.game.load.image('back', 'assets/back.png');
-		this.game.load.image('front', 'assets/front.png');
-		this.game.load.image('foret', 'assets/foret.png');
 		this.game.load.image('cross', 'assets/cross.jpg');
 		this.game.load.image('titleBg', 'assets/bg.jpg');
 		this.game.load.image('corona', 'assets/blue.png');
 		this.game.load.image('logo', 'assets/logo-magic.png');
-		this.game.load.spritesheet('button', 'assets/button_sprite_sheet.png', 193, 71);
 		this.game.load.video('video', 'assets/defkp_EMN_Header_41.mp4');
 
 	},

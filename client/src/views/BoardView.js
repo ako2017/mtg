@@ -116,7 +116,7 @@ BoardView.prototype.getPlayerByName = function(name) {
 		}
 	}
 	return null;
-}
+};
 
 BoardView.prototype.muliganeAnim = function(player, cards) {
 	var playerView = this.getPlayerByName(player.name);
@@ -137,6 +137,10 @@ BoardView.prototype.muliganeAnim = function(player, cards) {
 	}}.bind(this,cards,player.name), 3000);
 };
 
+BoardView.prototype.stackCardAnim = function(card) {
+	this.game.add.tween(card.observers[0]).to({x:0,y:150},2000,Phaser.Easing.Linear.None,true);
+};
+
 BoardView.prototype.onReceive = function(event) {
 	switch(event.type) {
 		case GameEvent.DISTRIBUTION:
@@ -155,7 +159,9 @@ BoardView.prototype.onReceive = function(event) {
 				cardView.events.onInputUp.add(cardView.onClick, cardView);
 			}		
 			break;
-		case GameEvent.RETIRER_CARD:
+		case GameEvent.STACK_CARD:
+			this.stackCardAnim(event.data.card);
+			event.data.player.observers[0].hand.removeByValue(event.data.card.observers[0]);
 			break;
 		case GameEvent.RETIRER_CARD_OK:
 			var playerView = this.getPlayerByName(event.data.player.name);

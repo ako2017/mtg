@@ -79,7 +79,7 @@ Board.prototype.pauseTimer = function() {
 Board.prototype.containsTypeInStack = function(type) {
 	for(var i=0;i<this.stack.length;i++) {
 		var element = this.stack[i];
-		if(element.type == type) {
+		if(element.typeC == type) {
 			return true;
 		}
 	}

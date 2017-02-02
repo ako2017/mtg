@@ -1,4 +1,5 @@
 Player = function() {
+	Observable.call(this);
 	this.hand = [];
 	this.battlefield = [];
 	this.terrains = [];
@@ -6,7 +7,8 @@ Player = function() {
 	this.cemeteryes = [];
 	this.exil = [];
 	this.life = 22;
-	this.mana=[0,0,0,0,0,0];
+//	this.mana=[0,0,0,0,0,0];
+	this.mana=[5,5,5,5,5,5];
 	this.name = "";
 	this.doneDistrib = false;
 	this.hasPoseTerrain = false;
@@ -14,7 +16,7 @@ Player = function() {
 	this.attaquants = [];
 };
 
-Player.prototype = new Observable();
+Player.prototype = Object.create(Observable.prototype);
 
 Player.prototype.canPayMana = function(mana) {
 	for(var i=0;i<mana.length;i++) {
@@ -73,7 +75,6 @@ Player.prototype.poseCreatureOrEphemere= function(board, card, isEph) {
 		this.notify(event);
 		return;
 	}
-	this.payMana(card.mana);
 	console.log("pose creature or ephemere");
 	if(board.containsTypeInStack(TypeCard.CREATURE) && !isEph) {
 		event.type = GameEvent.ERROR;
@@ -81,12 +82,13 @@ Player.prototype.poseCreatureOrEphemere= function(board, card, isEph) {
 		this.notify(event);
 		return;
 	}
+	this.payMana(card.mana);
 	board.stack.push(card);
 	this.hand.removeByValue(card);	
 	event.type = GameEvent.STACK_CARD;
-	event.data = {player:this,card:card};
-	this.notify(event);
-	board.letPlayerDoSth();
+	event.data = {card:card,player:this};
+	board.notify(event);
+	//board.letPlayerDoSth();
 };
 
 Player.prototype.poseCard = function(board, card) {
