@@ -30,7 +30,9 @@ mainMenuState.prototype = {
 	onNewLocalGame: function(data) {
 		board = new Board();
 		board.addPlayer(this.createPlayer('lala'));
-		board.addPlayer(this.createPlayer('pau'));
+		var player = this.createPlayer('pau');
+		player.isMe = true;
+		board.addPlayer(player);
 		this.game.state.start("Game");
 	},
 	showMessage: function(msg) {

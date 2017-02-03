@@ -1,10 +1,6 @@
-
-var ID_CARD=0;
 Card = function (player) {
 	Observable.call(this);
-	this.owner;
 	this.force = 0;
-	this.id = ID_CARD++;
 	this.endurance = 0;
 	this.nom="nom";
 	this.text="descriptif de la carte";
@@ -21,6 +17,7 @@ Card = function (player) {
 	this.marqueurs = [];
 	this._capacities = [0,0,0];
 	this.blockedBy = null;
+	this.malInvocation = false;
 };
 
 Card.prototype = new Observable();
@@ -57,7 +54,7 @@ Card.prototype.hasVigilance = function() {
 };
 
 Card.prototype.hasCapacity = function(capacity) {
-	return this._capacities[capacity] != NONE;
+	return this._capacities[capacity] != Ttl.NONE;
 };
 
 Card.prototype.addMarqueur = function(force,endurance,ttl) {

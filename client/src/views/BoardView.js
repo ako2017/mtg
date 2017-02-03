@@ -40,16 +40,23 @@ BoardView.prototype.initPlayers = function(players) {
 	}
 	for(var i=0;i<players.length;i++) {
 		var newPlayer = new PlayerView(this.game);
+		newPlayer.posDeck.x = this.game.world.width-80;
+		if(i != this.myId) {
+			newPlayer.posDeck.y = this.game.world.centerY -300;
+		}
+		else {
+			newPlayer.posDeck.y = this.game.world.centerY + 100;
+		}
 		for(var j=0;j<players[i].deck.length;j++) {
 			var card = players[i].deck[j];
 			var newCard = new CardView(this.game, card, this.model, this,newPlayer);
 			if(i != this.myId) {
-				newCard.y=this.game.world.centerY -300+j;
+				newCard.y=this.game.world.centerY -300;
 			}
 			else {
-				newCard.y=this.game.world.centerY +100+j;
+				newCard.y=this.game.world.centerY +100;
 			}
-			newCard.x=600+j;
+			newCard.x=this.game.world.width-80;
 			this.addChild(newCard);
 			newPlayer.deck.push(newCard);
 			newPlayer.name = players[i].name;
@@ -61,6 +68,7 @@ BoardView.prototype.initPlayers = function(players) {
 		players[i].addObserver(newPlayer);
 		this.players.push(newPlayer);
 	}	
+	this.players[1].isMe = true;
 };
  
 BoardView.prototype.update = function() {
@@ -90,7 +98,7 @@ BoardView.prototype.distributionAnim = function(players) {
 			if(i == 1) {
 				posY = 430;
 			}	
-			this.game.add.tween(cardView).to({x: posX,y:posY},2000,Phaser.Easing.Linear.None,true);
+			this.game.add.tween(cardView).to({x: posX,y:posY},1000,Phaser.Easing.Linear.None,true);
 			if(i == 1) {
 				cardView.inputEnabled = true;
 				cardView.events.onInputUp.add(cardView.onClick, cardView);
@@ -118,36 +126,18 @@ BoardView.prototype.getPlayerByName = function(name) {
 	return null;
 };
 
-BoardView.prototype.muliganeAnim = function(player, cards) {
-	var playerView = this.getPlayerByName(player.name);
-	for(var i=0;i<playerView.hand.length;i++) {
-		this.game.add.tween(playerView.hand[i]).to({x: 700},2000,Phaser.Easing.Linear.None,true);
-		playerView.hand[i].show(false);
-	}
-	playerView.hand = [];
-	for(var i=0;i<cards.length;i++) {
-		playerView.hand.push(cards[i].observers[0]);
-	}
-	
-	setTimeout(function(cards,name){
-		for(var i=0;i<cards.length;i++) {
-		this.game.add.tween(cards[i].observers[0]).to({x: 100 + i*80},2000,Phaser.Easing.Linear.None,true);
-		if(name == this.myName)
-			cards[i].observers[0].show(true);
-	}}.bind(this,cards,player.name), 3000);
+BoardView.prototype.stackCardAnim = function(card) {
+	this.game.add.tween(card.observers[0]).to({x:0,y:150},1000,Phaser.Easing.Linear.None,true);
 };
 
-BoardView.prototype.stackCardAnim = function(card) {
-	this.game.add.tween(card.observers[0]).to({x:0,y:150},2000,Phaser.Easing.Linear.None,true);
+BoardView.prototype.enterBattlefieldAnim = function(card) {
+	this.game.add.tween(card).to({x:400,y:150},1000,Phaser.Easing.Linear.None,true);
 };
 
 BoardView.prototype.onReceive = function(event) {
 	switch(event.type) {
 		case GameEvent.DISTRIBUTION:
 			this.distributionAnim(event.data);
-			break;
-		case GameEvent.MULIGANE:
-			this.muliganeAnim(event.data.player, event.data.cards);
 			break;
 		case GameEvent.WHO_BEGIN:
 			this.playerActifLabel.setText("JOUEUR ACTIF:" + this.players[event.data].name);
@@ -163,13 +153,15 @@ BoardView.prototype.onReceive = function(event) {
 			this.stackCardAnim(event.data.card);
 			event.data.player.observers[0].hand.removeByValue(event.data.card.observers[0]);
 			break;
+		case GameEvent.ENTER_BATTLEFIELD:
+			this.enterBattlefieldAnim(event.data.card.observers[0]);
+			break;
 		case GameEvent.RETIRER_CARD_OK:
 			var playerView = this.getPlayerByName(event.data.player.name);
 			var cards = event.data.cards;
 			for(var i=0;i<cards.length;i++) {
 				playerView.hand.removeByValue(cards[i].observers[0]);
 				this.game.add.tween(cards[i].observers[0]).to({x: 700},2000,Phaser.Easing.Linear.None,true);
-				
 			}
 			break;
 		case GameEvent.ERROR:

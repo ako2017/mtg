@@ -32,7 +32,6 @@ Board.prototype.run = function() {
 };
 
 Board.prototype.update = function() {
-	console.log('toto');
 };
 
 Board.prototype.distribution = function() {
@@ -64,12 +63,12 @@ Board.prototype.poseCard = function(player, card) {
 
 Board.prototype.letPlayerDoSth = function() {
 	this.timerId = setTimeout(this.noReponse.bind(this), 5000);
-	this.beginTimer();
+	//this.beginTimer();
 	this.mode = Mode.WAIT_PLAYER;
 };
 
 Board.prototype.noReponse = function() {
-	
+	this.resolveStack();
 };
 
 Board.prototype.pauseTimer = function() {
@@ -100,18 +99,18 @@ Board.prototype.checkTriggeredCapacities = function(trigger, card) {
 Board.prototype.resolveStack = function() {
 	var element = this.stack.pop();
 	if(element != null) {
-		if(element.type == TypeCard.CREATURE) {
+		if(element.typeC == TypeCard.CREATURE) {
 			for(var i=0;i<element.capacities.length;i++) {
 				if(!element.capacities[i].hasMana()) {
 					element.capacities[i].execute({board:this, action:-1});
 				}
 			}
-			element.owner.battlefield.push(card);
+			element.owner.battlefield.push(element);
 			var event = {};
 			event.type = GameEvent.ENTER_BATTLEFIELD;
-			event.data = {card:card};
+			event.data = {card:element};
 			this.notify(event);
-			this.checkTriggeredCapacities(GameEvent.ENTER_BATTLEFIELD, card);
+			//this.checkTriggeredCapacities(GameEvent.ENTER_BATTLEFIELD, card);
 		}
 		else if(element.type == TypeCard.CAPACITY) {
 			element.execute({board:this});
@@ -305,18 +304,19 @@ Board.prototype.getPlayerActif = function() {
 };
 
 Board.prototype.muligane = function(player) {
-	var event = {};
-	var nbCard = player.hand.length-1;
-	for(var i=0;i<player.hand.length;i++) {
-		player.deck.push(player.hand[i]);
-	}
-	player.hand = [];
-	for(var i=0;i<nbCard;i++) {
-		player.hand.push(player.deck.pop());
-	}
-	event.type = GameEvent.MULIGANE;
-	event.data = {player:player,cards:player.hand};
-	this.notify(event);
+	player.muligane();
+//	var event = {};
+//	var nbCard = player.hand.length-1;
+//	for(var i=0;i<player.hand.length;i++) {
+//		player.deck.push(player.hand[i]);
+//	}
+//	player.hand = [];
+//	for(var i=0;i<nbCard;i++) {
+//		player.hand.push(player.deck.pop());
+//	}
+//	event.type = GameEvent.MULIGANE;
+//	event.data = {player:player,cards:player.hand};
+//	this.notify(event);
 };
 
 Board.prototype.getBloqueur = function() {

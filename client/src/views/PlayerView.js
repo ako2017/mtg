@@ -10,6 +10,8 @@ PlayerView = function(game) {
 	this.mana = [ 0, 0, 0, 0, 0, 0 ];
 	this.name = "";
 	this.model = null;
+	this.isMe = false;
+	this.posDeck = {x:0, y:0};
 };
 
 PlayerView.prototype.hasSelectedCards = function() {
@@ -27,22 +29,22 @@ PlayerView.prototype.poseCardsAnim = function(player, card) {
 		if (card.typeC == TypeCard.TERRAIN) {
 			this.game.add.tween(cardView).to({
 				y : 300
-			}, 2000, Phaser.Easing.Linear.None, true);
+			}, 1000, Phaser.Easing.Linear.None, true);
 		}
 		if (card.typeC != TypeCard.TERRAIN) {
 			this.game.add.tween(cardView).to({
 				y : 270
-			}, 2000, Phaser.Easing.Linear.None, true);
+			}, 1000, Phaser.Easing.Linear.None, true);
 		}
 	} else {
 		if (player.typeC == TypeCard.TERRAIN)
 			this.game.add.tween(cardView).to({
 				y : 150
-			}, 2000, Phaser.Easing.Linear.None, true);
+			}, 1000, Phaser.Easing.Linear.None, true);
 		if (player.typeC != TypeCard.TERRAIN)
 			this.game.add.tween(cardView).to({
 				y : 200
-			}, 2000, Phaser.Easing.Linear.None, true);
+			}, 1000, Phaser.Easing.Linear.None, true);
 	}
 	cardView.show(true);
 	this.hand.removeByValue(cardView);
@@ -58,15 +60,39 @@ PlayerView.prototype.piocheCardAnim = function(card) {
 };
 
 PlayerView.prototype.unselectAllWithout = function(card) {
-	for(i=0;i<this.hand.length;i++) {
-		if(this.hand[i].isSelected && this.hand[i] != card) {
+	for (i = 0; i < this.hand.length; i++) {
+		if (this.hand[i].isSelected && this.hand[i] != card) {
 			this.hand[i].select();
 		}
 	}
 };
 
+PlayerView.prototype.muliganeAnim = function(player, cards) {
+	for(var i=0;i<this.hand.length;i++) {
+		this.game.add.tween(this.hand[i]).to({x: this.posDeck.x, y:this.posDeck.y},1000,Phaser.Easing.Linear.None,true);
+		this.hand[i].show(false);
+	}
+	this.hand = [];
+	for(var i=0;i<cards.length;i++) {
+		this.hand.push(cards[i].observers[0]);
+	}
+	
+	setTimeout(function(cards,name){
+		var y = this.isMe?430:0;
+		for(var i=0;i<cards.length;i++) {
+			this.game.add.tween(cards[i].observers[0]).to({x: 100 + i*80, y:y},1000,Phaser.Easing.Linear.None,true);
+			if(this.isMe) {
+				cards[i].observers[0].show(true);
+			}
+		}
+		}.bind(this,cards,player.name), 2000);
+};
+
 PlayerView.prototype.onReceive = function(event) {
 	switch (event.type) {
+	case GameEvent.MULIGANE:
+		this.muliganeAnim(event.data.player, event.data.cards);
+		break;
 	case GameEvent.POSE_CARD:
 		this.poseCardsAnim(event.data.player, event.data.card);
 		break;

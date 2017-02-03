@@ -88,7 +88,7 @@ Player.prototype.poseCreatureOrEphemere= function(board, card, isEph) {
 	event.type = GameEvent.STACK_CARD;
 	event.data = {card:card,player:this};
 	board.notify(event);
-	//board.letPlayerDoSth();
+	board.letPlayerDoSth();
 };
 
 Player.prototype.poseCard = function(board, card) {
@@ -153,6 +153,29 @@ Player.prototype.undeclareBloqueur = function(bloqueur) {
 	var event = {};
 	event.type = GameEvent.UNDECLARE_BLOQUEUR;
 	event.data = attaquant;
+	this.notify(event);
+};
+
+Player.prototype.muligane = function() {
+	var event = {};
+	var nbCard = this.hand.length-1;
+	
+	if(nbCard == 0) {
+		event.type = GameEvent.ERROR;
+		event.data = "vous ne pouvez plus faire de muligane";
+		this.notify(event);
+		return;
+	}
+	
+	for(var i=0;i<this.hand.length;i++) {
+		this.deck.push(this.hand[i]);
+	}
+	this.hand = [];
+	for(var i=0;i<nbCard;i++) {
+		this.hand.push(this.deck.pop());
+	}
+	event.type = GameEvent.MULIGANE;
+	event.data = {player:this,cards:this.hand};
 	this.notify(event);
 };
 
