@@ -178,5 +178,3 @@ Player.prototype.muligane = function() {
 	event.data = {player:this,cards:this.hand};
 	this.notify(event);
 };
-
-module.exports = Player;

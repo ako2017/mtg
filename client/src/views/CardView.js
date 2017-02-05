@@ -6,6 +6,7 @@ CardView = function(game, card, board, boardView,ownerView) {
 	this.boardModel = board;
 	this.boardView = boardView;
 	this.ownerView = ownerView;
+	this.cardModel = card;
 	this.init(card);
 };
 
@@ -61,5 +62,16 @@ CardView.prototype.onClick = function() {
 CardView.prototype.update = function() {
 };
 
+CardView.prototype.enterBattlefieldAnim = function(card) {
+};
+
 CardView.prototype.onReceive = function(event) {
+	switch(event.type) {
+		case GameEvent.ENTER_BATTLEFIELD:
+			this.enterBattlefieldAnim();
+			break;
+		case GameEvent.ERROR:
+			alert(event.data);
+			break;
+	}
 };

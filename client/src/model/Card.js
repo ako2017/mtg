@@ -20,7 +20,7 @@ Card = function (player) {
 	this.malInvocation = false;
 };
 
-Card.prototype = new Observable();
+Card.prototype = Object.create(Observable.prototype);
 
 Card.prototype.addVol = function(ttl) {
 	return this.addCapacity(Capacity.VOL,ttl);
@@ -113,7 +113,6 @@ Card.prototype.init = function init(data) {
 	this.celerite = data.celerite;
 	this.vigilance = data.vigilance;
 	this.typeC = data.type;
-	
 };
 
 Card.prototype.engage = function() {
@@ -146,4 +145,15 @@ Card.prototype.attack = function(player) {
 	}
 };
 
-module.exports = Card;
+Card.prototype.executeCapacityActive = function(context) {
+	for(var i=0;i<this.capacities.length;i++) {
+		var capacity =  this.capacities[i];
+		if(!capacity.hasMana()) {
+			capacity.execute(context);
+		}
+	}
+};
+
+Card.prototype.onEnterBattlefield = function() {
+	this.owner.battlefield.push(this);
+};

@@ -100,17 +100,12 @@ Board.prototype.resolveStack = function() {
 	var element = this.stack.pop();
 	if(element != null) {
 		if(element.typeC == TypeCard.CREATURE) {
-			for(var i=0;i<element.capacities.length;i++) {
-				if(!element.capacities[i].hasMana()) {
-					element.capacities[i].execute({board:this, action:-1});
-				}
-			}
-			element.owner.battlefield.push(element);
+			element.executeCapacityActive({});
+			element.onEnterBattlefield();
 			var event = {};
 			event.type = GameEvent.ENTER_BATTLEFIELD;
 			event.data = {card:element};
 			this.notify(event);
-			//this.checkTriggeredCapacities(GameEvent.ENTER_BATTLEFIELD, card);
 		}
 		else if(element.type == TypeCard.CAPACITY) {
 			element.execute({board:this});
@@ -305,18 +300,6 @@ Board.prototype.getPlayerActif = function() {
 
 Board.prototype.muligane = function(player) {
 	player.muligane();
-//	var event = {};
-//	var nbCard = player.hand.length-1;
-//	for(var i=0;i<player.hand.length;i++) {
-//		player.deck.push(player.hand[i]);
-//	}
-//	player.hand = [];
-//	for(var i=0;i<nbCard;i++) {
-//		player.hand.push(player.deck.pop());
-//	}
-//	event.type = GameEvent.MULIGANE;
-//	event.data = {player:player,cards:player.hand};
-//	this.notify(event);
 };
 
 Board.prototype.getBloqueur = function() {
@@ -333,5 +316,3 @@ Board.prototype.attributionBlessures = function() {
 		setTimeout(this.attributionBlessures.bind(this), 5000);
 	}
 };
-
-module.exports = Board;
