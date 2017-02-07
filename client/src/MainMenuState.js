@@ -25,7 +25,7 @@ mainMenuState.prototype = {
 		//	The 5000 value is the lifespan of each particle before it's killed
 		emitter.start(false, 5000, 100);		
 		
-		this.game.input.onDown.add(this.gofull, this);
+		//this.game.input.onDown.add(this.gofull, this);
 	},
 	onNewLocalGame: function(data) {
 		board = new Board();

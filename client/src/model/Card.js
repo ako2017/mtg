@@ -113,6 +113,11 @@ Card.prototype.init = function init(data) {
 	this.celerite = data.celerite;
 	this.vigilance = data.vigilance;
 	this.typeC = data.type;
+	for(var i=0;i<data.capacities.length;i++) {
+		var capacity = new ScriptCapacity(this);
+		capacity.init(data.capacities[i]);
+		this.capacities.push(capacity);
+	}
 };
 
 Card.prototype.engage = function() {
