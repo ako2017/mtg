@@ -9,7 +9,6 @@ preloadState.prototype = {
 			this.game.load.image(card.extension + '#' + card.numero, 'assets/extensions/'+card.extension+'/'+addzeros(card.numero,3)+'.jpg');
 		}
 		this.game.load.image('back', 'assets/back.png');
-		this.game.load.image('cross', 'assets/cross.jpg');
 		this.game.load.image('titleBg', 'assets/bg.jpg');
 		this.game.load.image('corona', 'assets/blue.png');
 		this.game.load.image('logo', 'assets/logo-magic.png');

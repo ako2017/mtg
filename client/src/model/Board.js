@@ -7,11 +7,11 @@ Board = function () {
 	this.isServer;
 	this.phase = Phase.DISTRIBUTION;
 	this.etape = Etape.IDLE;
-	this.sousEtape = SousEtape.IDLE;
+	this.mode;
 	this.timer = 0;
 	this.attaquants = [];
 	this.bloqueurs = [];
-	this.mode;
+
 };
 
 Board.prototype = new Observable();
@@ -32,6 +32,16 @@ Board.prototype.run = function() {
 };
 
 Board.prototype.update = function() {
+	if(this.getCurrendMode() == MODE.RESOLVE_STACK) {
+		this.stack.resolve();
+	}
+	else if(this.getCurrendMode() == MODE.SELECT_CARD) {
+
+	}
+};
+
+Board.prototype.getCurrentMode = function() {
+
 };
 
 Board.prototype.distribution = function() {
@@ -68,7 +78,7 @@ Board.prototype.letPlayerDoSth = function() {
 };
 
 Board.prototype.noReponse = function() {
-	this.resolveStack();
+	this.mode = Mode.RESOLVE_STACK;
 };
 
 Board.prototype.pauseTimer = function() {
@@ -107,7 +117,7 @@ Board.prototype.resolveStack = function() {
 			event.data = {card:element};
 			this.notify(event);
 		}
-		else if(element.type == TypeCard.CAPACITY) {
+		else if(element.typeC == TypeCard.CAPACITY) {
 			element.execute({board:this});
 		}
 	}
@@ -219,7 +229,6 @@ Board.prototype.piochePhase = function() {
 
 Board.prototype.nettoyagePhase = function() {
 	if(this.getPlayerActif().hand.length > 7) {
-		this.sousEtape = SousEtape.RETIRER_CARD;
 		var event = {};
 		event.type = GameEvent.RETIRER_CARD;
 		this.notify(event);

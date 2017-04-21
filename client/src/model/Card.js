@@ -8,7 +8,7 @@ Card = function (player) {
 	this.owner = player;
 	this.type="type de la carte";
 	this.typeC=null;
-	this.frontPic = "front";
+	this.frontPic = "";
 	this.isEngaged = false;
 	this.vol = false;
 	this.celerite = false;
@@ -150,7 +150,7 @@ Card.prototype.attack = function(player) {
 	}
 };
 
-Card.prototype.executeCapacityActive = function(context) {
+Card.prototype.getCapacityActive = function() {
 	for(var i=0;i<this.capacities.length;i++) {
 		var capacity =  this.capacities[i];
 		if(!capacity.hasMana()) {

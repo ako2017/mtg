@@ -47,7 +47,9 @@ CardEvent = {
 };
 const
 Mode = {
-	WAIT_PLAYER : 0
+	IDLE : 0,
+	WAIT_PLAYER : 1,
+	RESOLVE_STACK : 2
 };
 
 const
@@ -95,12 +97,6 @@ Etape = {
 	ATTRIBUTION_BLESSURES : 6,
 	FIN : 7,
 	NETTOYAGE : 8
-};
-
-const
-SousEtape = {
-	IDLE : -1,
-	RETIRER_CARD : 0
 };
 
 const
