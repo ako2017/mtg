@@ -28,5 +28,5 @@ Stack.prototype.resolve = function() {
 			this.current.execute({board:this});
 		}
 	}
-	return this.current != null;
+	return this.current != null;;
 };
