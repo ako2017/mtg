@@ -14,6 +14,8 @@ Player = function() {
 	this.hasPoseTerrain = false;
 	this.canPioche = true;
 	this.attaquants = [];
+	this.pass = false;
+	this.avatar = "";
 };
 
 Player.prototype = Object.create(Observable.prototype);
@@ -88,10 +90,33 @@ Player.prototype.poseCreatureOrEphemere= function(board, card, isEph) {
 	event.type = GameEvent.STACK_CARD;
 	event.data = {card:card,player:this};
 	board.notify(event);
-	board.letPlayerDoSth();
+};
+
+Player.prototype.poseCapacity= function(board, card, isEph) {
+	var event = {};
+	if(!this.canPayMana(card.mana)) {
+		event.type = GameEvent.ERROR;
+		event.data = "vous n'avez pas assez de mana";
+		this.notify(event);
+		return;
+	}
+	console.log("pose capacity");
+	if(board.containsTypeInStack(TypeCard.CREATURE) && !isEph) {
+		event.type = GameEvent.ERROR;
+		event.data = "une creature est deja dans la pile";
+		this.notify(event);
+		return;
+	}
+	this.payMana(card.mana);
+	board.stack.push(card);
+	event.type = GameEvent.STACK_CARD;
+	event.data = {card:card,player:this};
+	board.notify(event);
 };
 
 Player.prototype.poseCard = function(board, card) {
+	card.typeC=TypeCard.CAPACITY;
+	card.cibleRule="test";
 	console.log("pose carte");
 	var event = {};
 	if(!board.isPlayerActif(this)) {
@@ -108,6 +133,10 @@ Player.prototype.poseCard = function(board, card) {
 	else if(card.typeC == TypeCard.EPHEMERE){
 		this.poseCreatureOrEphemere(board, card, true);
 	}
+	else if(card.typeC == TypeCard.CAPACITY){
+		this.poseCapacity(board, card, true);
+	}
+	
 };
 
 Player.prototype.declareAttaquant = function(card) {

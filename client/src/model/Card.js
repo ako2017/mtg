@@ -18,6 +18,7 @@ Card = function (player) {
 	this._capacities = [0,0,0];
 	this.blockedBy = null;
 	this.malInvocation = false;
+	this.cibleRule = "test";
 };
 
 Card.prototype = Object.create(Observable.prototype);

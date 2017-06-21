@@ -14,12 +14,17 @@ BoardView.prototype = Object.create(Phaser.Group.prototype);
 BoardView.prototype.constructor = BoardView;
 
 BoardView.prototype.init = function(board) {
+	this.back = this.game.make.sprite(0, 0, 'fond');
+	this.back.scale.set(0.5, 0.5);
+	this.addChild(this.back);
 	this.initBtn();
 	this.initPlayers(board.players);
 	this.style = { font: "20px Arial", fill: "#f00"};
 	this.playerActifLabel= this.game.add.text(0, 0, "JOUEUR ACTIF: ", this.style);
-	this.phaseLabel= this.game.add.text(0, 20, "PHASE: ", this.style);
-	this.etapeLabel= this.game.add.text(0, 40, "ETAPE: ", this.style);
+	this.playerActifLabel.y = this.game.world.centerY -20;
+	this.phaseView = new PhaseView(this.game,board);
+	this.phaseView.y = this.game.world.centerY -10;
+	this.addChild(this.phaseView);
 };
 
 BoardView.prototype.initBtn = function() {
@@ -40,6 +45,7 @@ BoardView.prototype.initPlayers = function(players) {
 	}
 	for(var i=0;i<players.length;i++) {
 		var newPlayer = new PlayerView(this.game);
+		var playerState = new PlayerStateView(this.game, players[i]);
 		newPlayer.posDeck.x = this.game.world.width-80;
 		if(i != this.myId) {
 			newPlayer.posDeck.y = this.game.world.centerY -300;
@@ -65,15 +71,20 @@ BoardView.prototype.initPlayers = function(players) {
 			card.addObserver(newCard);
 			
 		}
+		if(i != this.myId) {
+		}
+		else {
+			playerState.y=this.game.world.height -150;
+		}
 		players[i].addObserver(newPlayer);
 		this.players.push(newPlayer);
+		this.addChild(playerState);
 	}	
 	this.players[1].isMe = true;
 };
  
 BoardView.prototype.update = function() {
-	this.phaseLabel.setText("PHASE: " + getPhaseName(this.model.phase));
-	this.etapeLabel.setText("ETAPE: " + getEtapeName(this.model.etape));
+	this.phaseView.update();
 	if(this.model.phase == Phase.COMBAT)
 		this.validBtn.setText("PASSER");
 	if(this.model.phase == Phase.PRINCIPALE) {
@@ -82,9 +93,9 @@ BoardView.prototype.update = function() {
 		else
 			this.validBtn.setText("PASSER");
 	}
-	if(this.model.sousEtape == SousEtape.RETIRER_CARD) {
-		this.validBtn.setText("RETIRER");
-	}
+//	if(this.model.sousEtape == SousEtape.RETIRER_CARD) {
+//		this.validBtn.setText("RETIRER");
+//	}
 };
 
 BoardView.prototype.distributionAnim = function(players) {

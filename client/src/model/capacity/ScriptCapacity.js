@@ -6,6 +6,7 @@ ScriptCapacity = function (card) {
 	this.typeC = TypeCard.CAPACITY;
 	this.mana = [0,0,0,0,0,0];
 	this.isRunning = false;
+	this.cibleRule = null;
 };
 
 ScriptCapacity.prototype.init = function init(data) {

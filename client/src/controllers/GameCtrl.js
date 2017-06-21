@@ -1,10 +1,14 @@
-BoardCtrl = function(board) {
+GameCtrl = function(board) {
 	this.board = board;
 	this.player = board.players[1];
 };
 
-BoardCtrl.prototype.endOfTurn = function(boardView) {
+GameCtrl.prototype.endOfTurn = function(boardView) {
 	boardView.muliganeBtn.visible = false;
+	if(this.board.mode ==  Mode.SELECT_CARD) {
+		this.board.validSelection(this.getSelectedCards());
+		return;
+	}
 	if (this.board.phase == Phase.DISTRIBUTION) {
 		var cards = boardView.players[1].hand;
 		this.board.endOfTurn(this.player);
@@ -17,30 +21,32 @@ BoardCtrl.prototype.endOfTurn = function(boardView) {
 				return;
 			}
 		}
-		this.board.passer(this.player);
+		this.board.pass(this.player);
 	} else if (this.board.phase == Phase.COMBAT) {
-		this.board.passer(this.player);
+		this.board.pass(this.player);
 	} else if (this.board.phase == Phase.PRINCIPALE_2) {
-		this.board.passer(this.player);
+		this.board.pass(this.player);
 	} else if (this.board.phase == Phase.FIN) {
-		this.board.passer(this.player);
-	} else if (this.board.sousEtape == SousEtape.RETIRER_CARD) {
-		var cards = boardView.players[1].hand;
-		var cardToRetire = [];
-		for (var i = 0; i < cards.length; i++) {
-			var card = cards[i];
-			if (card.isSelected) {
-				cardToRetire.push(card.model);
-			}
-		}
-		this.board.retirerCard(this.player, cardToRetire);
+		this.board.pass(this.player);
 	}
 };
 
-BoardCtrl.prototype.muligane = function(boardView) {
+GameCtrl.prototype.muligane = function(boardView) {
 	this.board.muligane(this.player);
 };
 
-BoardCtrl.prototype.poseCard = function(cardView) {
+GameCtrl.prototype.poseCard = function(cardView) {
 	this.board.poseCard(this.player, cardView.model);
+};
+
+GameCtrl.prototype.getSelectedCards = function() {
+	var cards = boardView.players[1].hand;
+	var res = [];
+	for (var i = 0; i < cards.length; i++) {
+		var card = cards[i];
+		if (card.isSelected) {
+			res.push(card.model);
+		}
+	}
+	return res;
 };

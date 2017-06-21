@@ -49,7 +49,10 @@ const
 Mode = {
 	IDLE : 0,
 	WAIT_PLAYER : 1,
-	RESOLVE_STACK : 2
+	RESOLVE_STACK : 2,
+	PRIORITY_RUN : 3,
+	NEXT_PHASE : 4,
+	SELECT_CARD : 5
 };
 
 const

@@ -4,7 +4,7 @@ gameState = function(game){
  
 gameState.prototype = {
   	create: function(){
-			var view = new BoardView(this.game,board,new BoardCtrl(board), 'pau');
+			var view = new BoardView(this.game,board,new GameCtrl(board), 'pau');
 			board.addObserver(view);
 			this.createIA(board);
 			this.game.add.existing(view);

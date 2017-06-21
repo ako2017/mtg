@@ -18,21 +18,21 @@ IAPlayer.prototype.update = function(delta) {
 		this.state = 2;
 	}
 	if( this.board.phase == Phase.PRINCIPALE && this.board.etape == Etape.IDLE && this.board.getPlayerWithToken().name == this.player.name) {
-		this.board.passer(this.player);
+		this.board.pass(this.player);
 	}
 	if( this.board.phase == Phase.COMBAT && this.board.etape == Etape.DEBUT_COMBAT && this.board.getPlayerWithToken().name == this.player.name) {
-		this.board.passer(this.player);
+		this.board.pass(this.player);
 	}
 	if( this.board.phase == Phase.COMBAT && this.board.etape == Etape.DECLARATION_ATTAQUANTS && this.board.getPlayerWithToken().name == this.player.name) {
-		this.board.passer(this.player);
+		this.board.pass(this.player);
 	}
 	if( this.board.phase == Phase.COMBAT && this.board.etape == Etape.DECLARATION_BLOQUEURS && this.board.getPlayerWithToken().name == this.player.name) {
-		this.board.passer(this.player);
+		this.board.pass(this.player);
 	}
 	if( this.board.phase == Phase.PRINCIPALE_2 && this.board.etape == Etape.IDLE && this.board.getPlayerWithToken().name == this.player.name) {
-		this.board.passer(this.player);
+		this.board.pass(this.player);
 	}
 	if( this.board.phase == Phase.FIN && this.board.etape == Etape.FIN && this.board.getPlayerWithToken().name == this.player.name) {
-		this.board.passer(this.player);
+		this.board.pass(this.player);
 	}
 };

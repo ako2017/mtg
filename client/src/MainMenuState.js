@@ -25,12 +25,12 @@ mainMenuState.prototype = {
 		//	The 5000 value is the lifespan of each particle before it's killed
 		emitter.start(false, 5000, 100);		
 		
-		//this.game.input.onDown.add(this.gofull, this);
+		this.game.input.onDown.add(this.gofull, this);
 	},
 	onNewLocalGame: function(data) {
 		board = new Board();
-		board.addPlayer(this.createPlayer('lala'));
-		var player = this.createPlayer('pau');
+		board.addPlayer(this.createPlayer('lala','avatar1'));
+		var player = this.createPlayer('pau','avatar2');
 		player.isMe = true;
 		board.addPlayer(player);
 		this.game.state.start("Game");
@@ -38,8 +38,9 @@ mainMenuState.prototype = {
 	showMessage: function(msg) {
 		text.setText(msg);
 	},
-	createPlayer: function(name) {
+	createPlayer: function(name, avatar) {
 		var player = new Player();
+		player.avatar = avatar;
 		var cardService = new CardService();
 		var cards = cardService.getAvailableCards();
 		var nbCards = cards.length;
