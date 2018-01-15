@@ -1,36 +1,32 @@
 ScriptCapacity = function (card) {
 	this.card = card;
 	this.trigger = null;
-	this.script = null;
-	this.scriptEnd = null;
-	this.typeC = TypeCard.CAPACITY;
+	this.action = null;
+	this.type = TypeCard.CAPACITY;
 	this.mana = [0,0,0,0,0,0];
-	this.isRunning = false;
 	this.cibleRule = null;
+	this.cibles = [];
 };
 
 ScriptCapacity.prototype.init = function init(data) {
 	this.trigger = data.trigger;
-	this.script = data.action;
-	this.scriptEnd = data.action;
-	this.mana = [data.col1,data.col2,data.col3,data.col4,data.col5,data.col6];
+	this.action = data.action;
+	this.mana = data.mana;
+	this.cibleRule = data.cible;
 };
 
-ScriptCapacity.prototype.execute = function(context) {
-	if(!this.isRunning) {
-		this.isRunning = true;
-		eval(this.script);
-	}
+ScriptCapacity.prototype.execute = function(ctx) {
+	eval(this.action);
 };
 
-ScriptCapacity.prototype.isFinished = function(context) {
-	return eval(this.scriptEnd) && this.isRunning;
+ScriptCapacity.prototype.isValidCible = function(cibles) {
+	return eval(this.cibleRule);
 };
 
-ScriptCapacity.prototype.hasMana = function() {
-	for(var i=0;i<this.mana.length;i++) {
-		if(this.mana[i]>0)
-			return true;
-	}
-	return false;
+Stack.prototype.setCible = function(cibles) {
+	this.cibles = cibles;
+};
+
+ScriptCapacity.prototype.needCible = function() {
+	return this.cibleRule != null;
 };

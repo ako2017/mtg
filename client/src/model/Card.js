@@ -6,8 +6,8 @@ Card = function (player) {
 	this.text="descriptif de la carte";
 	this.mana= [];
 	this.owner = player;
-	this.type="type de la carte";
-	this.typeC=null;
+	this.typeLabel="type de la carte";
+	this.type=null;
 	this.frontPic = "";
 	this.isEngaged = false;
 	this.vol = false;
@@ -18,7 +18,6 @@ Card = function (player) {
 	this._capacities = [0,0,0];
 	this.blockedBy = null;
 	this.malInvocation = false;
-	this.cibleRule = "test";
 };
 
 Card.prototype = Object.create(Observable.prototype);
@@ -113,7 +112,7 @@ Card.prototype.init = function init(data) {
 	this.vol = data.vol;
 	this.celerite = data.celerite;
 	this.vigilance = data.vigilance;
-	this.typeC = data.type;
+	this.type = data.type;
 	for(var i=0;i<data.capacities.length;i++) {
 		var capacity = new ScriptCapacity(this);
 		capacity.init(data.capacities[i]);
@@ -151,15 +150,20 @@ Card.prototype.attack = function(player) {
 	}
 };
 
-Card.prototype.getCapacityActive = function() {
+Card.prototype.getCapacityByTrigger = function(trigger, source) {
 	for(var i=0;i<this.capacities.length;i++) {
 		var capacity =  this.capacities[i];
-		if(!capacity.hasMana()) {
-			capacity.execute(context);
+		if(capacity.trigger == trigger) {
+			return capacity;
 		}
 	}
+	return null;
 };
 
-Card.prototype.onEnterBattlefield = function() {
+Card.prototype.enterBattlefield = function() {
 	this.owner.battlefield.push(this);
+	var event = {};
+	event.type = GameEvent.ENTER_BATTLEFIELD;
+	event.data = this;
+	this.notify(event);
 };
