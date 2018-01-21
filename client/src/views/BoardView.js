@@ -55,7 +55,7 @@ BoardView.prototype.initPlayers = function(players) {
 		}
 		for(var j=0;j<players[i].deck.length;j++) {
 			var card = players[i].deck[j];
-			var newCard = new CardView(this.game, card, this.model, this,newPlayer);
+			var newCard = new CardView(this.game, card);
 			if(i != this.myId) {
 				newCard.y=this.game.world.centerY -300;
 			}

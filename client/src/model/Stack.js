@@ -68,7 +68,7 @@ Stack.prototype.setCible = function(cibles) {
 	elt.setCibles(cibles);
 };
 
-Stack.prototype.containsTypeInStack = function(type) {
+Stack.prototype.containsType = function(type) {
 	for (var i = 0; i < this.stack.length; i++) {
 		var element = this.stack[i];
 		if (element.type == type) {

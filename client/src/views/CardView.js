@@ -1,11 +1,9 @@
-CardView = function(game, card, board, boardView,ownerView) {
+CardView = function(game, card) {
 	Phaser.Sprite.call(this, game);
+	card.view = this;
 	this.back = null;
 	this.front = null;
 	this.isSelected = false;
-	this.boardModel = board;
-	this.boardView = boardView;
-	this.ownerView = ownerView;
 	this.cardModel = card;
 	this.init(card);
 };
@@ -35,7 +33,7 @@ CardView.prototype.initLabels = function(card) {
 CardView.prototype.select = function() {
 	this.isSelected = !this.isSelected;
 	if (this.isSelected) {
-		this.ownerView.unselectAllWithout(this);
+		//this.ownerView.unselectAllWithout(this);
 		this.y -= 70;
 		this.scale.set(0.7, 0.7);
 	} else {
@@ -45,14 +43,7 @@ CardView.prototype.select = function() {
 };
 
 CardView.prototype.onClick = function() {
-	if (this.boardModel.etape == Etape.DECLARATION_ATTAQUANTS) {
-		//this.cardModel.owner.declareAttaquant(this);
-	} else if (this.boardModel.etape == Etape.DECLARATION_BLOQUEURS) {
-		//this.cardModel.owner.declareBloqueur(this);
-		//	this.select();	
-	} else if (this.boardModel.phase == Phase.PRINCIPALE) {
-		this.select();
-	}
+	this.select();
 };
 
 /**

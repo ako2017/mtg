@@ -1,4 +1,5 @@
 PhaseManager = function(game) {
+	Observable.call(this);
 	this.phases = [];
 	this.phases[PHASE.DISTRIBUTION] = new DistributionPhase(this);
 	this.phases[PHASE.WHO_BEGINS] = new WhoBeginsPhase(this);
@@ -17,12 +18,18 @@ PhaseManager = function(game) {
 	this._next;
 };
 
+PhaseManager.prototype = Object.create(Observable.prototype);
+
 PhaseManager.prototype.isCurrentPhase = function(phase) {
 	return this.currentPhase == this.phases[phase];
 };
 
 PhaseManager.prototype.start = function() {
 	this.currentPhase = this.phases[PHASE.DISTRIBUTION];
+	var event = {};
+	event.type = GameEvent.CHANGE_PHASE;
+	event.data = PHASE.DISTRIBUTION;
+	this.notify(event);
 	this._next = this.currentPhase.execute(this.game);
 };
 
@@ -34,6 +41,10 @@ PhaseManager.prototype.next = function() {
 	if(this._next != PHASE.WAIT) {
 		this.currentPhase.end();
 		this.currentPhase = this.phases[this._next];
+		var event = {};
+		event.type = GameEvent.CHANGE_PHASE;
+		event.data = this._next;
+		this.notify(event);
 		this._next = this.currentPhase.execute(this.game);
 	}
 };

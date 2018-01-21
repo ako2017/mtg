@@ -23,6 +23,7 @@ function addzeros(number, length) {
 
 const
 GameEvent = {
+	CHANGE_PHASE : -6,
 	ERROR : -5,
 	WHO_BEGIN : -4,
 	DISTRIBUTION : -3,
@@ -64,7 +65,7 @@ CardEvent = {
 };
 const
 State = {
-	NEED_CIIBLE : 0
+	NEED_CIBLE : 0
 };
 
 const
@@ -121,47 +122,3 @@ Capacity = {
 	CELERITE : 1,
 	VIGILANCE : 2
 };
-
-function getPhaseName(phase) {
-	switch (phase) {
-	case Phase.DISTRIBUTION:
-		return "DISTRIBUTION";
-	case Phase.WHO_BEGINS:
-		return "WHO_BEGINS";
-	case Phase.DEBUT:
-		return "DEBUT";
-	case Phase.PRINCIPALE:
-		return "PRINCIPALE";
-	case Phase.COMBAT:
-		return "COMBAT";
-	case Phase.PRINCIPALE_2:
-		return "PRINCIPALE_2";
-	case Phase.FIN:
-		return "FIN";
-	}
-}
-
-function getEtapeName(etape) {
-	switch (etape) {
-	case Etape.IDLE:
-		return "RIEN";
-	case Etape.DEGAGEMENT:
-		return "DEGAGEMENT";
-	case Etape.ENTRETIEN:
-		return "ENTRETIEN";
-	case Etape.PIOCHE:
-		return "PIOCHE";
-	case Etape.DEBUT_COMBAT:
-		return "DEBUT_COMBAT";
-	case Etape.DECLARATION_ATTAQUANTS:
-		return "DECLARATION_ATTAQUANTS";
-	case Etape.DECLARATION_BLOQUEURS:
-		return "DECLARATION_BLOQUEURS";
-	case Etape.ATTRIBUTION_BLESSURES:
-		return "ATTRIBUTION_BLESSURES";
-	case Etape.FIN:
-		return "FIN";
-	case Etape.NETTOYAGE:
-		return "NETTOYAGE";
-	}
-}

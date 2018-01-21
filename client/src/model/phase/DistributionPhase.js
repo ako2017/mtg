@@ -12,8 +12,8 @@ DistributionPhase.prototype.execute = function() {
 	}
 	var event = {};
 	event.type = GameEvent.DISTRIBUTION;
-	event.data = this.pm.game.players;
 	for(var i=0;i<this.pm.game.players.length;i++) {
+		event.data = this.pm.game.players[i];
 		this.pm.game.players[i].notify(event);
 	} 
 	return PHASE.WAIT;

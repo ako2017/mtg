@@ -7,8 +7,8 @@ Player = function() {
 	this.cemeteryes = [];
 	this.exil = [];
 	this.life = 22;
-//	this.mana=[0,0,0,0,0,0];
-	this.mana=[5,5,5,5,5,5];
+	this.mana=[0,0,0,0,0,0];
+//	this.mana=[5,5,5,5,5,5];
 	this.name = "";
 	this.doneDistrib = false;
 	this.hasPoseTerrain = false;
@@ -40,6 +40,9 @@ Player.prototype.payMana = function(mana) {
 };
 
 Player.prototype.degagement = function() {
+	var event = {};
+	event.type = GameEvent.DEGAGEMENT;
+	this.notify(event);
 };
 
 Player.prototype.pioche = function() {
@@ -112,18 +115,17 @@ Player.prototype.poseCapacity= function(board, card, isEph) {
 };
 
 Player.prototype.poseCard = function(card,stack) {
-	console.log("pose carte");
 	var event = {};
-	if(card.typeC == TypeCard.TERRAIN && !player.hasPoseTerrain) {
+	if(card.type == TypeCard.TERRAIN && !player.hasPoseTerrain) {
 		return this.poseTerrain(card);
 	}
-	else if(card.typeC == TypeCard.CREATURE){
+	else if(card.type == TypeCard.CREATURE){
 		return this.poseCreatureOrEphemere(stack, card, false);
 	}
-	else if(card.typeC == TypeCard.EPHEMERE){
+	else if(card.type == TypeCard.EPHEMERE){
 		return this.poseCreatureOrEphemere(stack, card, true);
 	}
-	else if(card.typeC == TypeCard.CAPACITY){
+	else if(card.type == TypeCard.CAPACITY){
 		return this.poseCapacity(stack, card, true);
 	}
 };
@@ -193,6 +195,6 @@ Player.prototype.muligane = function() {
 		this.hand.push(this.deck.pop());
 	}
 	event.type = GameEvent.MULIGANE;
-	event.data = {player:this,cards:this.hand};
+	event.data = {player:this};
 	this.notify(event);
 };

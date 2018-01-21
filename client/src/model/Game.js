@@ -99,7 +99,3 @@ Game.prototype.validCible = function(player, cards) {
 Game.prototype.muligane = function(player) {
 	player.muligane();
 };
-
-Game.prototype.getBloqueur = function() {
-	return this.players[(this.playerActif + 1) % this.players.length];
-};
