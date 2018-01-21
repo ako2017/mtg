@@ -75,7 +75,14 @@ GameView.prototype.gui = function(player) {
     }).attr('id','m_'+player.name);
     $("#gui").before(test);
 	var test = $('<button>pose</button>').click(function () {
-		player.poseCard(playersView[player.name].hand[0].cardModel,gameModel.stack);
+		var selected = null;
+		$.each(playersView[player.name].hand, function( index, value ) {
+			  if(value.isSelected) {
+				  selected = value;
+				  return false;
+			  }
+			});
+		player.poseCard(selected.cardModel,gameModel.stack);
     }).attr('id','p_'+player.name);
     $("#gui").before(test);
     test = $('<button>valid</button>').click(function () {
@@ -133,6 +140,8 @@ GameView.prototype.onReceive = function(event) {
 			}		
 			break;
 		case GameEvent.DEGAGEMENT:
+			break;
+		case GameEvent.POSE_CARD:
 			break;
 /*		case GameEvent.STACK_CARD:
 			this.stackCardAnim(event.data.card);
