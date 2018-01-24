@@ -66,14 +66,42 @@ GameView.prototype.muliganeAnim = function(player) {
 		this.playersView[player.name].hand[i].show(false);
 	}	
 	setTimeout(function(player){
+		this.playersView[player.name].hand = [];
 		var isMe = player.name == "pau";
 		var y = this.game.world.centerY;
 		y += isMe?50:-150;
 		for(var i=0;i<player.hand.length;i++) {
 			this.game.add.tween(player.hand[i].view).to({x: 100 + i*80, y:y},1000,Phaser.Easing.Linear.None,true);
 			player.hand[i].view.show(true);
+			this.playersView[player.name].hand.push(player.hand[i].view);
 		}
 		}.bind(this,player), 2000);
+};
+
+GameView.prototype.moveCard = function(player) {
+	var isMe = player.name == "pau";
+	var posY;
+	if(isMe) {
+		posY=this.game.world.centerY +200;
+	}
+	else {
+		posY=0;
+	}
+	for(var i=0;i<this.playersView[player.name].hand.length;i++) {
+		this.game.add.tween(this.playersView[player.name].hand[i]).to({y:posY},1000,Phaser.Easing.Linear.None,true);
+	}	
+};
+
+GameView.prototype.poseCardAnim = function(player,card) {
+	var isMe = player.name == "pau";
+	var posY;
+	if(isMe) {
+		posY=this.game.world.centerY +100;
+	}
+	else {
+		posY=100;
+	}
+	this.game.add.tween(card.view).to({y:posY},1000,Phaser.Easing.Linear.None,true);
 };
 
 GameView.prototype.onReceive = function(event) {
@@ -85,6 +113,8 @@ GameView.prototype.onReceive = function(event) {
 			this.muliganeAnim(event.data.player);
 			break;
 		case GameEvent.WHO_BEGIN:
+			this.moveCard(this.gameModel.players[0]);
+			this.moveCard(this.gameModel.players[1]);
 			var cards = this.gameModel.getPlayerActif().hand;
 			for(var i=0;i<cards.length;i++) {
 				var cardView = cards[i].view;
@@ -95,6 +125,7 @@ GameView.prototype.onReceive = function(event) {
 		case GameEvent.DEGAGEMENT:
 			break;
 		case GameEvent.POSE_CARD:
+			this.poseCardAnim(event.data.player,event.data.card);
 			break;
 /*		case GameEvent.STACK_CARD:
 			this.stackCardAnim(event.data.card);
