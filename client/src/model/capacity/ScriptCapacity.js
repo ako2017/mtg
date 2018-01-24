@@ -30,3 +30,10 @@ Stack.prototype.setCible = function(cibles) {
 ScriptCapacity.prototype.needCible = function() {
 	return this.cibleRule != null;
 };
+
+ScriptCapacity.prototype.isCapacityByTrigger = function(trigger, source) {
+	if(this.trigger) {
+		return eval(this.trigger);	
+	}
+	return false;
+};

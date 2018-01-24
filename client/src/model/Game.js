@@ -77,6 +77,9 @@ Game.prototype.poseCard = function(player, card) {
 		return;
 	}
 	if (player.poseCard(card, this.stack)) {
+		if(card.type == TypeCard.TERRAIN) {
+			this.stack.addCapacitiesByTrigger(GameEvent.ON_ENTER_BATTLEFIELD,card, this.players);
+		}
 		if (this.stack.needCible()) {
 			event.type = GameEvent.NEED_CIBLE;
 			player.notify(event);

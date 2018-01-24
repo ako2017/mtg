@@ -94,16 +94,6 @@ Card.prototype.calcState = function(phase) {
 	this.marqueurs.removeByValues(toDelete);
 };
 
-Card.prototype.getTriggerCapacity = function(trigger) {
-	for(var i=0;i<this.capacities.length;i++) {
-		var capacity = this.capacities[i]; 
-		if(capacity.trigger == trigger) {
-			return capacity;
-		}
-	}
-	return null;
-};
-
 Card.prototype.init = function init(data) {
 	this.force = data.force;
 	this.endurance = data.endurance;
@@ -153,7 +143,7 @@ Card.prototype.attack = function(player) {
 Card.prototype.getCapacityByTrigger = function(trigger, source) {
 	for(var i=0;i<this.capacities.length;i++) {
 		var capacity =  this.capacities[i];
-		if(capacity.trigger == trigger) {
+		if(capacity.isCapacityByTrigger(trigger,source)) {
 			return capacity;
 		}
 	}

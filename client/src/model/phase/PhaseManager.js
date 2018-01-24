@@ -10,7 +10,6 @@ PhaseManager = function(game) {
 	this.phases[PHASE.DECLARATION_ATTAQUANT] = new DeclarationAttaquantPhase(this);
 	this.phases[PHASE.DECLARATION_BLOQUEUR] = new DeclarationBloqueurPhase(this);
 	this.phases[PHASE.ATTRIBUTION_BLESSURE] = new AttributionBlessurePhase(this);
-	this.phases[PHASE.PRINCIPALE] = new PrincipalePhase(this);
 	this.phases[PHASE.FIN] = new FinPhase(this);
 	this.phases[PHASE.NETTOYAGE] = new NettoyagePhase(this);
 	this.game = game;

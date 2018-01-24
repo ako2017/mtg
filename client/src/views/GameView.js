@@ -1,27 +1,25 @@
-GameView = function (game, gameModel, controller) {
+GameView = function (game) {
 	Phaser.Group.call(this, game);
-	this.gameModel = gameModel;
+	this.gameModel = null;
+	this.controller = null;
 	this.playersView = [];
-	this.init(gameModel);
-	this.initGui();
 };
 
 GameView.prototype = Object.create(Phaser.Group.prototype);
 GameView.prototype.constructor = GameView;
 
-GameView.prototype.init = function(gameModel) {
+GameView.prototype.init = function() {
 	this.back = this.game.make.sprite(0, 0, 'fond');
 	this.back.scale.set(0.5, 0.5);
 	this.addChild(this.back);
-	this.gameModel = gameModel;
-	this.initPlayers(gameModel.players);
-	gameModel.pm.addObserver(this);
+	this.initPlayers(this.gameModel.players);
 };
 
 GameView.prototype.initPlayers = function(players) {
 	for(var i=0;i<players.length;i++) {
 		this.playersView[players[i].name] = {hand:[]};
 		var isMe = players[i].name == "pau";
+		players[i].addObserver(this);
 		for(var j=0;j<players[i].deck.length;j++) {
 			var card = players[i].deck[j];
 			var cardView = new CardView(this.game, card);
@@ -31,10 +29,9 @@ GameView.prototype.initPlayers = function(players) {
 			else {
 				cardView.y=this.game.world.centerY -300;
 			}
-			this.addChild(cardView);		
+			this.addChild(cardView);
 			card.addObserver(this);
 		}
-		players[i].addObserver(this);
 	}	
 };
 
@@ -54,42 +51,6 @@ GameView.prototype.distributionAnim = function(player) {
 		this.game.add.tween(cardView).to({x: posX,y:posY},1000,Phaser.Easing.Linear.None,true);
 	}	
 };
-
-GameView.prototype.initGui = function() {
-	for(var i=0;i<2;i++) {
-		this.gui(this.gameModel.players[i]);	
-		var test = $('<div></div>');
-		$("#gui").before(test);
-	}
-	var test = $('<div>phase</div>').attr('id','phase');
-	$("#gui").before(test);
-	var test = $('<div>error</div>').attr('id','error');
-	$("#gui").before(test);
-}
-
-GameView.prototype.gui = function(player) {
-    var gameModel = this.gameModel;
-    var playersView = this.playersView;
-	var test = $('<button>muligane</button>').click(function () {
-		player.muligane();
-    }).attr('id','m_'+player.name);
-    $("#gui").before(test);
-	var test = $('<button>pose</button>').click(function () {
-		var selected = null;
-		$.each(playersView[player.name].hand, function( index, value ) {
-			  if(value.isSelected) {
-				  selected = value;
-				  return false;
-			  }
-			});
-		player.poseCard(selected.cardModel,gameModel.stack);
-    }).attr('id','p_'+player.name);
-    $("#gui").before(test);
-    test = $('<button>valid</button>').click(function () {
-        gameModel.valid(player);
-    }).attr('id','v_'+player.name);
-    $("#gui").before(test);
-}
 
 GameView.prototype.muliganeAnim = function(player) {
 	var isMe = player.name == "pau";
@@ -115,16 +76,8 @@ GameView.prototype.muliganeAnim = function(player) {
 		}.bind(this,player), 2000);
 };
 
-
-
 GameView.prototype.onReceive = function(event) {
 	switch(event.type) {
-		case GameEvent.ERROR:
-			$('#error').text(event.data);
-		break;	
-		case GameEvent.CHANGE_PHASE:
-			$('#phase').text(event.data);
-		break;
 		case GameEvent.DISTRIBUTION:
 			this.distributionAnim(event.data);
 			break;

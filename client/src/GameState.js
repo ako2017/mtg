@@ -1,20 +1,43 @@
-gameState = function(game){
-	this.gameModel = null;
+gameState = function(game) {
+	this.gameController = null;
 }
- 
+
 gameState.prototype = {
-  	create: function(){
-  		this.gameModel = new Game();
-  		this.gameModel.addPlayer(this.createPlayer('lala'));
-  		this.gameModel.addPlayer(this.createPlayer('pau'));
-		var view = new GameView(this.game, this.gameModel);
-		this.game.add.existing(view);
+	create : function() {
+		var model = this.createModel();
+		var view = this.createGameView();
+		var guiView = this.createGuiView();
+		this.gameController = new GameController();
+		this.gameController.gameModel = model;
+		view.controller = this.gameController;
+		view.gameModel = model;
+		guiView.controller = this.gameController;
+		guiView.gameModel = model;
+		guiView.gameView = view;
+		view.init();
+		guiView.init();
+		
 		setTimeout(this.start.bind(this), Duration.DECLARATION_ATTAQUANT);
 	},
-	start: function(name) {
-		this.gameModel.start();
+	start : function() {
+		this.gameController.init();
 	},
-	createPlayer: function(name) {
+	createModel : function() {
+		var gameModel = new Game();
+		gameModel.addPlayer(this.createPlayer('lala'));
+		gameModel.addPlayer(this.createPlayer('pau'));
+		return gameModel;
+	},
+	createGameView : function() {
+		var view = new GameView(this.game);
+		this.game.add.existing(view);
+		return view;
+	},
+	createGuiView : function() {
+		var view = new GuiView();
+		return view;
+	},
+	createPlayer :function(name) {
 		var player = new Player();
 		player.name = name;
 		var cards = [];
@@ -35,6 +58,7 @@ gameState.prototype = {
 	}
 }
 
+
 var cardCreature = {
 		extension : 0,
 		numero : 1,
@@ -44,14 +68,14 @@ var cardCreature = {
 		text:"descriptif de la carte",
 		mana: [1,0,0,0,0,0],
 		typeLabel:"type de la carte",
-		type:1,//TypeCard.CREATURE,
+		type:1,// TypeCard.CREATURE,
 		vol : false,
 		celerite : false,
 		vigilance : false,
 		capacities : [{
 			mana : [0,0,0,0,0,0],
-			action : "alert('test'+ this.card.force)",
-			trigger : 14//GameEvent.ON_ENTER_BATTLEFIELD
+			action : "alert('je suis dans le champs de bataille')",
+			trigger : "trigger == GameEvent.ON_ENTER_BATTLEFIELD && source == this.card;"
 		}]
 };
 
@@ -64,7 +88,7 @@ var island = {
 		text:"descriptif de la carte",
 		mana: [0,0,0,0,0,0],
 		typeLabel:"type de la carte",
-		type:3,//TypeCard.TERRAIN,
+		type:3,// TypeCard.TERRAIN,
 		vol : false,
 		celerite : false,
 		vigilance : false,
@@ -84,7 +108,7 @@ var cardEphemere = {
 		text:"descriptif de la carte",
 		mana: [0,0,0,0,0,0],
 		typeLabel:"type de la carte",
-		type:5,//TypeCard.EPHEMERE,
+		type:5,// TypeCard.EPHEMERE,
 		vol : false,
 		celerite : false,
 		vigilance : false,
@@ -104,7 +128,7 @@ var cardEphemere2 = {
 		text:"descriptif de la carte",
 		mana: [1],
 		typeLabel:"type de la carte",
-		type:5,//TypeCard.EPHEMERE,
+		type:5,// TypeCard.EPHEMERE,
 		vol : false,
 		celerite : false,
 		vigilance : false,

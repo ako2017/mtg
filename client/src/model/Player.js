@@ -8,7 +8,6 @@ Player = function() {
 	this.exil = [];
 	this.life = 22;
 	this.mana=[0,0,0,0,0,0];
-//	this.mana=[5,5,5,5,5,5];
 	this.name = "";
 	this.doneDistrib = false;
 	this.hasPoseTerrain = false;
@@ -16,7 +15,6 @@ Player = function() {
 	this.attaquants = [];
 	this.hasPass = false;
 	this.avatar = "";
-	this.board = null;
 };
 
 Player.prototype = Object.create(Observable.prototype);
@@ -64,7 +62,7 @@ Player.prototype.getCardById = function(cardId) {
 };
 
 Player.prototype.poseTerrain = function(card) {
-	console.log("pose terrain");
+	var event = {};
 	if(this.hasPoseTerrain) {
 		event.type = GameEvent.ERROR;
 		event.data = "vous ne pouvez poser qu'un terrain par tour";
@@ -74,7 +72,6 @@ Player.prototype.poseTerrain = function(card) {
 	this.hasPoseTerrain = true;
 	this.terrains.push(card);
 	this.hand.removeByValue(card);
-	var event = {};
 	event.type = GameEvent.POSE_CARD;
 	event.data = {player:this,card:card};
 	this.notify(event);
@@ -97,12 +94,12 @@ Player.prototype.poseCreatureOrEphemere= function(stack, card, isEph) {
 		return false;
 	}
 	this.payMana(card.mana);
-	stack.push(card);
 	this.hand.removeByValue(card);
+	stack.push(card);
 	return true;
 };
 
-Player.prototype.poseCapacity= function(board, card, isEph) {
+Player.prototype.poseCapacity= function(stack, card) {
 	var event = {};
 	if(!this.canPayMana(card.mana)) {
 		event.type = GameEvent.ERROR;
@@ -117,7 +114,7 @@ Player.prototype.poseCapacity= function(board, card, isEph) {
 
 Player.prototype.poseCard = function(card,stack) {
 	var event = {};
-	if(card.type == TypeCard.TERRAIN && !this.hasPoseTerrain) {
+	if(card.type == TypeCard.TERRAIN) {
 		return this.poseTerrain(card);
 	}
 	else if(card.type == TypeCard.CREATURE){
@@ -127,7 +124,7 @@ Player.prototype.poseCard = function(card,stack) {
 		return this.poseCreatureOrEphemere(stack, card, true);
 	}
 	else if(card.type == TypeCard.CAPACITY){
-		return this.poseCapacity(stack, card, true);
+		return this.poseCapacity(stack, card);
 	}
 };
 

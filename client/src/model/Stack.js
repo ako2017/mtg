@@ -11,16 +11,13 @@ Stack.prototype.resolve = function(game) {
 	if (current != undefined) {
 		switch(current.type) {
 		case TypeCard.CREATURE :
-			var capacity = current.getCapacityByTrigger(GameEvent.ON_ENTER_BATTLEFIELD);
-			if(capacity) this.push(capacity);
-			this.capacities = this.getCapacitiesByTrigger(GameEvent.ON_ENTER_BATTLEFIELD,current, game.players);
-			Array.prototype.push.apply(this.stack, capacities);
+			current.enterBattlefield();
+			this.addCapacitiesByTrigger(GameEvent.ON_ENTER_BATTLEFIELD,current, game.players);
 			break;
 		case TypeCard.CAPACITY :
 			this.current.execute({game : game});
 			break;
 		case TypeCard.EPHEMERE :
-			//var capacity = current.getCapacityByTrigger(GameEvent.STATIC);
 			var capacity = current.capacities[0];
 			capacity.execute({game : game});
 			break;
@@ -28,17 +25,16 @@ Stack.prototype.resolve = function(game) {
 	}
 };
 
-Stack.prototype.getCapacitiesByTrigger = function(trigger, card, players) {
-	var capacities = [];
+Stack.prototype.addCapacitiesByTrigger = function(trigger, card, players) {
 	for (var i = 0; i < players[i]; i++) {
 		var battlefield = players[i].battlefield;
 		for (var j = 0; j < battlefield.length; j++) {
-			if (!element.capacities[i].hasMana()) {
-				capacities.push(element.capacities[i]);
+			var capacity = battlefield[j].getCapacityByTrigger(trigger,card);
+			if (capacity) {
+				this.push(capacity);
 			}
 		}
 	}
-	return capacities;
 };
 
 Stack.prototype.push = function(card) {
