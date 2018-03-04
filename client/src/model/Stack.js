@@ -39,6 +39,10 @@ Stack.prototype.addCapacitiesByTrigger = function(trigger, card, players) {
 
 Stack.prototype.push = function(card) {
 	this.stack.push(card);
+	var event = {};
+	event.type = GameEvent.STACK_CARD;
+	event.data = card;
+	this.notify(event);
 };
 
 Stack.prototype.validCible = function(cards) {

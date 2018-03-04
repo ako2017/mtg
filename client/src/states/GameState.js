@@ -1,3 +1,4 @@
+var GUI = new Gui();
 gameState = function(game) {
 	this.gameController = null;
 }
@@ -16,7 +17,7 @@ gameState.prototype = {
 		guiView.gameView = view;
 		view.init();
 		guiView.init();
-		
+		GUI.gameController=this.gameController;
 		setTimeout(this.start.bind(this), Duration.DECLARATION_ATTAQUANT);
 	},
 	start : function() {
@@ -86,7 +87,7 @@ var island = {
 		endurance : 0,
 		nom:"nom",
 		text:"descriptif de la carte",
-		mana: [0,0,0,0,0,0],
+		mana: [1,0,0,0,0,0],
 		typeLabel:"type de la carte",
 		type:3,// TypeCard.TERRAIN,
 		vol : false,
@@ -106,7 +107,7 @@ var cardEphemere = {
 		endurance : 0,
 		nom:"nom",
 		text:"descriptif de la carte",
-		mana: [0,0,0,0,0,0],
+		mana: [1,0,0,0,0,0],
 		typeLabel:"type de la carte",
 		type:5,// TypeCard.EPHEMERE,
 		vol : false,
@@ -126,7 +127,7 @@ var cardEphemere2 = {
 		endurance : 0,
 		nom:"nom",
 		text:"descriptif de la carte",
-		mana: [1],
+		mana: [1,0,0,0,0,0],
 		typeLabel:"type de la carte",
 		type:5,// TypeCard.EPHEMERE,
 		vol : false,

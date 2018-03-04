@@ -1,5 +1,5 @@
 var preloadState = function(game){}
- 
+
 preloadState.prototype = {
 	preload: function(){ 
 		var cards = [];

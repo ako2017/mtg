@@ -3,6 +3,7 @@
     <head> 
         <title>Magic the Gathering v1.0</title> 
         <meta name="viewport" content="width=device-width, initial-scale=1"> 
+        <link rel="stylesheet" href="src/styles/gui.css">
 		<script src="libs/jquery-3.0.0.min.js"></script>
     	<script src="libs/phaser.min.js"></script>
 		<script  src="editor/localstoragedb.min.js"></script>
@@ -32,9 +33,11 @@
 		<script src="src/views/PlayerStateView.js"></script>
 		<script src="src/views/GameView.js"></script>
 		<script src="src/views/GuiView.js"></script>
-		<script src="src/PreloadState.js"></script>
-		<script src="src/MainMenuState.js"></script>
-		<script src="src/GameState.js"></script>
+		
+		<script src="src/gui/Gui.js"></script>
+		<script src="src/states/PreloadState.js"></script>
+		<script src="src/states/MainMenuState.js"></script>
+		<script src="src/states/GameState.js"></script>
 		<script>
 			$(document).ready(function() {
 				var game;

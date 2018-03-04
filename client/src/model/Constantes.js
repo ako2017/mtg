@@ -21,6 +21,12 @@ function addzeros(number, length) {
 	return num;
 };
 
+function addMana(source, dest) {
+	for(var i=0;i<source.length;i++) {
+		dest[i] += source[i];
+	}
+};
+
 const
 GameEvent = {
 	CHANGE_PHASE : -6,
@@ -43,7 +49,9 @@ GameEvent = {
 	ON_DEATH : 13,
 	ON_ENTER_BATTLEFIELD : 14,
 	STATIC : 15,
-	NEED_CIBLE : 16
+	NEED_CIBLE : 16,
+	POSE_TERRAIN : 17,
+	NEXT_TOKEN : 18
 };
 
 const

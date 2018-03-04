@@ -6,6 +6,8 @@ CardView = function(game, card) {
 	this.isSelected = false;
 	this.cardModel = card;
 	this.init(card);
+	this.inputEnabled = true;
+	this.events.onInputUp.add(this.onClick, this);
 };
 
 CardView.prototype = Object.create(Phaser.Sprite.prototype);
@@ -32,18 +34,25 @@ CardView.prototype.initLabels = function(card) {
 
 CardView.prototype.select = function() {
 	this.isSelected = !this.isSelected;
-	if (this.isSelected) {
-		//this.ownerView.unselectAllWithout(this);
-		this.y -= 70;
-		this.scale.set(0.7, 0.7);
-	} else {
-		this.y += 70;
-		this.scale.set(0.5, 0.5);
+};
+
+CardView.prototype.unselectAllWithout = function(card) {
+	for (i = 0; i < this.owner.hand.length; i++) {
+		if (this.owner.hand[i].isSelected && this.owner.hand[i] != card) {
+			this.owner.hand[i].select();
+		}
 	}
 };
 
 CardView.prototype.onClick = function() {
 	this.select();
+	if(!this.isSelected) {
+		GUI.hideActionCard();
+	}
+	else {
+		GUI.showActionCard(this);		
+	}
+
 };
 
 /**

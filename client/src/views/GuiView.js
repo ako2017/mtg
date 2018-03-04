@@ -7,7 +7,6 @@ GuiView = function () {
 GuiView.prototype.constructor = GuiView;
 
 GuiView.prototype.init = function() {
-	this.registerObserver();
 	this.generateButton();
 	this.generateInfoLabel();
 }
@@ -26,18 +25,6 @@ GuiView.prototype.generateInfoLabel = function() {
 	var test = $('<div>error</div>').attr('id','error');
 	$("#gui").before(test);
 }
-
-
-GuiView.prototype.registerObserver = function() {
-	this.gameModel.pm.addObserver(this);
-	for(var i=0;i<this.gameModel.players.length;i++) {
-		this.gameModel.players[i].addObserver(this);
-		for(var j=0;j<this.gameModel.players[i].deck.length;j++) {
-			var card = this.gameModel.players[i].deck[j];
-			this.gameModel.players[i].addObserver(this);
-		}
-	}	
-};
 
 GuiView.prototype.guiFor = function(player) {
 	var controller = this.controller;
@@ -64,26 +51,5 @@ GuiView.prototype.guiFor = function(player) {
 }
 
 GuiView.prototype.onReceive = function(event) {
-	switch(event.type) {
-		case GameEvent.ERROR:
-			$('#error').text(event.data);
-		break;	
-		case GameEvent.CHANGE_PHASE:
-			$('#phase').text(phaseMapping[event.data]);
-		break;
-	}
+
 };
-
-var phaseMapping = [];
-
-phaseMapping[PHASE.DISTRIBUTION] ="DISTRIBUTION";
-phaseMapping[PHASE.WHO_BEGINS] = "WHO_BEGINS";
-phaseMapping[PHASE.DEGAGEMENT] = "DEGAGEMENT";
-phaseMapping[PHASE.ENTRETIENT] = "ENTRETIENT";
-phaseMapping[PHASE.PIOCHE] = "PIOCHE";
-phaseMapping[PHASE.PRINCIPALE] = "PRINCIPALE";
-phaseMapping[PHASE.DECLARATION_ATTAQUANT] = "DECLARATION_ATTAQUANT";
-phaseMapping[PHASE.DECLARATION_BLOQUEUR] = "DECLARATION_BLOQUEUR";
-phaseMapping[PHASE.ATTRIBUTION_BLESSURE] = "ATTRIBUTION_BLESSURE";
-phaseMapping[PHASE.FIN] = "FIN";
-phaseMapping[PHASE.NETTOYAGE] = "NETTOYAGE";

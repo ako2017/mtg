@@ -56,6 +56,10 @@ Game.prototype.nextPlayer = function() {
 
 Game.prototype.nextToken = function() {
 	this.token = (this.token + 1) % this.players.length;
+	var event = {};
+	event.type = GameEvent.NEXT_TOKEN;
+	event.data = this.getPlayerWithToken();
+	this.notify(event);
 };
 
 Game.prototype.valid = function(player) {
@@ -73,7 +77,7 @@ Game.prototype.poseCard = function(player, card) {
 	if (!this.isPlayerWithToken(player)) {
 		event.type = GameEvent.ERROR;
 		event.data = "vous n'avez pas la main";
-		player.notify(event);
+		this.notify(event);
 		return;
 	}
 	if (player.poseCard(card, this.stack)) {
@@ -82,7 +86,7 @@ Game.prototype.poseCard = function(player, card) {
 		}
 		if (this.stack.needCible()) {
 			event.type = GameEvent.NEED_CIBLE;
-			player.notify(event);
+			this.notify(event);
 			this.state = State.NEED_CIBLE;
 		}
 	}

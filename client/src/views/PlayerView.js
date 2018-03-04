@@ -60,9 +60,9 @@ PlayerView.prototype.piocheCardAnim = function(card) {
 };
 
 PlayerView.prototype.unselectAllWithout = function(card) {
-	for (i = 0; i < this.hand.length; i++) {
-		if (this.hand[i].isSelected && this.hand[i] != card) {
-			this.hand[i].select();
+	for (i = 0; i < this.owner.hand.length; i++) {
+		if (this.owner.hand[i].isSelected && this.owner.hand[i] != card) {
+			this.owner.hand[i].select();
 		}
 	}
 };
