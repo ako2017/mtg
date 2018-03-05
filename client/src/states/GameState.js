@@ -95,7 +95,7 @@ var island = {
 		vigilance : false,
 		capacities : [{
 			mana : [1,0,0,0,0,0],
-			action : "alert('test');ctx.game.players[0].name='lolo'",
+			action : "alert('test21');ctx.game.players[0].name='lolo'",
 			cible : null
 		}]
 };
@@ -115,7 +115,7 @@ var cardEphemere = {
 		vigilance : false,
 		capacities : [{
 			mana : [1,0,0,0,0,0],
-			action : "alert('test');ctx.game.players[0].name='lolo'",
+			action : "alert('test2');ctx.game.players[0].name='lolo'",
 			cible : null
 		}]
 };

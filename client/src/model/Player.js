@@ -15,6 +15,7 @@ Player = function() {
 	this.attaquants = [];
 	this.hasPass = false;
 	this.avatar = "";
+	this.game = null;
 };
 
 Player.prototype = Object.create(Observable.prototype);
@@ -63,6 +64,13 @@ Player.prototype.getCardById = function(cardId) {
 
 Player.prototype.poseTerrain = function(card) {
 	var event = {};
+	
+	if(!this.game.isPlayerActif(this)) {
+		event.type = GameEvent.ERROR;
+		event.data = "vous n'etes pas le joueur actif";
+		this.notify(event);
+		return false;
+	}
 	if(this.hasPoseTerrain) {
 		event.type = GameEvent.ERROR;
 		event.data = "vous ne pouvez poser qu'un terrain par tour";

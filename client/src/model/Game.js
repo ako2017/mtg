@@ -13,6 +13,7 @@ Game.prototype = new Observable();
 
 Game.prototype.addPlayer = function(player) {
 	if (this.players.length < 2) {
+		player.game = this;
 		this.players.push(player);
 	}
 };
