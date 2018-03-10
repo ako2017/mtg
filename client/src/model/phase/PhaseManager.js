@@ -32,6 +32,10 @@ PhaseManager.prototype.start = function() {
 	this._next = this.currentPhase.execute(this.game);
 };
 
+PhaseManager.prototype.isPhase = function(phaseId) {
+	this.currentPhase.phaseId == phaseId;
+};
+
 PhaseManager.prototype.valid = function(player) {
 	return this.currentPhase.valid(player);
 };

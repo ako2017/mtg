@@ -35,6 +35,12 @@ Game.prototype.checkAllPass = function() {
 	return true;
 };
 
+Game.prototype.unPassAll = function() {
+	for (var i = 0; i < this.players.length; i++) {
+		this.players[i].hasPass = false;
+	}
+};
+
 Game.prototype.isPlayerActif = function(player) {
 	return this.getPlayerActif().name == player.name;
 };
@@ -53,6 +59,10 @@ Game.prototype.getPlayerActif = function() {
 
 Game.prototype.nextPlayer = function() {
 	this.playerActif = (this.playerActif + 1) % this.players.length;
+	var event = {};
+	event.type = GameEvent.NEXT_PLAYER;
+	event.data = this.getPlayerActif();
+	this.notify(event);
 };
 
 Game.prototype.nextToken = function() {
@@ -66,8 +76,10 @@ Game.prototype.nextToken = function() {
 Game.prototype.valid = function(player) {
 	if (this.pm.valid(player)) {
 		if (!this.stack.isEmpty()) {
+			this.unPassAll();
 			this.stack.resolve(this);
 		} else {
+			this.unPassAll();
 			this.pm.next();
 		}
 	}
@@ -75,6 +87,7 @@ Game.prototype.valid = function(player) {
 
 Game.prototype.poseCard = function(player, card) {
 	var event = {};
+	
 	if (!this.isPlayerWithToken(player)) {
 		event.type = GameEvent.ERROR;
 		event.data = "vous n'avez pas la main";
@@ -93,6 +106,28 @@ Game.prototype.poseCard = function(player, card) {
 	}
 };
 
+Game.prototype.muligane = function(player) {
+	var event = {};
+	//if(this.pm.isPhase(PHASE.DISTRIBUTION)) {
+		player.muligane();		
+	//}
+};
+
+Game.prototype.declareAttaquant = function(player,card) {
+	var event = {};
+	//if(this.pm.isPhase(PHASE.DISTRIBUTION)) {
+		player.declareAttaquant(card);		
+	//}
+};
+
+Game.prototype.declareBloqueur = function(player,card,cardBlocked) {
+	var event = {};
+	//if(this.pm.isPhase(PHASE.DISTRIBUTION)) {
+		player.declareBloqueur(card,cardBlocked);		
+	//}
+};
+
+
 Game.prototype.validCible = function(player, cards) {
 	if (this.state != State.NEED_CIBLE)
 		return;
@@ -102,8 +137,4 @@ Game.prototype.validCible = function(player, cards) {
 			this.state = null;
 		}
 	}
-};
-
-Game.prototype.muligane = function(player) {
-	player.muligane();
 };

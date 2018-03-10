@@ -1,27 +1,8 @@
-var GUI = new Gui();
-gameState = function(game) {
-	this.gameController = null;
-}
-
-gameState.prototype = {
+gameState = {
 	create : function() {
-		var model = this.createModel();
-		var view = this.createGameView();
-		var guiView = this.createGuiView();
-		this.gameController = new GameController();
-		this.gameController.gameModel = model;
-		view.controller = this.gameController;
-		view.gameModel = model;
-		guiView.controller = this.gameController;
-		guiView.gameModel = model;
-		guiView.gameView = view;
-		view.init();
-		guiView.init();
-		GUI.gameController=this.gameController;
-		setTimeout(this.start.bind(this), Duration.DECLARATION_ATTAQUANT);
-	},
-	start : function() {
-		this.gameController.init();
+		this.model = this.createModel();
+		this.createGameView();
+		this.game.time.events.add(Phaser.Timer.SECOND * 4, function() {this.model.start();}, this);
 	},
 	createModel : function() {
 		var gameModel = new Game();
@@ -31,12 +12,9 @@ gameState.prototype = {
 	},
 	createGameView : function() {
 		var view = new GameView(this.game);
+		view.gameModel = this.model;
+		view.init();
 		this.game.add.existing(view);
-		return view;
-	},
-	createGuiView : function() {
-		var view = new GuiView();
-		return view;
 	},
 	createPlayer :function(name) {
 		var player = new Player();
@@ -59,6 +37,29 @@ gameState.prototype = {
 	}
 }
 
+CONFIG = {
+		pilelabel : [0,180],
+		pile : [0,196],
+		deck : [[0,496],[0,0]],
+		cemeterylabel : [[705,480],[705,0]],
+		cemetery : [[725,496],[725,0]],
+		phase : [680,280],
+		error : [0,120]
+}
+
+phaseMapping = [];
+
+phaseMapping[PHASE.DISTRIBUTION] ="DISTRIBUTION";
+phaseMapping[PHASE.WHO_BEGINS] = "WHO_BEGINS";
+phaseMapping[PHASE.DEGAGEMENT] = "DEGAGEMENT";
+phaseMapping[PHASE.ENTRETIENT] = "ENTRETIENT";
+phaseMapping[PHASE.PIOCHE] = "PIOCHE";
+phaseMapping[PHASE.PRINCIPALE] = "PRINCIPALE";
+phaseMapping[PHASE.DECLARATION_ATTAQUANT] = "DECLARATION\nATTAQUANT";
+phaseMapping[PHASE.DECLARATION_BLOQUEUR] = "DECLARATION\nBLOQUEUR";
+phaseMapping[PHASE.ATTRIBUTION_BLESSURE] = "ATTRIBUTION\nBLESSURE";
+phaseMapping[PHASE.FIN] = "FIN";
+phaseMapping[PHASE.NETTOYAGE] = "NETTOYAGE";
 
 var cardCreature = {
 		extension : 0,

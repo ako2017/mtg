@@ -4,7 +4,7 @@ Player = function() {
 	this.battlefield = [];
 	this.terrains = [];
 	this.deck = [];
-	this.cemeteryes = [];
+	this.cemetery = [];
 	this.exil = [];
 	this.life = 22;
 	this.mana=[0,0,0,0,0,0];
@@ -138,7 +138,7 @@ Player.prototype.poseCard = function(card,stack) {
 };
 
 Player.prototype.declareAttaquant = function(card) {
-	if(card.isEngaged()) {
+	if(card.isEngaged) {
 		var event = {};
 		event.type = GameEvent.ERROR;
 		event.data = "carte déja engagée";
@@ -154,31 +154,11 @@ Player.prototype.declareAttaquant = function(card) {
 	}
 };
 
-Player.prototype.undeclareAttaquant = function(card) {
-	if(card.isEngaged()) {
-		this.attaquants.removeByValue(card);
-		card.degage();
-		var event = {};
-		event.type = GameEvent.UNDECLARE_ATTAQUANT;
-		event.data = card;
-		this.notify(event);
-	}
-};
-
 Player.prototype.declareBloqueur = function(bloqueur, attaquant) {
 	attaquant.blockedBy = bloqueur;
 	bloqueur.blockCard = attaquant;
 	var event = {};
 	event.type = GameEvent.DECLARE_BLOQUEUR;
-	event.data = attaquant;
-	this.notify(event);
-};
-
-Player.prototype.undeclareBloqueur = function(bloqueur) {
-	bloqueur.blockCard.blockedBy = null;
-	bloqueur.blockCard = null;
-	var event = {};
-	event.type = GameEvent.UNDECLARE_BLOQUEUR;
 	event.data = attaquant;
 	this.notify(event);
 };

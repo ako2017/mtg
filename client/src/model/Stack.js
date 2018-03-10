@@ -20,6 +20,7 @@ Stack.prototype.resolve = function(game) {
 		case TypeCard.EPHEMERE :
 			var capacity = current.capacities[0];
 			capacity.execute({game : game});
+			current.gotoCemetery();
 			break;
 		}
 	}

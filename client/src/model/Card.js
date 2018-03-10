@@ -114,9 +114,19 @@ Card.prototype.engage = function() {
 	this.isEngaged = true;
 	var event = {};
 	event.type = GameEvent.ENGAGEMENT;
-	event.data = this.isEngaged;
+	event.data = this;
 	this.notify(event);
 };
+
+Card.prototype.gotoCemetery = function() {
+	this.owner.cemetery.push(this);
+	var event = {};
+	event.type = GameEvent.GOTO_CEMETERY;
+	event.data = this;
+	this.notify(event);
+};
+
+
 
 Card.prototype.degage = function() {
 	this.isEngaged = false;
@@ -124,10 +134,6 @@ Card.prototype.degage = function() {
 	event.type = GameEvent.DEGAGEMENT;
 	event.data = this.isEngaged;
 	this.notify(event);
-};
-
-Card.prototype.isEngaged = function() {
-	return this.isEngaged;
 };
 
 Card.prototype.attack = function(player) {

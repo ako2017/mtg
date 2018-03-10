@@ -8,7 +8,7 @@ WhoBeginsPhase.prototype.execute = function() {
 	this.pm.game.token = this.pm.game.playerActif;
 	this.pm.game.getPlayerActif().canPioche = false;
 	event.type = GameEvent.WHO_BEGIN;
-	event.data = this.playerActif;
+	event.data = this.pm.game.getPlayerActif();
 	for(var i=0;i<this.pm.game.players.length;i++) {
 		this.pm.game.players[i].notify(event);
 	} 

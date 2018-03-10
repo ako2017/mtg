@@ -13,6 +13,8 @@ FinPhase.prototype.valid = function(player) {
 
 FinPhase.prototype.next = function() {
 	this.pm._next = PHASE.NETTOYAGE;
+	this.pm.game.nextToken();
+	this.pm.game.nextPlayer();
 	this.pm.next();
 };
 
