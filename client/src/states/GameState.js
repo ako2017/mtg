@@ -2,7 +2,7 @@ gameState = {
 	create : function() {
 		this.model = this.createModel();
 		this.createGameView();
-		this.game.time.events.add(Phaser.Timer.SECOND * 4, function() {this.model.start();}, this);
+		this.game.time.events.add(Phaser.Timer.SECOND * 1, function() {this.model.start();}, this);
 	},
 	createModel : function() {
 		var gameModel = new Game();
@@ -37,6 +37,18 @@ gameState = {
 	}
 }
 
+
+CONFIG = {
+		pilelabel : [0,180],
+		pile : [37,248],
+		deck : [[37,548],[37,52]],
+		cemeterylabel : [[705,480],[705,0]],
+		cemetery : [[725,496],[725,0]],
+		phase : [680,280],
+		error : [0,120]
+}
+
+/*
 CONFIG = {
 		pilelabel : [0,180],
 		pile : [0,196],
@@ -46,7 +58,7 @@ CONFIG = {
 		phase : [680,280],
 		error : [0,120]
 }
-
+*/
 phaseMapping = [];
 
 phaseMapping[PHASE.DISTRIBUTION] ="DISTRIBUTION";
@@ -96,7 +108,7 @@ var island = {
 		vigilance : false,
 		capacities : [{
 			mana : [1,0,0,0,0,0],
-			action : "alert('test21');ctx.game.players[0].name='lolo'",
+			action : "alert('test21');",//action : "alert('test21');ctx.game.players[0].name='lala'"
 			cible : null
 		}]
 };
@@ -116,7 +128,7 @@ var cardEphemere = {
 		vigilance : false,
 		capacities : [{
 			mana : [1,0,0,0,0,0],
-			action : "alert('test2');ctx.game.players[0].name='lolo'",
+			action : "alert('test2');",
 			cible : null
 		}]
 };

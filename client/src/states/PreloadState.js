@@ -1,5 +1,6 @@
 preloadState = {
 	preload: function(){ 
+		this.game.plugins.add(PhaserInput.Plugin);
 		var cards = [];
 		cards.push(cardCreature);
 		cards.push(cardEphemere);
@@ -15,13 +16,6 @@ preloadState = {
 		this.game.load.image('logo', 'assets/logo-magic.png');
 		this.game.load.image('fond', 'assets/fond.jpg');
 		this.game.load.video('video', 'assets/defkp_EMN_Header_41.mp4');
-		var buttonImage = this.game.add.bitmapData(225, 40);
-        buttonImage.ctx.fillStyle = '#e6dec7';
-        buttonImage.ctx.strokeStyle = '#35371c';
-        buttonImage.ctx.lineWidth = 4;
-        buttonImage.ctx.fillRect(0, 0, 225, 40);
-        buttonImage.ctx.strokeRect(0, 0, 225, 40);
-        this.game.cache.addBitmapData('button', buttonImage);
 		var buttonImage = this.game.add.bitmapData(100, 20);
         buttonImage.ctx.fillStyle = '#e6dec7';
         buttonImage.ctx.strokeStyle = '#35371c';

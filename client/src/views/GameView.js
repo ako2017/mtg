@@ -23,34 +23,22 @@ GameView.prototype.init = function() {
 	this.playersView[this.gameModel.players[0].name] = {hand:[],terrains:[],battlefield:[]};
 	this.playersView[this.gameModel.players[1].name] = {hand:[],terrains:[],battlefield:[]};
 	
-	this.btnGroup = this.game.add.group();
-	
 	this.muligageBtn = this.game.add.button(0, 110, this.game.cache.getBitmapData('buttonsmall'), function(button){this.muligane(button.player);},this.gameModel);
 	this.muligageBtn.text = this.muligageBtn.addChild(this.game.add.text(0, 0, 'muligane', {font: '16px Arial Black'}));
 	this.muligageBtn.player = this.gameModel.players[0];
 	
-	this.validBtn = this.game.add.button(0, 130, this.game.cache.getBitmapData('buttonsmall'), function(button){this.valid(button.player);},this.gameModel);
+	this.validBtn = this.game.add.button(380, 270, this.game.cache.getBitmapData('buttonsmall'), function(button){this.valid(button.player);},this.gameModel);
 	this.validBtn.text = this.validBtn.addChild(this.game.add.text(0, 0, 'valid', {font: '16px Arial Black'}));
 	this.validBtn.player = this.gameModel.players[0];
 	
-	this.btnGroup.addChild(this.muligageBtn);
-	this.btnGroup.addChild(this.validBtn);
+	this.muligageBtn2 = this.game.add.button(0, 400, this.game.cache.getBitmapData('buttonsmall'), function(button){this.muligane(button.player);},this.gameModel);
+	this.muligageBtn2.text = this.muligageBtn2.addChild(this.game.add.text(0, 0, 'muligane', {font: '16px Arial Black'}));
+	this.muligageBtn2.player = this.gameModel.players[1];
 	
-	this.muligageBtn = this.game.add.button(0, 400, this.game.cache.getBitmapData('buttonsmall'), function(button){this.muligane(button.player);},this.gameModel);
-	this.muligageBtn.text = this.muligageBtn.addChild(this.game.add.text(0, 0, 'muligane', {font: '16px Arial Black'}));
-	this.muligageBtn.player = this.gameModel.players[1];
-	
-	this.validBtn = this.game.add.button(0, 420, this.game.cache.getBitmapData('buttonsmall'), function(button){this.valid(button.player);},this.gameModel);
+	this.validBtn = this.game.add.button(380, 305, this.game.cache.getBitmapData('buttonsmall'), function(button){this.valid(button.player);},this.gameModel);
 	this.validBtn.text = this.validBtn.addChild(this.game.add.text(0, 0, 'valid', {font: '16px Arial Black'}));
 	this.validBtn.player = this.gameModel.players[1];
 	
-	this.btnGroup.addChild(this.muligageBtn);
-	this.btnGroup.addChild(this.validBtn);
-	
-	this.validBtn2 = this.game.add.button(380, 290, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameModel.valid(this.gameModel.getPlayerWithToken());},this);
-	this.validBtn2.text = this.validBtn2.addChild(this.game.add.text(0, 0, 'valid', {font: '16px Arial Black'}));
-	this.validBtn2.visible = false;
-
 	this.actionCardGroup = this.game.add.group();
 	this.actionCardGroup.y=300;
 	this.actionCardGroup.visible = false;
@@ -60,9 +48,21 @@ GameView.prototype.init = function() {
 	this.actionCardGroup.attaquantBtn = this.game.add.button(0, 20, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameModel.declareAttaquant(this.actionCardGroup.player,this.actionCardGroup.card);this.actionCardGroup.visible = false;},this);
 	this.actionCardGroup.attaquantBtn.text = this.actionCardGroup.attaquantBtn.addChild(this.game.add.text(0, 0, 'attaquant', {font: '16px Arial Black'}));
 	this.actionCardGroup.addChild(this.actionCardGroup.attaquantBtn);
-	this.actionCardGroup.bloqueurBtn = this.game.add.button(0, 40, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameModel.declareBloqueur(this.actionCardGroup.player,this.actionCardGroup.card);this.actionCardGroup.visible = false;},this);
+	this.actionCardGroup.bloqueurBtn = this.game.add.button(0, 40, this.game.cache.getBitmapData('buttonsmall'), function(button){this.declareBloqueur(this.actionCardGroup.player,this.actionCardGroup.card);this.actionCardGroup.visible = false;},this);
 	this.actionCardGroup.bloqueurBtn.text = this.actionCardGroup.bloqueurBtn.addChild(this.game.add.text(0, 0, 'bloqueur', {font: '16px Arial Black'}));
 	this.actionCardGroup.addChild(this.actionCardGroup.bloqueurBtn);
+	this.actionCardGroup.retirerBtn = this.game.add.button(0, 60, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameModel.retirerCard(this.actionCardGroup.player,this.actionCardGroup.card);this.actionCardGroup.visible = false;},this);
+	this.actionCardGroup.retirerBtn.text = this.actionCardGroup.retirerBtn.addChild(this.game.add.text(0, 0, 'retirer', {font: '16px Arial Black'}));
+	this.actionCardGroup.addChild(this.actionCardGroup.retirerBtn);
+};
+
+GameView.prototype.declareBloqueur = function(player,cardModel) {
+	this.bloqueur = cardModel;	
+	this.showError('veuillez selectionner une creature a bloquer');
+};
+
+GameView.prototype.declareBlockedBy = function(player,cardModel) {
+	this.blockedBy = cardModel;
 };
 
 GameView.prototype.registerObserver = function() {
@@ -76,7 +76,13 @@ GameView.prototype.hideActionCard = function(cardView) {
 };
 
 GameView.prototype.showActionCard = function(cardView) {
-	this.actionCardGroup.player = cardView.cardModel.owner;
+	if(this.gameModel.pm.isCurrentPhase(PHASE.DECLARATION_BLOQUEUR) && !this.gameModel.pm.currentPhase.hasDonedeclaration) {
+		this.actionCardGroup.player = this.gameModel.getPlayerNonActif();
+	}
+	else {
+		this.actionCardGroup.player = cardView.cardModel.owner;	
+	}
+	
 	this.actionCardGroup.card = cardView.cardModel;
 	this.actionCardGroup.visible=true;
 };
@@ -91,7 +97,7 @@ GameView.prototype.initPlayers = function(players) {
 			var cardView = new CardView(this.game, card);
 			cardView.ownerView = this.playersView[players[i].name];
 			if(isMe) {
-				cardView.y=CONFIG.deck[0][0];
+				cardView.x=CONFIG.deck[0][0];
 				cardView.y=CONFIG.deck[0][1];
 			}
 			else {
@@ -111,13 +117,13 @@ GameView.prototype.distributionAnim = function(player) {
 	var cards = player.hand;
 	for(var j=0;j<cards.length;j++) {
 		var cardView = cards[j].view;
-		var posX = 100 + j*80;
+		var posX = 100 + j*80+37;
 		var posY;
 		cardView.slot = j;
 		if(isMe) {
-			posY = this.game.world.centerY;
+			posY = this.game.world.centerY+52;
 		}
-		else{posY = this.game.world.centerY-104;}
+		else{posY = this.game.world.centerY-104+52;}
 		cardView.show(true);
 		this.game.add.tween(cardView).to({x: posX,y:posY},1000,Phaser.Easing.Linear.None,true);
 		cardView.slot = j;
@@ -129,13 +135,13 @@ GameView.prototype.muliganeAnim = function(player) {
 	var isMe = player.name == "pau";
 	var posY;
 	if(isMe) {
-		posY=this.game.world.height -(208/2);
+		posY=this.game.world.height -(208/2)+52;
 	}
 	else {
-		posY=0;
+		posY=52;
 	}
 	for(var i=0;i<this.playersView[player.name].hand.length;i++) {
-		this.game.add.tween(this.playersView[player.name].hand[i]).to({x: 0, y:posY},1000,Phaser.Easing.Linear.None,true);
+		this.game.add.tween(this.playersView[player.name].hand[i]).to({x: 37, y:posY},1000,Phaser.Easing.Linear.None,true);
 		this.playersView[player.name].hand[i].show(false);
 		this.playersView[player.name].hand[i] = null;
 	}	
@@ -143,12 +149,12 @@ GameView.prototype.muliganeAnim = function(player) {
 		var isMe = player.name == "pau";
 		var y = this.game.world.centerY;
 		if(isMe) {
-			y = this.game.world.centerY;
+			y = this.game.world.centerY+52;
 		}
-		else{y = this.game.world.centerY-104;}
+		else{y = this.game.world.centerY-104+52;}
 		this.playersView[player.name].length=0;
 		for(var i=0;i<player.hand.length;i++) {
-			this.game.add.tween(player.hand[i].view).to({x: 100 + i*80, y:y},1000,Phaser.Easing.Linear.None,true);
+			this.game.add.tween(player.hand[i].view).to({x: 100+37 + i*80, y:y},1000,Phaser.Easing.Linear.None,true);
 			player.hand[i].view.show(true);
 			player.hand[i].view.slot = i;
 			this.playersView[player.name].hand[i] = player.hand[i].view;
@@ -160,10 +166,10 @@ GameView.prototype.moveCard = function(player) {
 	var isMe = player.name == "pau";
 	var posY;
 	if(isMe) {
-		posY=this.game.world.height - (208/2);
+		posY=this.game.world.height - (208/2)+52;
 	}
 	else {
-		posY=0;
+		posY=52;
 	}
 	for(var i=0;i<player.hand.length;i++) {
 		this.game.add.tween(player.hand[i].view).to({y:posY},1000,Phaser.Easing.Linear.None,true);
@@ -174,18 +180,34 @@ GameView.prototype.poseTerrainAnim = function(player,card) {
 	var isMe = player.name == "pau";
 	var posY;
 	if(isMe) {
-		posY=this.game.world.centerY +100;
+		posY=this.game.world.height - (208/2)-52;
 	}
 	else {
-		posY=100;
+		posY=104+52;
 	}
+	removePlayerSlot(this.playersView[card.owner.name],card.view);
 	var slot = getFreeSlot(this.playersView[player.name].terrains);
 	this.playersView[player.name].terrains[slot] = card.view;
-	this.playersView[player.name].hand[card.view.slot] = null;
-	this.game.add.tween(card.view).to({x:100+80*slot, y:posY},1000,Phaser.Easing.Linear.None,true);
+	this.game.add.tween(card.view).to({x:100+37+80*slot, y:posY},1000,Phaser.Easing.Linear.None,true);
+};
+
+GameView.prototype.piocheCardAnim = function(player,card) {
+	var isMe = player.name == "pau";
+	var posY;
+	if(isMe) {
+		posY=600-52;
+	}
+	else {
+		posY=52;
+	}
+	var slot = getFreeSlot(this.playersView[player.name].hand);
+	this.playersView[player.name].hand[slot] = card.view;
+	card.view.show(true);
+	this.game.add.tween(card.view).to({x:100+37+80*slot, y:posY},1000,Phaser.Easing.Linear.None,true);
 };
 
 GameView.prototype.stackAnim = function(card) {
+	removePlayerSlot(this.playersView[card.owner.name],card.view);
 	this.game.add.tween(card.view).to({x:CONFIG.pile[0],y:CONFIG.pile[1]},1000,Phaser.Easing.Linear.None,true);
 };
 
@@ -193,12 +215,13 @@ GameView.prototype.enterBattlefieldAnim = function(card) {
 	var posY = this.game.world.centerY;
 	var isMe = card.owner.name == "pau";
 	if(isMe) {
-		posY = this.game.world.centerY;
+		posY = this.game.world.centerY+52;
 	}
-	else{posY = this.game.world.centerY-104;}
+	else{posY = this.game.world.centerY-104+52;}
+	removePlayerSlot(this.playersView[card.owner.name],card.view);
 	var slot = getFreeSlot(this.playersView[card.owner.name].battlefield);
 	this.playersView[card.owner.name].battlefield[slot] = card.view;
-	this.game.add.tween(card.view).to({y:posY,x:100+80*slot},1000,Phaser.Easing.Linear.None,true);
+	this.game.add.tween(card.view).to({y:posY,x:100+37+80*slot},1000,Phaser.Easing.Linear.None,true);
 };
 
 function getFreeSlot(tab) {
@@ -207,15 +230,41 @@ function getFreeSlot(tab) {
 	}
 	return tab.length;
 }
+
+function removeSlot(tab,value) {
+	for(var i=0;i<tab.length;i++) {
+		if(tab[i] == value) {
+			tab[i] = null;
+			return;
+		};
+	}
+}
+
+function removePlayerSlot(player,value) {
+	for(var i=0;i<player.hand.length;i++) {
+		if(player.hand[i] == value) {
+			player.hand[i] = null;
+			return;
+		};
+	}
+	for(var i=0;i<player.battlefield.length;i++) {
+		if(player.battlefield[i] == value) {
+			player.battlefield[i] = null;
+			return;
+		};
+	}
+}
+
 GameView.prototype.gotoCemeteryAnim = function(card) {
 	var isMe = card.owner.name == "pau";
-	posX = this.game.world.width - (156/2);
+	posX = this.game.world.width - (156/2)+37;
 	if(isMe){
-		posY = this.game.world.height - (208/2);
+		posY = this.game.world.height - (208/2)+52;
 	}
 	else{
-		posY = 0;		
+		posY = 52;		
 	}
+	removePlayerSlot(this.playersView[card.owner.name],card.view);
 	this.game.add.tween(card.view).to({y:posY,x:posX},1000,Phaser.Easing.Linear.None,true);
 };
 
@@ -240,13 +289,14 @@ GameView.prototype.onReceive = function(event) {
 			break;
 		case GameEvent.CHANGE_PHASE:
 			this.showPhase(event.data);
+			break;
 		break;
 		case GameEvent.MULIGANE:
 			this.muliganeAnim(event.data.player);
 			break;
 		case GameEvent.WHO_BEGIN:
-			this.btnGroup.visible = false;
-			this.validBtn2.visible = true;
+			this.muligageBtn.visible = false;
+			this.muligageBtn2.visible = false;
 			this.moveCard(this.gameModel.players[0]);
 			this.moveCard(this.gameModel.players[1]);
 			this.tokenLabel.x=20;
@@ -255,6 +305,7 @@ GameView.prototype.onReceive = function(event) {
 			this.actifLabel.y=(event.data.name == 'pau' ? 580:0);
 			break;
 		case GameEvent.DEGAGEMENT:
+			this.game.add.tween(event.data.view).to({angle:0},500,Phaser.Easing.Linear.None,true);
 			break;
 		case GameEvent.ENGAGEMENT:
 			this.game.add.tween(event.data.view).to({angle:90},500,Phaser.Easing.Linear.None,true);
@@ -273,6 +324,12 @@ GameView.prototype.onReceive = function(event) {
 			break;
 		case GameEvent.GOTO_CEMETERY:
 			this.gotoCemeteryAnim(event.data);
+			break;
+		case GameEvent.PIOCHE_CARD:
+			this.piocheCardAnim(event.data.player,event.data.card);
+			break;
+		case GameEvent.RETIRER_CARD:
+				this.showError('retirez des cartes');
 			break;
 	}
 };

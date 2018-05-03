@@ -1,5 +1,6 @@
 EntretientPhase = function(pm) {
 	this.pm = pm;
+	this.phaseId = PHASE.ENTRETIENT;
 };
 
 EntretientPhase.prototype.execute = function() {

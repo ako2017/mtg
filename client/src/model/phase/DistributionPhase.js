@@ -1,5 +1,6 @@
 DistributionPhase = function(pm) {
 	this.pm=pm;
+	this.phaseId = PHASE.DISTRIBUTION;
 };
 
 DistributionPhase.prototype.execute = function() {

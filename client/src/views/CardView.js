@@ -12,6 +12,8 @@ CardView.prototype.constructor = CardView;
 CardView.prototype.init = function(card) {
 	this.back = this.addChild(this.game.make.sprite(0, 0, 'back'));
 	this.front = this.addChild(this.game.make.sprite(0, 0, card.frontPic));
+	this.front.anchor.setTo(0.5);
+	this.back.anchor.setTo(0.5);
 	this.show(false);
 	this.model = card;
 	this.scale.set(0.5, 0.5);

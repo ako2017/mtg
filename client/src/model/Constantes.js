@@ -13,6 +13,14 @@ Array.prototype.removeByValues = function(val) {
 	}
 }
 
+function sendEvent(eventType,data,context) {
+	var event = {};
+	event.type = eventType;
+	event.data = data;
+	context.notify(event);
+	
+}
+
 function addzeros(number, length) {
 	var num = '' + number;
 	while (num.length < length) {
@@ -38,13 +46,13 @@ GameEvent = {
 	POSE_CARD : 2,
 	PIOCHE_CARD : 3,
 	RETIRER_CARD : 4,
-	RETIRER_CARD_OK : 5,
+	RETIRER_CARD_VALID : 5,
 	ENTER_BATTLEFIELD : 6,
 	STACK_CARD : 7,
 	ENGAGEMENT : 8,
 	DEGAGEMENT : 9,
 	DECLARE_BLOQUEUR : 10,
-	//UNDECLARE_BLOQUEUR : 11,
+	MULIGANE : 11,
 	STACK_CARD : 12,
 	ON_DEATH : 13,
 	ON_ENTER_BATTLEFIELD : 14,

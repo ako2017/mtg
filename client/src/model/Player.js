@@ -39,9 +39,13 @@ Player.prototype.payMana = function(mana) {
 };
 
 Player.prototype.degagement = function() {
-	var event = {};
-	event.type = GameEvent.DEGAGEMENT;
-	this.notify(event);
+	this.battlefield.forEach(function(card, index) {
+		card.degage();
+	});
+	
+	this.terrains.forEach(function(card, index) {
+		card.degage();
+	});
 };
 
 Player.prototype.pioche = function() {
@@ -63,18 +67,12 @@ Player.prototype.getCardById = function(cardId) {
 };
 
 Player.prototype.poseTerrain = function(card) {
-	var event = {};
-	
 	if(!this.game.isPlayerActif(this)) {
-		event.type = GameEvent.ERROR;
-		event.data = "vous n'etes pas le joueur actif";
-		this.notify(event);
+		sendEvent(GameEvent.ERROR,"vous n'etes pas le joueur actif",this);
 		return false;
 	}
 	if(this.hasPoseTerrain) {
-		event.type = GameEvent.ERROR;
-		event.data = "vous ne pouvez poser qu'un terrain par tour";
-		this.notify(event);
+		sendEvent(GameEvent.ERROR,"vous ne pouvez poser qu'un terrain par tour",this);
 		return false;
 	}
 	addMana(card.mana,this.mana);
@@ -87,33 +85,9 @@ Player.prototype.poseTerrain = function(card) {
 	return true;
 };
 
-Player.prototype.poseCreatureOrEphemere= function(stack, card, isEph) {
-	var event = {};
-	if(!this.canPayMana(card.mana)) {
-		event.type = GameEvent.ERROR;
-		event.data = "vous n'avez pas assez de mana";
-		this.notify(event);
-		return false;
-	}
-	console.log("pose creature or ephemere");
-	if(stack.containsType(TypeCard.CREATURE) && !isEph) {
-		event.type = GameEvent.ERROR;
-		event.data = "une creature est deja dans la pile";
-		this.notify(event);
-		return false;
-	}
-	this.payMana(card.mana);
-	this.hand.removeByValue(card);
-	stack.push(card);
-	return true;
-};
-
 Player.prototype.poseCapacity= function(stack, card) {
-	var event = {};
 	if(!this.canPayMana(card.mana)) {
-		event.type = GameEvent.ERROR;
-		event.data = "vous n'avez pas assez de mana";
-		this.notify(event);
+		sendEvent(GameEvent.ERROR,"vous n'avez pas assez de mana",this);
 		return false;
 	}
 	this.payMana(card.mana);
@@ -121,30 +95,62 @@ Player.prototype.poseCapacity= function(stack, card) {
 	return false;
 };
 
+Player.prototype.retirerCard= function(card) {
+	if (!this.game.isPlayerWithToken(this)) {
+		sendEvent(GameEvent.ERROR,"vous n'avez pas la main",this);
+		return;
+	}
+	
+	if(this.hand.length > 7) {
+		this.hand.removeByValue(card);
+		card.gotoCemetery();	
+	}
+	else {
+		sendEvent(GameEvent.ERROR,"nombre de carte atteint",this);
+	}	
+};
+
 Player.prototype.poseCard = function(card,stack) {
-	var event = {};
 	if(card.type == TypeCard.TERRAIN) {
 		return this.poseTerrain(card);
 	}
-	else if(card.type == TypeCard.CREATURE){
-		return this.poseCreatureOrEphemere(stack, card, false);
+	if(!this.canPayMana(card.mana)) {
+		sendEvent(GameEvent.ERROR,"vous n'avez pas assez de mana",this);
+		return false;
 	}
+
 	else if(card.type == TypeCard.EPHEMERE){
-		return this.poseCreatureOrEphemere(stack, card, true);
+		this.payMana(card.mana);
+		this.hand.removeByValue(card);
+		stack.push(card);
+		return true;
 	}
 	else if(card.type == TypeCard.CAPACITY){
 		return this.poseCapacity(stack, card);
 	}
+	else if(card.type == TypeCard.CREATURE || card.type == TypeCard.RITUEL || card.type == TypeCard.ENCHANTEMENT || card.type == TypeCard.ARTEFACT){
+		if(!this.game.pm.isPhase(PHASE.PRINCIPALE) || !this.game.isPlayerActif(this)) {
+			sendEvent(GameEvent.ERROR,"carte jouable en phase principale par le joueur actif",this);
+			return false;
+		}
+		if(stack.containsType(card.type)) {
+			sendEvent(GameEvent.ERROR,"une carte de ce type est deja dans la pile",this);
+			return false;
+		}
+		this.payMana(card.mana);
+		this.hand.removeByValue(card);
+		stack.push(card);
+		return true;
+	}
 };
 
 Player.prototype.declareAttaquant = function(card) {
-	if(card.isEngaged) {
-		var event = {};
-		event.type = GameEvent.ERROR;
-		event.data = "carte déja engagée";
-		this.notify(event);
+	if(!this.game.pm.isPhase(PHASE.DECLARATION_ATTAQUANT)) {
+		sendEvent(GameEvent.ERROR,"vous ne pouvez pas faire cette action",this);
+		return;
 	}
-	else {
+	
+	if(card.canAttaque()) {
 		card.engage();
 		this.attaquants.push(card);
 		var event = {};
@@ -155,22 +161,31 @@ Player.prototype.declareAttaquant = function(card) {
 };
 
 Player.prototype.declareBloqueur = function(bloqueur, attaquant) {
-	attaquant.blockedBy = bloqueur;
-	bloqueur.blockCard = attaquant;
-	var event = {};
-	event.type = GameEvent.DECLARE_BLOQUEUR;
-	event.data = attaquant;
-	this.notify(event);
+	if(!this.game.pm.isPhase(PHASE.DECLARATION_BLOQUEUR)) {
+		sendEvent(GameEvent.ERROR,"vous ne pouvez pas faire cette action",this);
+		return;
+	}
+	
+	if(bloqueur.canBloque(attaquant)) {
+		attaquant.blockedBy = bloqueur;
+		bloqueur.blockCard = attaquant;
+		var event = {};
+		event.type = GameEvent.DECLARE_BLOQUEUR;
+		event.data = attaquant;
+		this.notify(event);
+	}
 };
 
 Player.prototype.muligane = function() {
-	var event = {};
+	if(!this.game.pm.isPhase(PHASE.DISTRIBUTION)) {
+		sendEvent(GameEvent.ERROR,"vous ne pouvez pas faire de muligane",this);
+		return;
+	}
+	
 	var nbCard = this.hand.length-1;
 	
 	if(nbCard == 0) {
-		event.type = GameEvent.ERROR;
-		event.data = "vous ne pouvez plus faire de muligane";
-		this.notify(event);
+		sendEvent(GameEvent.ERROR,"vous ne pouvez plus faire de muligane",this);
 		return;
 	}
 	

@@ -1,5 +1,6 @@
 PiochePhase = function(pm) {
 	this.pm = pm;
+	this.phaseId = PHASE.PIOCHE;
 };
 
 PiochePhase.prototype.execute = function() {

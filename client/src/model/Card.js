@@ -126,14 +126,20 @@ Card.prototype.gotoCemetery = function() {
 	this.notify(event);
 };
 
-
-
 Card.prototype.degage = function() {
 	this.isEngaged = false;
 	var event = {};
 	event.type = GameEvent.DEGAGEMENT;
-	event.data = this.isEngaged;
+	event.data = this;
 	this.notify(event);
+};
+
+Card.prototype.canBloque = function(card) {
+	return !this.isEngaged && this.type == TypeCard.CREATURE && card.type == TypeCard.CREATURE;
+};
+
+Card.prototype.canAttaque = function() {
+	return !this.isEngaged && this.type == TypeCard.CREATURE && !this.hasMalInvocation();
 };
 
 Card.prototype.attack = function(player) {
@@ -143,6 +149,7 @@ Card.prototype.attack = function(player) {
 	}
 	else {
 		player.life -= this.getForce();
+		console.log(player.name + ' ' + player.life);
 	}
 };
 
@@ -156,8 +163,13 @@ Card.prototype.getCapacityByTrigger = function(trigger, source) {
 	return null;
 };
 
+Card.prototype.hasMalInvocation = function() {
+	return this.malInvocation;
+};
+
 Card.prototype.enterBattlefield = function() {
 	this.owner.battlefield.push(this);
+	this.malInvocation = true;
 	var event = {};
 	event.type = GameEvent.ENTER_BATTLEFIELD;
 	event.data = this;

@@ -33,7 +33,7 @@ PhaseManager.prototype.start = function() {
 };
 
 PhaseManager.prototype.isPhase = function(phaseId) {
-	this.currentPhase.phaseId == phaseId;
+	return this.currentPhase.phaseId == phaseId;
 };
 
 PhaseManager.prototype.valid = function(player) {

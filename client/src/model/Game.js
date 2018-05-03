@@ -57,6 +57,10 @@ Game.prototype.getPlayerActif = function() {
 	return this.players[this.playerActif];
 };
 
+Game.prototype.getPlayerNonActif = function() {
+	return this.players[(this.playerActif + 1) % this.players.length];
+};
+
 Game.prototype.nextPlayer = function() {
 	this.playerActif = (this.playerActif + 1) % this.players.length;
 	var event = {};
@@ -86,18 +90,15 @@ Game.prototype.valid = function(player) {
 };
 
 Game.prototype.poseCard = function(player, card) {
-	var event = {};
-	
+	if (this.stack.needCible()) {
+		sendEvent(GameEvent.ERROR,"cible requise",this);
+		return;
+	}
 	if (!this.isPlayerWithToken(player)) {
-		event.type = GameEvent.ERROR;
-		event.data = "vous n'avez pas la main";
-		this.notify(event);
+		sendEvent(GameEvent.ERROR,"vous n'avez pas la main",this);
 		return;
 	}
 	if (player.poseCard(card, this.stack)) {
-		if(card.type == TypeCard.TERRAIN) {
-			this.stack.addCapacitiesByTrigger(GameEvent.ON_ENTER_BATTLEFIELD,card, this.players);
-		}
 		if (this.stack.needCible()) {
 			event.type = GameEvent.NEED_CIBLE;
 			this.notify(event);
@@ -106,27 +107,21 @@ Game.prototype.poseCard = function(player, card) {
 	}
 };
 
+Game.prototype.retirerCard = function(player, card) {
+	player.retirerCard(card);
+};
+
 Game.prototype.muligane = function(player) {
-	var event = {};
-	//if(this.pm.isPhase(PHASE.DISTRIBUTION)) {
-		player.muligane();		
-	//}
+	player.muligane();		
 };
 
 Game.prototype.declareAttaquant = function(player,card) {
-	var event = {};
-	//if(this.pm.isPhase(PHASE.DISTRIBUTION)) {
-		player.declareAttaquant(card);		
-	//}
+	player.declareAttaquant(card);		
 };
 
 Game.prototype.declareBloqueur = function(player,card,cardBlocked) {
-	var event = {};
-	//if(this.pm.isPhase(PHASE.DISTRIBUTION)) {
-		player.declareBloqueur(card,cardBlocked);		
-	//}
+	player.declareBloqueur(card,cardBlocked);	
 };
-
 
 Game.prototype.validCible = function(player, cards) {
 	if (this.state != State.NEED_CIBLE)

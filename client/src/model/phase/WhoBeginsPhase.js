@@ -1,5 +1,6 @@
 WhoBeginsPhase = function(pm) {
 	this.pm = pm;
+	this.phaseId = PHASE.WHO_BEGINS;
 };
 
 WhoBeginsPhase.prototype.execute = function() {

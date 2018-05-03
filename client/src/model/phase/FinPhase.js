@@ -1,5 +1,6 @@
 FinPhase = function(pm) {
 	this.pm = pm;
+	this.phaseId = PHASE.FIN;
 };
 
 FinPhase.prototype.execute = function() {

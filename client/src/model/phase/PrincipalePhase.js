@@ -1,6 +1,7 @@
 PrincipalePhase = function(pm) {
 	this.pm = pm;
 	this.phaseNum = 0;
+	this.phaseId = PHASE.PRINCIPALE;
 };
 
 PrincipalePhase.prototype.execute = function() {

@@ -5,7 +5,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1"> 
         <link rel="stylesheet" href="src/styles/gui.css">
 		<script src="libs/jquery-3.0.0.min.js"></script>
+
     	<script src="libs/phaser.min.js"></script>
+    			<script src="libs/phaser-input.min.js"></script>
 		<script  src="editor/localstoragedb.min.js"></script>
 		<script src="src/model/Constantes.js"></script>
 		<script src="src/model/Observable.js"></script>
@@ -40,6 +42,7 @@
 				var gameSize;
 
 				game = new Phaser.Game(800,600, Phaser.CANVAS, "game-area");
+				
 				game.state.add("Preload",preloadState);
 				game.state.add("MainMenu",mainMenuState);
 				game.state.add("Game",gameState);
