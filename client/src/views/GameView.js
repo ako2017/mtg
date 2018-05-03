@@ -48,9 +48,6 @@ GameView.prototype.init = function() {
 	this.actionCardGroup.attaquantBtn = this.game.add.button(0, 20, this.game.cache.getBitmapData('buttonsmall'), function(button){this.declareAttaquantOrBloqueur(this.actionCardGroup.card);this.actionCardGroup.visible = false;},this);
 	this.actionCardGroup.attaquantBtn.text = this.actionCardGroup.attaquantBtn.addChild(this.game.add.text(0, 0, 'attaquant', {font: '16px Arial Black'}));
 	this.actionCardGroup.addChild(this.actionCardGroup.attaquantBtn);
-	this.actionCardGroup.bloqueurBtn = this.game.add.button(0, 40, this.game.cache.getBitmapData('buttonsmall'), function(button){this.declareBloqueur(this.actionCardGroup.player,this.actionCardGroup.card);this.actionCardGroup.visible = false;},this);
-	this.actionCardGroup.bloqueurBtn.text = this.actionCardGroup.bloqueurBtn.addChild(this.game.add.text(0, 0, 'bloqueur', {font: '16px Arial Black'}));
-	this.actionCardGroup.addChild(this.actionCardGroup.bloqueurBtn);
 	this.actionCardGroup.retirerBtn = this.game.add.button(0, 60, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameModel.retirerCard(this.actionCardGroup.player,this.actionCardGroup.card);this.actionCardGroup.visible = false;},this);
 	this.actionCardGroup.retirerBtn.text = this.actionCardGroup.retirerBtn.addChild(this.game.add.text(0, 0, 'retirer', {font: '16px Arial Black'}));
 	this.actionCardGroup.addChild(this.actionCardGroup.retirerBtn);
@@ -58,27 +55,25 @@ GameView.prototype.init = function() {
 
 GameView.prototype.declareAttaquantOrBloqueur = function(cardModel) {
 	if(this.gameModel.pm.isCurrentPhase(PHASE.DECLARATION_BLOQUEUR)) {
-		this.declareBloqueur(cardModel);
+		if(!this.bloqueur) {
+			this.bloqueur = cardModel;
+		}
+		else if(this.blockedCard) {
+			if(!this.gameModel.getPlayerNonActif().declareBloqueur(this.bloqueur, cardModel)) {
+				this.showError('probleme dans le bloqueur ou attaquant, recommencez');
+			}
+			this.bloqueur = null;
+		}
 	}
 	else if(this.gameModel.pm.isCurrentPhase(PHASE.DECLARATION_ATTAQUANT)) {
 		this.gameModel.declareAttaquant(this.gameModel.getPlayerActif(), cardModel);
-	}	
-};
-
-GameView.prototype.declareBloqueur = function(cardModel) {
-	if(this.gameModel.pm.isCurrentPhase(PHASE.DECLARATION_BLOQUEUR)) {
-		this.bloqueur = cardModel;		
+	}
+	else {
 		this.showError('veuillez selectionner une creature a bloquer');
-	} else {
-		this.showError('vous ne pouvez pas faire cette action');
-	}	
-	this.game.time.events.add(Phaser.Timer.SECOND * 3, function(){
-		this.showError("");
-	}, this);	
-};
-
-GameView.prototype.declareBlockedCard = function(player,cardModel) {
-	this.blockedCard = cardModel;
+		this.game.time.events.add(Phaser.Timer.SECOND * 3, function(){
+			this.showError("");
+		}, this);
+	}
 };
 
 GameView.prototype.registerObserver = function() {
@@ -92,6 +87,14 @@ GameView.prototype.hideActionCard = function(cardView) {
 };
 
 GameView.prototype.showActionCard = function(cardView) {
+	this.actionCardGroup.poseBtn.visible = false;
+	this.actionCardGroup.attaquantBtn.visible = false;
+	this.actionCardGroup.retirerBtn.visible = false;
+	
+	if(this.gameModel.pm.isCurrentPhase(PHASE.PRINCIPALE)) {
+		this.actionCardGroup.poseBtn.visible = true;
+	}
+	
 	if(this.gameModel.pm.isCurrentPhase(PHASE.DECLARATION_BLOQUEUR) && !this.gameModel.pm.currentPhase.hasDonedeclaration) {
 		this.actionCardGroup.player = this.gameModel.getPlayerNonActif();
 	}
@@ -99,8 +102,26 @@ GameView.prototype.showActionCard = function(cardView) {
 		this.actionCardGroup.player = cardView.cardModel.owner;	
 	}
 	
-	this.actionCardGroup.bloqueurBtn.inputEnabled = this.gameModel.pm.isCurrentPhase(PHASE.DECLARATION_ATTAQUANT) || this.gameModel.pm.isCurrentPhase(PHASE.DECLARATION_BLOQUEUR) ;
-
+	this.actionCardGroup.attaquantBtn.visible = false;
+	if(this.gameModel.pm.isCurrentPhase(PHASE.DECLARATION_ATTAQUANT)) {
+		this.actionCardGroup.attaquantBtn.visible = cardView.cardModel.owner == this.gameModel.getPlayerActif();
+	}
+	else if(this.gameModel.pm.isCurrentPhase(PHASE.DECLARATION_BLOQUEUR)){
+		if(!this.bloqueur && cardView.cardModel.owner == this.gameModel.getPlayerNonActif()) {
+			this.actionCardGroup.attaquantBtn.visible =true;
+		}
+		if(this.bloqueur && cardView.cardModel.owner == this.gameModel.getPlayerActif()) {
+			this.actionCardGroup.attaquantBtn.visible =true;
+		}
+	}
+	var text = '';
+	if(cardView.model.owner == this.gameModel.getPlayerActif()) {
+		text = 'attaquant';
+	}
+	else {
+		text = 'bloqueur';
+	}
+	this.actionCardGroup.attaquantBtn.text.text = text;
 	this.actionCardGroup.card = cardView.cardModel;
 	this.actionCardGroup.visible=true;
 };

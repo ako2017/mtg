@@ -161,19 +161,13 @@ Player.prototype.declareAttaquant = function(card) {
 };
 
 Player.prototype.declareBloqueur = function(bloqueur, attaquant) {
-	if(!this.game.pm.isPhase(PHASE.DECLARATION_BLOQUEUR)) {
-		sendEvent(GameEvent.ERROR,"vous ne pouvez pas faire cette action",this);
-		return;
-	}
-	
 	if(bloqueur.canBloque(attaquant)) {
 		attaquant.blockedBy = bloqueur;
 		bloqueur.blockCard = attaquant;
-		var event = {};
-		event.type = GameEvent.DECLARE_BLOQUEUR;
-		event.data = attaquant;
-		this.notify(event);
+		sendEvent(GameEvent.DECLARE_BLOQUEUR,attaquant,this);
+		return true;
 	}
+	return false;
 };
 
 Player.prototype.muligane = function() {
