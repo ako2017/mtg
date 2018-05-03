@@ -57,13 +57,12 @@ GameView.prototype.declareAttaquantOrBloqueur = function(cardModel) {
 	if(this.gameModel.pm.isCurrentPhase(PHASE.DECLARATION_BLOQUEUR)) {
 		if(!this.bloqueur) {
 			this.bloqueur = cardModel;
+			return;
 		}
-		else if(this.blockedCard) {
-			if(!this.gameModel.getPlayerNonActif().declareBloqueur(this.bloqueur, cardModel)) {
+		else if(!this.gameModel.getPlayerNonActif().declareBloqueur(this.bloqueur, cardModel)) {
 				this.showError('probleme dans le bloqueur ou attaquant, recommencez');
-			}
-			this.bloqueur = null;
 		}
+		this.bloqueur = null;
 	}
 	else if(this.gameModel.pm.isCurrentPhase(PHASE.DECLARATION_ATTAQUANT)) {
 		this.gameModel.declareAttaquant(this.gameModel.getPlayerActif(), cardModel);
@@ -102,15 +101,14 @@ GameView.prototype.showActionCard = function(cardView) {
 		this.actionCardGroup.player = cardView.cardModel.owner;	
 	}
 	
-	this.actionCardGroup.attaquantBtn.visible = false;
 	if(this.gameModel.pm.isCurrentPhase(PHASE.DECLARATION_ATTAQUANT)) {
 		this.actionCardGroup.attaquantBtn.visible = cardView.cardModel.owner == this.gameModel.getPlayerActif();
 	}
 	else if(this.gameModel.pm.isCurrentPhase(PHASE.DECLARATION_BLOQUEUR)){
-		if(!this.bloqueur && cardView.cardModel.owner == this.gameModel.getPlayerNonActif()) {
+		if(this.bloqueur==null && cardView.cardModel.owner == this.gameModel.getPlayerNonActif() && cardView.cardModel.type == TypeCard.CREATURE) {
 			this.actionCardGroup.attaquantBtn.visible =true;
 		}
-		if(this.bloqueur && cardView.cardModel.owner == this.gameModel.getPlayerActif()) {
+		if(this.bloqueur!=null && cardView.cardModel.owner == this.gameModel.getPlayerActif()) {
 			this.actionCardGroup.attaquantBtn.visible =true;
 		}
 	}
@@ -307,6 +305,10 @@ GameView.prototype.gotoCemeteryAnim = function(card) {
 	this.game.add.tween(card.view).to({y:posY,x:posX},1000,Phaser.Easing.Linear.None,true);
 };
 
+GameView.prototype.declareBloqueurAnim = function(card) {
+	alert('ttt');
+};
+
 GameView.prototype.showPhase = function(id) {
 	this.phaseLabel.text = phaseMapping[id];
 };
@@ -356,6 +358,9 @@ GameView.prototype.onReceive = function(event) {
 			break;
 		case GameEvent.ENTER_BATTLEFIELD:
 			this.enterBattlefieldAnim(event.data);
+			break;
+		case GameEvent.DECLARE_BLOQUEUR:
+			this.declareBloqueurAnim(event.data);
 			break;
 		case GameEvent.NEXT_TOKEN:
 			this.tokenLabel.y=(event.data.name == 'pau' ? 580:0);
