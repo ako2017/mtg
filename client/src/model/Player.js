@@ -79,9 +79,7 @@ Player.prototype.poseTerrain = function(card) {
 	this.hasPoseTerrain = true;
 	this.terrains.push(card);
 	this.hand.removeByValue(card);
-	event.type = GameEvent.POSE_TERRAIN;
-	event.data = {player:this,card:card};
-	this.notify(event);
+	sendEvent(GameEvent.POSE_TERRAIN,{player:this,card:card},this);
 	return true;
 };
 
