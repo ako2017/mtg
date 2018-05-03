@@ -76,7 +76,7 @@ phaseMapping[PHASE.NETTOYAGE] = "NETTOYAGE";
 var cardCreature = {
 		extension : 0,
 		numero : 1,
-		force : 0,
+		force : 1,
 		endurance : 0,
 		nom:"nom",
 		text:"descriptif de la carte",

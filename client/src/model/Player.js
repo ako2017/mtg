@@ -143,7 +143,7 @@ Player.prototype.poseCard = function(card,stack) {
 };
 
 Player.prototype.declareAttaquant = function(card) {
-	if(!this.game.pm.isPhase(PHASE.DECLARATION_ATTAQUANT)) {
+	if(!this.game.pm.isPhase(PHASE.DECLARATION_ATTAQUANT) || !this.game.isPlayerActif(this)) {
 		sendEvent(GameEvent.ERROR,"vous ne pouvez pas faire cette action",this);
 		return;
 	}
