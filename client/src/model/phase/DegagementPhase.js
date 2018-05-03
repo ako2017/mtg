@@ -4,8 +4,12 @@ DegagementPhase = function(pm) {
 };
 
 DegagementPhase.prototype.execute = function() {
-	this.pm.game.getPlayerWithToken().degagement();
-	setTimeout(this.next.bind(this), Duration.DEGAGEMENT);
+	if(this.pm.game.getPlayerWithToken().degagement()) {
+		setTimeout(this.next.bind(this), Duration.DEGAGEMENT);
+	}
+	else {
+		setTimeout(this.next.bind(this), 0);
+	}
 	return PHASE.WAIT;
 };
 

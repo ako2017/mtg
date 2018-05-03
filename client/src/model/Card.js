@@ -127,11 +127,13 @@ Card.prototype.gotoCemetery = function() {
 };
 
 Card.prototype.degage = function() {
+	if(!this.isEngaged) return false;
 	this.isEngaged = false;
 	var event = {};
 	event.type = GameEvent.DEGAGEMENT;
 	event.data = this;
 	this.notify(event);
+	return true;
 };
 
 Card.prototype.canBloque = function(card) {

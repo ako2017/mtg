@@ -39,13 +39,15 @@ Player.prototype.payMana = function(mana) {
 };
 
 Player.prototype.degagement = function() {
+	var doDegagement = false;
 	this.battlefield.forEach(function(card, index) {
-		card.degage();
+		if(card.degage()) doDegagement = true;
 	});
 	
 	this.terrains.forEach(function(card, index) {
-		card.degage();
+		if(card.degage()) doDegagement = true;
 	});
+	return doDegagement;
 };
 
 Player.prototype.pioche = function() {
@@ -197,4 +199,16 @@ Player.prototype.muligane = function() {
 	event.type = GameEvent.MULIGANE;
 	event.data = {player:this};
 	this.notify(event);
+};
+
+Player.prototype.valid = function() {
+		if (this.game.pm.valid(this)) {
+		if (!this.game.stack.isEmpty()) {
+			this.game.unPassAll();
+			this.game.stack.resolve(this);
+		} else {
+			this.game.unPassAll();
+			this.game.pm.next();
+		}
+	}
 };

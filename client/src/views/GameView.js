@@ -45,7 +45,7 @@ GameView.prototype.init = function() {
 	this.actionCardGroup.poseBtn = this.game.add.button(0, 0, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameModel.poseCard(this.actionCardGroup.player,this.actionCardGroup.card);this.actionCardGroup.visible = false;},this);
 	this.actionCardGroup.poseBtn.text = this.actionCardGroup.poseBtn.addChild(this.game.add.text(0, 0, 'pose', {font: '16px Arial Black'}));
 	this.actionCardGroup.addChild(this.actionCardGroup.poseBtn);
-	this.actionCardGroup.attaquantBtn = this.game.add.button(0, 20, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameModel.declareAttaquant(this.actionCardGroup.player,this.actionCardGroup.card);this.actionCardGroup.visible = false;},this);
+	this.actionCardGroup.attaquantBtn = this.game.add.button(0, 20, this.game.cache.getBitmapData('buttonsmall'), function(button){this.declareAttaquantOrBloqueur(this.actionCardGroup.card);this.actionCardGroup.visible = false;},this);
 	this.actionCardGroup.attaquantBtn.text = this.actionCardGroup.attaquantBtn.addChild(this.game.add.text(0, 0, 'attaquant', {font: '16px Arial Black'}));
 	this.actionCardGroup.addChild(this.actionCardGroup.attaquantBtn);
 	this.actionCardGroup.bloqueurBtn = this.game.add.button(0, 40, this.game.cache.getBitmapData('buttonsmall'), function(button){this.declareBloqueur(this.actionCardGroup.player,this.actionCardGroup.card);this.actionCardGroup.visible = false;},this);
@@ -56,13 +56,29 @@ GameView.prototype.init = function() {
 	this.actionCardGroup.addChild(this.actionCardGroup.retirerBtn);
 };
 
-GameView.prototype.declareBloqueur = function(player,cardModel) {
-	this.bloqueur = cardModel;	
-	this.showError('veuillez selectionner une creature a bloquer');
+GameView.prototype.declareAttaquantOrBloqueur = function(cardModel) {
+	if(this.gameModel.pm.isCurrentPhase(PHASE.DECLARATION_BLOQUEUR)) {
+		this.declareBloqueur(cardModel);
+	}
+	else if(this.gameModel.pm.isCurrentPhase(PHASE.DECLARATION_ATTAQUANT)) {
+		this.gameModel.declareAttaquant(this.gameModel.getPlayerActif(), cardModel);
+	}	
 };
 
-GameView.prototype.declareBlockedBy = function(player,cardModel) {
-	this.blockedBy = cardModel;
+GameView.prototype.declareBloqueur = function(cardModel) {
+	if(this.gameModel.pm.isCurrentPhase(PHASE.DECLARATION_BLOQUEUR)) {
+		this.bloqueur = cardModel;		
+		this.showError('veuillez selectionner une creature a bloquer');
+	} else {
+		this.showError('vous ne pouvez pas faire cette action');
+	}	
+	this.game.time.events.add(Phaser.Timer.SECOND * 3, function(){
+		this.showError("");
+	}, this);	
+};
+
+GameView.prototype.declareBlockedCard = function(player,cardModel) {
+	this.blockedCard = cardModel;
 };
 
 GameView.prototype.registerObserver = function() {
@@ -83,6 +99,8 @@ GameView.prototype.showActionCard = function(cardView) {
 		this.actionCardGroup.player = cardView.cardModel.owner;	
 	}
 	
+	this.actionCardGroup.bloqueurBtn.inputEnabled = this.gameModel.pm.isCurrentPhase(PHASE.DECLARATION_ATTAQUANT) || this.gameModel.pm.isCurrentPhase(PHASE.DECLARATION_BLOQUEUR) ;
+
 	this.actionCardGroup.card = cardView.cardModel;
 	this.actionCardGroup.visible=true;
 };
@@ -285,11 +303,13 @@ GameView.prototype.onReceive = function(event) {
 			this.stackAnim(event.data);
 			break;
 		case GameEvent.ERROR:
-			this.showError(event.data);
+			this.showError(event.data);	
+			this.game.time.events.add(Phaser.Timer.SECOND * 3, function(){
+				this.showError("");
+			}, this);			
 			break;
 		case GameEvent.CHANGE_PHASE:
 			this.showPhase(event.data);
-			break;
 		break;
 		case GameEvent.MULIGANE:
 			this.muliganeAnim(event.data.player);

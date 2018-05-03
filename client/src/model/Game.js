@@ -78,15 +78,7 @@ Game.prototype.nextToken = function() {
 };
 
 Game.prototype.valid = function(player) {
-	if (this.pm.valid(player)) {
-		if (!this.stack.isEmpty()) {
-			this.unPassAll();
-			this.stack.resolve(this);
-		} else {
-			this.unPassAll();
-			this.pm.next();
-		}
-	}
+	player.valid();
 };
 
 Game.prototype.poseCard = function(player, card) {

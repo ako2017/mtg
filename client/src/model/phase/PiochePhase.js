@@ -6,7 +6,7 @@ PiochePhase = function(pm) {
 PiochePhase.prototype.execute = function() {
 	if (!this.pm.game.getPlayerActif().canPioche) {
 		this.pm.game.getPlayerActif().canPioche = true;
-		setTimeout(this.next.bind(this), Duration.PIOCHE);
+		setTimeout(this.next.bind(this), 0);
 		return PHASE.WAIT;
 	} else {
 		this.pm.game.getPlayerActif().pioche();
