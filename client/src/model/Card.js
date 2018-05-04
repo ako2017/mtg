@@ -18,6 +18,7 @@ Card = function (player) {
 	this._capacities = [0,0,0];
 	this.blockedBy = null;
 	this.malInvocation = false;
+	this.enduranceCpt = 0;
 };
 
 Card.prototype = Object.create(Observable.prototype);
@@ -153,6 +154,10 @@ Card.prototype.attack = function(player) {
 		player.life -= this.getForce();
 		console.log(player.name + ' ' + player.life);
 	}
+};
+
+Card.prototype.damage = function(force) {
+	this.enduranceCpt-=force;
 };
 
 Card.prototype.getCapacityByTrigger = function(trigger, source) {

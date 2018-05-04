@@ -4,6 +4,14 @@ NettoyagePhase = function(pm) {
 };
 
 NettoyagePhase.prototype.execute = function() {
+	//suppression des cartes détruites
+	/*this.pm.game.getPlayerNonActif().battlefield.forEach(function(card) {
+		card.malInvocation = false;
+	});*/
+	//remise en place des bloqueurs à leur position
+	
+	
+	
 	this.pm.game.getPlayerActif().battlefield.forEach(function(card, index) {
 		card.malInvocation = false;
 	});

@@ -57,6 +57,10 @@ GameView.prototype.declareAttaquantOrBloqueur = function(cardModel) {
 	if(this.gameModel.pm.isCurrentPhase(PHASE.DECLARATION_BLOQUEUR)) {
 		if(!this.bloqueur) {
 			this.bloqueur = cardModel;
+			this.showError('veuillez selectionner une creature a bloquer');
+			this.game.time.events.add(Phaser.Timer.SECOND * 3, function(){
+				this.showError("");
+			}, this);
 			return;
 		}
 		else if(!this.gameModel.getPlayerNonActif().declareBloqueur(this.bloqueur, cardModel)) {
@@ -66,12 +70,6 @@ GameView.prototype.declareAttaquantOrBloqueur = function(cardModel) {
 	}
 	else if(this.gameModel.pm.isCurrentPhase(PHASE.DECLARATION_ATTAQUANT)) {
 		this.gameModel.declareAttaquant(this.gameModel.getPlayerActif(), cardModel);
-	}
-	else {
-		this.showError('veuillez selectionner une creature a bloquer');
-		this.game.time.events.add(Phaser.Timer.SECOND * 3, function(){
-			this.showError("");
-		}, this);
 	}
 };
 
@@ -239,6 +237,7 @@ GameView.prototype.piocheCardAnim = function(player,card) {
 	}
 	var slot = getFreeSlot(this.playersView[player.name].hand);
 	this.playersView[player.name].hand[slot] = card.view;
+	card.view.slot = slot;
 	card.view.show(true);
 	this.game.add.tween(card.view).to({x:100+37+80*slot, y:posY},1000,Phaser.Easing.Linear.None,true);
 };
@@ -258,6 +257,7 @@ GameView.prototype.enterBattlefieldAnim = function(card) {
 	removePlayerSlot(this.playersView[card.owner.name],card.view);
 	var slot = getFreeSlot(this.playersView[card.owner.name].battlefield);
 	this.playersView[card.owner.name].battlefield[slot] = card.view;
+	card.view.slot = slot;
 	this.game.add.tween(card.view).to({y:posY,x:100+37+80*slot},1000,Phaser.Easing.Linear.None,true);
 };
 
@@ -306,7 +306,7 @@ GameView.prototype.gotoCemeteryAnim = function(card) {
 };
 
 GameView.prototype.declareBloqueurAnim = function(card) {
-	alert('ttt');
+	this.game.add.tween(card.blockedBy.view).to({y:300,x:100+37+80*card.view.slot},1000,Phaser.Easing.Linear.None,true);
 };
 
 GameView.prototype.showPhase = function(id) {

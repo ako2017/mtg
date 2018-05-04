@@ -8,8 +8,10 @@ mainMenuState = {
 		this.style = { font: '30px Arial Black',fill: '#fff',strokeThickness: 4, boundsAlignH: "center", boundsAlignV: "middle" };
 		var validBtn = this.game.add.button(this.game.world.centerX - 100, this.game.world.centerY-50, null,function(){this.game.state.start("Game");},this);
 		validBtn.addChild(this.game.add.text(0,0, "PARTIE SOLO", this.style));
+		var creationDeckBtn = this.game.add.button(this.game.world.centerX - 100, this.game.world.centerY, null,function(){},this);
+		creationDeckBtn.addChild(this.game.add.text(0,0, "DECKS", this.style));
 		
-	/*	var password = this.game.add.inputField(400, 90, {
+		/*var password = this.game.add.inputField(400, 90, {
 		    font: '18px Arial',
 		    fill: '#212121',
 		    fontWeight: 'bold',
