@@ -1,29 +1,52 @@
-DeclarationBloqueurPhase = function(pm) {
+DeclarationAttaquantPhase = function(pm) {
 	this.pm = pm;
-	this.hasDonedeclaration = false;
-	this.phaseId = PHASE.DECLARATION_BLOQUEUR;
+	this.phaseId = PHASE.DECLARATION_ATTAQUANT;
 };
 
-DeclarationBloqueurPhase.prototype.execute = function() {
+DeclarationAttaquantPhase.prototype.execute = function() {
+	var passDeclare = true;
+	this.pm.game.getPlayerActif().battlefield.every(function(card, index) {
+		if(card.canAttaque()) {
+			passDeclare = false;
+			return true;
+		}
+		return false;
+	});
+	if(passDeclare) {
+		setTimeout(this.nextFin.bind(this), Duration.DECLARATION_ATTAQUANT);
+	}
 	return PHASE.WAIT;
 };
 
-DeclarationBloqueurPhase.prototype.valid = function(player) {
-	if (!this.pm.game.isPlayerActif(player) && !this.hasDonedeclaration) {
-		this.hasDonedeclaration = true;
-	}
-	else if (this.pm.game.isPlayerWithToken(player) && this.hasDonedeclaration) {
+DeclarationAttaquantPhase.prototype.valid = function(player) {
+	if (this.pm.game.isPlayerWithToken(player)) {
 		player.pass();
 		this.pm.game.nextToken();
 		if (this.pm.game.checkAllPass()) {
-			this.pm._next = PHASE.ATTRIBUTION_BLESSURE;
-			return true;
+			
+			//on a des attaquants on va les bloquer
+			if(this.pm.game.getPlayerActif().attaquants.length>0) {
+				this.pm._next = PHASE.DECLARATION_BLOQUEUR;
+				return true;
+			}
+			else {
+				this.pm._next = PHASE.FIN;
+				return true;	
+			}
 		}
 	}
 	return false;
 };
 
+DeclarationAttaquantPhase.prototype.nextFin = function() {
+	this.pm._next = PHASE.FIN;
+	this.pm.next();
+};
 
-DeclarationBloqueurPhase.prototype.end = function() {
-	this.hasDonedeclaration = false;
+DeclarationAttaquantPhase.prototype.next = function() {
+	this.pm._next = PHASE.DECLARATION_BLOQUEUR;
+	this.pm.next();
+};
+
+DeclarationAttaquantPhase.prototype.end = function() {
 };
