@@ -51,12 +51,9 @@ Player.prototype.degagement = function() {
 };
 
 Player.prototype.pioche = function() {
-	var event = {};
-	event.type = GameEvent.PIOCHE_CARD;
 	var card = this.deck.pop();
 	this.hand.push(card);
-	event.data = {player:this,card:card};
-	this.notify(event);
+	sendEvent(GameEvent.PIOCHE_CARD,{player:this,card:card},this);
 };
 
 Player.prototype.getCardById = function(cardId) {
@@ -66,6 +63,11 @@ Player.prototype.getCardById = function(cardId) {
 		}
 	}
 	return null;
+};
+
+Player.prototype.damage = function(value) {
+	this.life += value;
+	sendEvent(GameEvent.PLAYER_LIFE,this,this);
 };
 
 Player.prototype.poseTerrain = function(card) {
@@ -78,6 +80,7 @@ Player.prototype.poseTerrain = function(card) {
 		return false;
 	}
 	addMana(card.mana,this.mana);
+	sendEvent(GameEvent.UPDATE_MANA,this,this);
 	this.hasPoseTerrain = true;
 	this.terrains.push(card);
 	this.hand.removeByValue(card);
@@ -158,6 +161,22 @@ Player.prototype.declareAttaquant = function(card) {
 		event.data = card;
 		this.notify(event);
 	}
+};
+
+Player.prototype.newTurn = function() {
+	this.attaquants.length=0;
+	this.hasPoseTerrain = false;
+	this.battlefield.forEach(function(card, index) {
+		card.malInvocation = false;
+		card.restaure();
+	});
+	//on remplit sont compteur de mana
+	for(var i=0;i<this.mana.length;i++)
+		this.mana[i] = 0;
+	
+	this.terrains.forEach(function(card, index) {
+		addMana(card.mana,this.mana);
+	},this);
 };
 
 Player.prototype.declareBloqueur = function(bloqueur, attaquant) {

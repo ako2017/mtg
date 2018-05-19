@@ -19,58 +19,35 @@ GameView.prototype.init = function() {
 	this.tokenLabel = this.game.add.image(800, 0, this.game.cache.getBitmapData('token'));
 	this.actifLabel = this.game.add.image(800, 0, this.game.cache.getBitmapData('actif'));
 	this.bandeau = this.game.add.image(0, 295, this.game.cache.getBitmapData('bandeau'));
-	this.playerView = [];
-	this.playersView[this.gameModel.players[0].name] = {hand:[],terrains:[],battlefield:[]};
-	this.playersView[this.gameModel.players[1].name] = {hand:[],terrains:[],battlefield:[]};
 	
-	this.muligageBtn = this.game.add.button(0, 110, this.game.cache.getBitmapData('buttonsmall'), function(button){this.muligane(button.player);},this.gameModel);
+	this.muligageBtn = this.game.add.button(0, 110, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameCtrl.muligane(button.player);},this);
 	this.muligageBtn.text = this.muligageBtn.addChild(this.game.add.text(0, 0, 'muligane', {font: '16px Arial Black'}));
 	this.muligageBtn.player = this.gameModel.players[0];
 	
-	this.validBtn = this.game.add.button(380, 270, this.game.cache.getBitmapData('buttonsmall'), function(button){this.valid(button.player);},this.gameModel);
+	this.validBtn = this.game.add.button(380, 270, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameCtrl.valid(button.player);},this);
 	this.validBtn.text = this.validBtn.addChild(this.game.add.text(0, 0, 'valid', {font: '16px Arial Black'}));
 	this.validBtn.player = this.gameModel.players[0];
 	
-	this.muligageBtn2 = this.game.add.button(0, 400, this.game.cache.getBitmapData('buttonsmall'), function(button){this.muligane(button.player);},this.gameModel);
+	this.muligageBtn2 = this.game.add.button(0, 400, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameCtrl.muligane(button.player);},this);
 	this.muligageBtn2.text = this.muligageBtn2.addChild(this.game.add.text(0, 0, 'muligane', {font: '16px Arial Black'}));
 	this.muligageBtn2.player = this.gameModel.players[1];
 	
-	this.validBtn = this.game.add.button(380, 305, this.game.cache.getBitmapData('buttonsmall'), function(button){this.valid(button.player);},this.gameModel);
+	this.validBtn = this.game.add.button(380, 305, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameCtrl.valid(button.player);},this);
 	this.validBtn.text = this.validBtn.addChild(this.game.add.text(0, 0, 'valid', {font: '16px Arial Black'}));
 	this.validBtn.player = this.gameModel.players[1];
 	
 	this.actionCardGroup = this.game.add.group();
 	this.actionCardGroup.y=300;
 	this.actionCardGroup.visible = false;
-	this.actionCardGroup.poseBtn = this.game.add.button(0, 0, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameModel.poseCard(this.actionCardGroup.player,this.actionCardGroup.card);this.actionCardGroup.visible = false;},this);
+	this.actionCardGroup.poseBtn = this.game.add.button(0, 0, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameCtrl.poseCard(this.actionCardGroup.player,this.actionCardGroup.card);},this);
 	this.actionCardGroup.poseBtn.text = this.actionCardGroup.poseBtn.addChild(this.game.add.text(0, 0, 'pose', {font: '16px Arial Black'}));
 	this.actionCardGroup.addChild(this.actionCardGroup.poseBtn);
-	this.actionCardGroup.attaquantBtn = this.game.add.button(0, 20, this.game.cache.getBitmapData('buttonsmall'), function(button){this.declareAttaquantOrBloqueur(this.actionCardGroup.card);this.actionCardGroup.visible = false;},this);
+	this.actionCardGroup.attaquantBtn = this.game.add.button(0, 20, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameCtrl.declareAttaquantOrBloqueur(this.actionCardGroup.card);this.actionCardGroup.visible = false;},this);
 	this.actionCardGroup.attaquantBtn.text = this.actionCardGroup.attaquantBtn.addChild(this.game.add.text(0, 0, 'attaquant', {font: '16px Arial Black'}));
 	this.actionCardGroup.addChild(this.actionCardGroup.attaquantBtn);
-	this.actionCardGroup.retirerBtn = this.game.add.button(0, 60, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameModel.retirerCard(this.actionCardGroup.player,this.actionCardGroup.card);this.actionCardGroup.visible = false;},this);
+	this.actionCardGroup.retirerBtn = this.game.add.button(0, 60, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameCtrl.retirerCard(this.actionCardGroup.player,this.actionCardGroup.card);},this);
 	this.actionCardGroup.retirerBtn.text = this.actionCardGroup.retirerBtn.addChild(this.game.add.text(0, 0, 'retirer', {font: '16px Arial Black'}));
 	this.actionCardGroup.addChild(this.actionCardGroup.retirerBtn);
-};
-
-GameView.prototype.declareAttaquantOrBloqueur = function(cardModel) {
-	if(this.gameModel.pm.isCurrentPhase(PHASE.DECLARATION_BLOQUEUR)) {
-		if(!this.bloqueur) {
-			this.bloqueur = cardModel;
-			this.showError('veuillez selectionner une creature a bloquer');
-			this.game.time.events.add(Phaser.Timer.SECOND * 3, function(){
-				this.showError("");
-			}, this);
-			return;
-		}
-		else if(!this.gameModel.getPlayerNonActif().declareBloqueur(this.bloqueur, cardModel)) {
-				this.showError('probleme dans le bloqueur ou attaquant, recommencez');
-		}
-		this.bloqueur = null;
-	}
-	else if(this.gameModel.pm.isCurrentPhase(PHASE.DECLARATION_ATTAQUANT)) {
-		this.gameModel.declareAttaquant(this.gameModel.getPlayerActif(), cardModel);
-	}
 };
 
 GameView.prototype.registerObserver = function() {
@@ -88,30 +65,36 @@ GameView.prototype.showActionCard = function(cardView) {
 	this.actionCardGroup.attaquantBtn.visible = false;
 	this.actionCardGroup.retirerBtn.visible = false;
 	
-	if(this.gameModel.pm.isCurrentPhase(PHASE.PRINCIPALE)) {
+	if(this.gameCtrl.isCurrentPhase(PHASE.PRINCIPALE)) {
 		this.actionCardGroup.poseBtn.visible = true;
 	}
 	
-	if(this.gameModel.pm.isCurrentPhase(PHASE.DECLARATION_BLOQUEUR) && !this.gameModel.pm.currentPhase.hasDonedeclaration) {
-		this.actionCardGroup.player = this.gameModel.getPlayerNonActif();
+	if(this.gameCtrl.isCurrentPhase(PHASE.DECLARATION_BLOQUEUR) && !this.gameCtrl.hasDonedeclaration()) {
+		this.actionCardGroup.player = this.gameCtrl.getPlayerNonActif();
 	}
 	else {
 		this.actionCardGroup.player = cardView.cardModel.owner;	
 	}
 	
-	if(this.gameModel.pm.isCurrentPhase(PHASE.DECLARATION_ATTAQUANT)) {
-		this.actionCardGroup.attaquantBtn.visible = cardView.cardModel.owner == this.gameModel.getPlayerActif();
+	if(this.gameCtrl.isCurrentPhase(PHASE.DECLARATION_ATTAQUANT)) {
+		this.actionCardGroup.attaquantBtn.visible = cardView.cardModel.owner == this.gameCtrl.getPlayerActif();
 	}
-	else if(this.gameModel.pm.isCurrentPhase(PHASE.DECLARATION_BLOQUEUR)){
-		if(this.bloqueur==null && cardView.cardModel.owner == this.gameModel.getPlayerNonActif() && cardView.cardModel.type == TypeCard.CREATURE) {
+	else if(this.gameCtrl.isCurrentPhase(PHASE.DECLARATION_BLOQUEUR)){
+		if(this.bloqueur==null && cardView.cardModel.owner == this.gameCtrl.getPlayerNonActif() && cardView.cardModel.type == TypeCard.CREATURE) {
 			this.actionCardGroup.attaquantBtn.visible =true;
 		}
-		if(this.bloqueur!=null && cardView.cardModel.owner == this.gameModel.getPlayerActif()) {
+		if(this.bloqueur!=null && cardView.cardModel.owner == this.gameCtrl.getPlayerActif()) {
 			this.actionCardGroup.attaquantBtn.visible =true;
 		}
 	}
+	
+	if(this.gameCtrl.isCurrentPhase(PHASE.NETTOYAGE) && cardView.cardModel.owner == this.gameCtrl.getPlayerActif()) {
+		this.actionCardGroup.retirerBtn.visible = true;
+		this.actionCardGroup.player = cardView.cardModel.owner;
+	}
+	
 	var text = '';
-	if(cardView.model.owner == this.gameModel.getPlayerActif()) {
+	if(cardView.model.owner == this.gameCtrl.getPlayerActif()) {
 		text = 'attaquant';
 	}
 	else {
@@ -124,8 +107,15 @@ GameView.prototype.showActionCard = function(cardView) {
 
 GameView.prototype.initPlayers = function(players) {
 	for(var i=0;i<players.length;i++) {
-		this.playersView[players[i].name] = {hand:[],terrains:[],battlefield:[]};
+		this.playersView[players[i].name] = {hand:[],terrains:[],battlefield:[],mana:[]};
 		var isMe = players[i].name == "pau";
+		
+		this.playersView[players[i].name].phaseLabel = this.game.add.text(0, isMe?500:0, players[i].life, {font: '14px Arial Black',fill: '#fff',strokeThickness: 4});
+		
+		for(var j=0;j<5;j++) {
+			this.playersView[players[i].name].mana[j] = this.game.add.text(j*12, isMe?520:20, '0', {font: '14px Arial Black',fill: '#fff',strokeThickness: 4});			
+		}
+		
 		players[i].addObserver(this);
 		for(var j=0;j<players[i].deck.length;j++) {
 			var card = players[i].deck[j];
@@ -187,7 +177,6 @@ GameView.prototype.muliganeAnim = function(player) {
 			y = this.game.world.centerY+52;
 		}
 		else{y = this.game.world.centerY-104+52;}
-		this.playersView[player.name].length=0;
 		for(var i=0;i<player.hand.length;i++) {
 			this.game.add.tween(player.hand[i].view).to({x: 100+37 + i*80, y:y},1000,Phaser.Easing.Linear.None,true);
 			player.hand[i].view.show(true);
@@ -309,12 +298,40 @@ GameView.prototype.declareBloqueurAnim = function(card) {
 	this.game.add.tween(card.blockedBy.view).to({y:300,x:100+37+80*card.view.slot},1000,Phaser.Easing.Linear.None,true);
 };
 
+GameView.prototype.restaureBloqueurAnim = function(playerName) {
+	var isMe = playerName == "pau";
+	var game = this.game;
+
+	this.playersView[playerName].battlefield.forEach(function(card){
+		if(card != null && card.cardModel.blockCard != null) {
+			var posY =0;
+			if(isMe) {
+				posY = game.world.centerY+52;
+			}
+			else{posY = game.world.centerY-104+52;}
+			game.add.tween(card).to({x:100+37+80*card.slot,y:posY},1000,Phaser.Easing.Linear.None,true);
+		}
+	});
+};
+
+GameView.prototype.damageAnim = function(card) {
+};
+
+GameView.prototype.manaAnim = function(player) {
+	for(var i =0;i<5;i++)
+		this.playersView[player.name].mana[i].text=player.mana[i];
+};
+
 GameView.prototype.showPhase = function(id) {
 	this.phaseLabel.text = phaseMapping[id];
 };
 
 GameView.prototype.showError = function(error) {
 	this.errorLabel.text = error;
+};
+
+GameView.prototype.playerLifeAnim = function(player) {
+	this.playersView[player.name].phaseLabel.text = player.life;
 };
 
 GameView.prototype.onReceive = function(event) {
@@ -377,5 +394,13 @@ GameView.prototype.onReceive = function(event) {
 		case GameEvent.RETIRER_CARD:
 				this.showError('retirez des cartes');
 			break;
+		case GameEvent.RESTAURE_BLOQUEURS:
+			this.restaureBloqueurAnim(event.data);
+			break;
+		case GameEvent.PLAYER_LIFE:
+			this.playerLifeAnim(event.data);
+		case GameEvent.UPDATE_MANA:
+			this.manaAnim(event.data);
+		break;
 	}
 };

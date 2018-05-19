@@ -26,8 +26,8 @@ CardView.prototype.show = function(isVisible) {
 
 CardView.prototype.unselectAllWithout = function(cardView) {
 	for (i = 0; i < this.ownerView.hand.length; i++) {
-		if (this.ownerView.hand[i].isSelected && this.ownerView.hand[i] != cardView) {
-			this.ownerView.hand[i].select();
+		if (this.ownerView.hand[i]!=null && this.ownerView.hand[i].isSelected && this.ownerView.hand[i] != cardView) {
+			this.ownerView.hand[i].isSelected = false;
 		}
 	}
 };

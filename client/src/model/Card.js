@@ -125,6 +125,7 @@ Card.prototype.gotoCemetery = function() {
 	event.type = GameEvent.GOTO_CEMETERY;
 	event.data = this;
 	this.notify(event);
+	this.degage();
 };
 
 Card.prototype.degage = function() {
@@ -151,13 +152,19 @@ Card.prototype.attack = function(player) {
 		this.damage(this.blockedBy.getForce());
 	}
 	else {
-		player.life -= this.getForce();
+		player.damage(-this.getForce());
 		console.log(player.name + ' ' + player.life);
 	}
 };
 
 Card.prototype.damage = function(force) {
 	this.enduranceCpt-=force;
+};
+
+Card.prototype.restaure = function() {
+	this.enduranceCpt = this.getForce();
+	this.blockedBy = null;
+	this.blockCard = null;
 };
 
 Card.prototype.getCapacityByTrigger = function(trigger, source) {

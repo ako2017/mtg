@@ -25,10 +25,7 @@ PhaseManager.prototype.isCurrentPhase = function(phase) {
 
 PhaseManager.prototype.start = function() {
 	this.currentPhase = this.phases[PHASE.DISTRIBUTION];
-	var event = {};
-	event.type = GameEvent.CHANGE_PHASE;
-	event.data = PHASE.DISTRIBUTION;
-	this.notify(event);
+	sendEvent(GameEvent.CHANGE_PHASE,PHASE.DISTRIBUTION,this);
 	this._next = this.currentPhase.execute(this.game);
 };
 
@@ -44,10 +41,7 @@ PhaseManager.prototype.next = function() {
 	if(this._next != PHASE.WAIT) {
 		this.currentPhase.end();
 		this.currentPhase = this.phases[this._next];
-		var event = {};
-		event.type = GameEvent.CHANGE_PHASE;
-		event.data = this._next;
-		this.notify(event);
+		sendEvent(GameEvent.CHANGE_PHASE,this._next,this);
 		this._next = this.currentPhase.execute(this.game);
 	}
 };

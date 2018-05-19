@@ -13,6 +13,8 @@ gameState = {
 	createGameView : function() {
 		var view = new GameView(this.game);
 		view.gameModel = this.model;
+		view.gameCtrl = new GameController(this.model);
+		view.gameCtrl.view = view;
 		view.init();
 		this.game.add.existing(view);
 	},
@@ -76,8 +78,8 @@ phaseMapping[PHASE.NETTOYAGE] = "NETTOYAGE";
 var cardCreature = {
 		extension : 0,
 		numero : 1,
-		force : 1,
-		endurance : 0,
+		force : 5,
+		endurance : 1,
 		nom:"nom",
 		text:"descriptif de la carte",
 		mana: [1,0,0,0,0,0],
@@ -116,8 +118,8 @@ var island = {
 var cardEphemere = {
 		extension : 0,
 		numero : 2,
-		force : 0,
-		endurance : 0,
+		force : 5,
+		endurance : 1,
 		nom:"nom",
 		text:"descriptif de la carte",
 		mana: [1,0,0,0,0,0],
@@ -136,8 +138,8 @@ var cardEphemere = {
 var cardEphemere2 = {
 		extension : 0,
 		numero : 3,
-		force : 0,
-		endurance : 0,
+		force : 5,
+		endurance : 1,
 		nom:"nom",
 		text:"descriptif de la carte",
 		mana: [1,0,0,0,0,0],

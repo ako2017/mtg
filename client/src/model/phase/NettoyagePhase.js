@@ -3,27 +3,15 @@ NettoyagePhase = function(pm) {
 	this.phaseId = PHASE.NETTOYAGE;
 };
 
-NettoyagePhase.prototype.execute = function() {
-	//suppression des cartes détruites
-	/*this.pm.game.getPlayerNonActif().battlefield.forEach(function(card) {
-		card.malInvocation = false;
-	});*/
-	//remise en place des bloqueurs à leur position
+NettoyagePhase.prototype.execute = function() {	
+	this.pm.game.getPlayerActif().newTurn();
 	
-	
-	
-	this.pm.game.getPlayerActif().battlefield.forEach(function(card, index) {
-		card.malInvocation = false;
-	});
-	this.pm.game.getPlayerActif().hasPoseTerrain = false;
-	this.pm.game.getPlayerActif().terrains.forEach(function(card, index) {
-		addMana(card.mana,this.pm.game.getPlayerActif().mana);
+	this.pm.game.getPlayerNonActif().battlefield.forEach(function(card, index) {
+		card.restaure();
 	},this);
 	
 	if (this.pm.game.getPlayerWithToken().hand.length > 7) {
-		var event = {};
-		event.type = GameEvent.RETIRER_CARD;
-		this.pm.notify(event);
+		sendEvent(GameEvent.RETIRER_CARD,null,this.pm);
 		return PHASE.WAIT;
 	} else {
 		setTimeout(this.next.bind(this), Duration.NETTOYAGE);
