@@ -36,6 +36,7 @@ Player.prototype.payMana = function(mana) {
 	for(var i=0;i<mana.length;i++) {
 		this.mana[i] = this.mana[i] - mana[i];
 	}
+	sendEvent(GameEvent.UPDATE_MANA,this,this);
 };
 
 Player.prototype.degagement = function() {
@@ -79,8 +80,6 @@ Player.prototype.poseTerrain = function(card) {
 		sendEvent(GameEvent.ERROR,"vous ne pouvez poser qu'un terrain par tour",this);
 		return false;
 	}
-	addMana(card.mana,this.mana);
-	sendEvent(GameEvent.UPDATE_MANA,this,this);
 	this.hasPoseTerrain = true;
 	this.terrains.push(card);
 	this.hand.removeByValue(card);
@@ -163,6 +162,14 @@ Player.prototype.declareAttaquant = function(card) {
 	}
 };
 
+Player.prototype.engage = function(card) {
+	if(this.game.isPlayerActif(this) && card.type == TypeCard.TERRAIN) {
+		card.engage();
+		addMana(card.mana,this.mana);
+		sendEvent(GameEvent.UPDATE_MANA,this,this);
+	}
+};
+
 Player.prototype.newTurn = function() {
 	this.attaquants.length=0;
 	this.hasPoseTerrain = false;
@@ -170,13 +177,9 @@ Player.prototype.newTurn = function() {
 		card.malInvocation = false;
 		card.restaure();
 	});
-	//on remplit sont compteur de mana
+	//on remet le compteur à 0
 	for(var i=0;i<this.mana.length;i++)
 		this.mana[i] = 0;
-	
-	this.terrains.forEach(function(card, index) {
-		addMana(card.mana,this.mana);
-	},this);
 };
 
 Player.prototype.declareBloqueur = function(bloqueur, attaquant) {
@@ -218,7 +221,7 @@ Player.prototype.valid = function() {
 		if (this.game.pm.valid(this)) {
 		if (!this.game.stack.isEmpty()) {
 			this.game.unPassAll();
-			this.game.stack.resolve(this);
+			this.game.stack.resolve(this.game);
 		} else {
 			this.game.unPassAll();
 			this.game.pm.next();

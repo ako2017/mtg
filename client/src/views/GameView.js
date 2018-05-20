@@ -48,6 +48,9 @@ GameView.prototype.init = function() {
 	this.actionCardGroup.retirerBtn = this.game.add.button(0, 60, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameCtrl.retirerCard(this.actionCardGroup.player,this.actionCardGroup.card);},this);
 	this.actionCardGroup.retirerBtn.text = this.actionCardGroup.retirerBtn.addChild(this.game.add.text(0, 0, 'retirer', {font: '16px Arial Black'}));
 	this.actionCardGroup.addChild(this.actionCardGroup.retirerBtn);
+	this.actionCardGroup.engageBtn = this.game.add.button(0, 80, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameCtrl.engage(this.actionCardGroup.player,this.actionCardGroup.card);},this);
+	this.actionCardGroup.engageBtn.text = this.actionCardGroup.engageBtn.addChild(this.game.add.text(0, 0, 'engager', {font: '16px Arial Black'}));
+	this.actionCardGroup.addChild(this.actionCardGroup.engageBtn);
 };
 
 GameView.prototype.registerObserver = function() {
@@ -64,8 +67,13 @@ GameView.prototype.showActionCard = function(cardView) {
 	this.actionCardGroup.poseBtn.visible = false;
 	this.actionCardGroup.attaquantBtn.visible = false;
 	this.actionCardGroup.retirerBtn.visible = false;
+	this.actionCardGroup.engageBtn.visible = false;
 	
-	if(this.gameCtrl.isCurrentPhase(PHASE.PRINCIPALE)) {
+	if(cardView.ownerView.terrains.contains(cardView) && cardView.cardModel.type == TypeCard.TERRAIN && !cardView.cardModel.isEngaged) {
+		this.actionCardGroup.engageBtn.visible = true;
+	}
+	
+	if(this.gameCtrl.isCurrentPhase(PHASE.PRINCIPALE) && (!cardView.ownerView.terrains.contains(cardView) &&  !cardView.ownerView.battlefield.contains(cardView))) {
 		this.actionCardGroup.poseBtn.visible = true;
 	}
 	

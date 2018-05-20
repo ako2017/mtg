@@ -48,7 +48,7 @@ GameController.prototype.declareAttaquantOrBloqueur = function(cardModel) {
 		else if(!this.getPlayerNonActif().declareBloqueur(this.view.bloqueur, cardModel)) {
 				this.showError('probleme dans le bloqueur ou attaquant, recommencez');
 		}
-		this.bloqueur = null;
+		this.view.bloqueur = null;
 	}
 	else if(this.isCurrentPhase(PHASE.DECLARATION_ATTAQUANT)) {
 		this.declareAttaquant(cardModel);
@@ -58,5 +58,9 @@ GameController.prototype.declareAttaquantOrBloqueur = function(cardModel) {
 GameController.prototype.retirerCard = function(player, card) {
 	this.gameModel.retirerCard(player,card);
 	this.view.actionCardGroup.visible = false;
+};
+
+GameController.prototype.engage = function(player, card) {
+	player.engage(card);
 };
 

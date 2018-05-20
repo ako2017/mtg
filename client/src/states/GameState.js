@@ -150,7 +150,7 @@ var cardEphemere2 = {
 		vigilance : false,
 		capacities : [{
 			mana : [0,0,0,0,0,0],
-			action : "this._cible.addMarqueur(1,0,Ttl.EOT)",
+			action : "console.log('test carte2')",
 			cible : "card.type == TypeCard.CREATURE",
 			trigger : 15
 		}]
