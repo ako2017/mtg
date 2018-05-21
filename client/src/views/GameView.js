@@ -240,6 +240,7 @@ GameView.prototype.piocheCardAnim = function(player,card) {
 };
 
 GameView.prototype.stackAnim = function(card) {
+	if(card.type == TypeCard.CAPACITY) return;
 	removePlayerSlot(this.playersView[card.owner.name],card.view);
 	this.game.add.tween(card.view).to({x:CONFIG.pile[0],y:CONFIG.pile[1]},1000,Phaser.Easing.Linear.None,true);
 };
@@ -340,6 +341,10 @@ GameView.prototype.showError = function(error) {
 
 GameView.prototype.playerLifeAnim = function(player) {
 	this.playersView[player.name].phaseLabel.text = player.life;
+	if(player.life <=0) {
+		alert("partie terminée");
+		this.game.state.start("MainMenu");
+	}
 };
 
 GameView.prototype.onReceive = function(event) {

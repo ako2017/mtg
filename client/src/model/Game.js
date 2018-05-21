@@ -35,6 +35,14 @@ Game.prototype.checkAllPass = function() {
 	return true;
 };
 
+Game.prototype.endOfGame = function() {
+	for (var i = 0; i < this.players.length; i++) {
+		if (this.players[i].life<0)
+			return true;
+	}
+	return false;
+};
+
 Game.prototype.unPassAll = function() {
 	for (var i = 0; i < this.players.length; i++) {
 		this.players[i].hasPass = false;

@@ -2,7 +2,9 @@ GameController = function(model) {
 	this.gameModel = model;
 };
 
+
 GameController.prototype.declareAttaquant = function(cardModel) {
+	if(this.gameModel.endOfGame()) return;
 	this.gameModel.declareAttaquant(this.gameModel.getPlayerActif(), cardModel);
 };
 
@@ -23,19 +25,23 @@ GameController.prototype.getPlayerActif = function() {
 };
 
 GameController.prototype.valid = function(player) {
+	if(this.gameModel.endOfGame()) return;
 	return this.gameModel.valid(player);
 };
 
 GameController.prototype.muligane = function(player) {
+	if(this.gameModel.endOfGame()) return;
 	return this.gameModel.muligane(player);
 };
 
 GameController.prototype.poseCard = function(player, card) {
+	if(this.gameModel.endOfGame()) return;
 	this.gameModel.poseCard(player,card);
 	this.view.actionCardGroup.visible = false;
 };
 
 GameController.prototype.declareAttaquantOrBloqueur = function(cardModel) {
+	if(this.gameModel.endOfGame()) return;
 	if(this.isCurrentPhase(PHASE.DECLARATION_BLOQUEUR)) {
 		if(!this.view.bloqueur) {
 			this.view.bloqueur = cardModel;
@@ -56,11 +62,13 @@ GameController.prototype.declareAttaquantOrBloqueur = function(cardModel) {
 };
 
 GameController.prototype.retirerCard = function(player, card) {
+	if(this.gameModel.endOfGame()) return;
 	this.gameModel.retirerCard(player,card);
 	this.view.actionCardGroup.visible = false;
 };
 
 GameController.prototype.engage = function(player, card) {
+	if(this.gameModel.endOfGame()) return;
 	player.engage(card);
 };
 

@@ -15,7 +15,7 @@ Stack.prototype.resolve = function(game) {
 			this.addCapacitiesByTrigger(GameEvent.ON_ENTER_BATTLEFIELD,current, game.players);
 			break;
 		case TypeCard.CAPACITY :
-			this.current.execute({game : game});
+			current.execute({game : game});
 			break;
 		case TypeCard.EPHEMERE :
 			var capacity = current.capacities[0];
@@ -27,7 +27,7 @@ Stack.prototype.resolve = function(game) {
 };
 
 Stack.prototype.addCapacitiesByTrigger = function(trigger, card, players) {
-	for (var i = 0; i < players[i]; i++) {
+	for (var i = 0; i < players.length; i++) {
 		var battlefield = players[i].battlefield;
 		for (var j = 0; j < battlefield.length; j++) {
 			var capacity = battlefield[j].getCapacityByTrigger(trigger,card);
