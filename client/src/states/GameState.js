@@ -90,7 +90,7 @@ var cardCreature = {
 		vigilance : false,
 		capacities : [{
 			mana : [0,0,0,0,0,0],
-			action : "alert('je suis dans le champs de bataille')",
+			action : "console.log('je suis dans le champs de bataille')",
 			trigger : "trigger == GameEvent.ON_ENTER_BATTLEFIELD && source == this.card;"
 		}]
 };

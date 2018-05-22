@@ -39,16 +39,16 @@ GameView.prototype.init = function() {
 	this.actionCardGroup = this.game.add.group();
 	this.actionCardGroup.y=300;
 	this.actionCardGroup.visible = false;
-	this.actionCardGroup.poseBtn = this.game.add.button(0, 0, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameCtrl.poseCard(this.actionCardGroup.player,this.actionCardGroup.card);},this);
+	this.actionCardGroup.poseBtn = this.game.add.button(0, 0, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameCtrl.poseCard(this.actionCardGroup.player,this.actionCardGroup.card);this.hideActionCard();},this);
 	this.actionCardGroup.poseBtn.text = this.actionCardGroup.poseBtn.addChild(this.game.add.text(0, 0, 'pose', {font: '16px Arial Black'}));
 	this.actionCardGroup.addChild(this.actionCardGroup.poseBtn);
-	this.actionCardGroup.attaquantBtn = this.game.add.button(0, 20, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameCtrl.declareAttaquantOrBloqueur(this.actionCardGroup.card);this.actionCardGroup.visible = false;},this);
+	this.actionCardGroup.attaquantBtn = this.game.add.button(0, 20, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameCtrl.declareAttaquantOrBloqueur(this.actionCardGroup.card);this.hideActionCard();},this);
 	this.actionCardGroup.attaquantBtn.text = this.actionCardGroup.attaquantBtn.addChild(this.game.add.text(0, 0, 'attaquant', {font: '16px Arial Black'}));
 	this.actionCardGroup.addChild(this.actionCardGroup.attaquantBtn);
-	this.actionCardGroup.retirerBtn = this.game.add.button(0, 60, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameCtrl.retirerCard(this.actionCardGroup.player,this.actionCardGroup.card);},this);
+	this.actionCardGroup.retirerBtn = this.game.add.button(0, 60, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameCtrl.retirerCard(this.actionCardGroup.player,this.actionCardGroup.card);this.hideActionCard();},this);
 	this.actionCardGroup.retirerBtn.text = this.actionCardGroup.retirerBtn.addChild(this.game.add.text(0, 0, 'retirer', {font: '16px Arial Black'}));
 	this.actionCardGroup.addChild(this.actionCardGroup.retirerBtn);
-	this.actionCardGroup.engageBtn = this.game.add.button(0, 80, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameCtrl.engage(this.actionCardGroup.player,this.actionCardGroup.card);},this);
+	this.actionCardGroup.engageBtn = this.game.add.button(0, 80, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameCtrl.engage(this.actionCardGroup.player,this.actionCardGroup.card);this.hideActionCard();},this);
 	this.actionCardGroup.engageBtn.text = this.actionCardGroup.engageBtn.addChild(this.game.add.text(0, 0, 'engager', {font: '16px Arial Black'}));
 	this.actionCardGroup.addChild(this.actionCardGroup.engageBtn);
 };
@@ -59,7 +59,7 @@ GameView.prototype.registerObserver = function() {
 	this.gameModel.addObserver(this);
 };
 
-GameView.prototype.hideActionCard = function(cardView) {
+GameView.prototype.hideActionCard = function() {
 	this.actionCardGroup.visible=false;
 };
 
@@ -139,6 +139,8 @@ GameView.prototype.initPlayers = function(players) {
 			}
 			cardView.inputEnabled = true;
 			cardView.events.onInputUp.add(cardView.onClick, this);
+			cardView.events.onInputOver.add(cardView.onOver, cardView);
+			cardView.events.onInputOut.add(cardView.onOut, cardView);
 			this.addChild(cardView);
 			card.addObserver(this);
 		}
@@ -246,6 +248,8 @@ GameView.prototype.stackAnim = function(card) {
 };
 
 GameView.prototype.enterBattlefieldAnim = function(card) {
+	if(card.hasMalInvocation())
+		card.view.front.tint = 0x696969;
 	var posY = this.game.world.centerY;
 	var isMe = card.owner.name == "pau";
 	if(isMe) {
@@ -412,8 +416,14 @@ GameView.prototype.onReceive = function(event) {
 			break;
 		case GameEvent.PLAYER_LIFE:
 			this.playerLifeAnim(event.data);
+			break;
 		case GameEvent.UPDATE_MANA:
 			this.manaAnim(event.data);
+			break;
+		case GameEvent.RESTAURE_MAL_INVOCATION:
+			event.data.forEach(function(card) {
+				card.view.front.tint = 0xffffff;
+			});
 		break;
 	}
 };

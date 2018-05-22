@@ -36,9 +36,17 @@ CardView.prototype.onClick = function(cardView) {
 	cardView.unselectAllWithout(cardView);
 	cardView.isSelected = !cardView.isSelected;
 	if(!cardView.isSelected) {
-		this.hideActionCard(cardView);
+		this.hideActionCard();
 	}
 	else {
 		this.showActionCard(cardView);
 	}
+};
+
+CardView.prototype.onOver = function(cardView) {
+	this.scale.setTo(0.8, 0.8);
+};
+
+CardView.prototype.onOut = function(cardView) {
+	this.scale.setTo(0.5, 0.5)
 };

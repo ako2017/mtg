@@ -180,6 +180,7 @@ Player.prototype.newTurn = function() {
 	//on remet le compteur à 0
 	for(var i=0;i<this.mana.length;i++)
 		this.mana[i] = 0;
+	sendEvent(GameEvent.RESTAURE_MAL_INVOCATION,this.battlefield,this);
 };
 
 Player.prototype.declareBloqueur = function(bloqueur, attaquant) {

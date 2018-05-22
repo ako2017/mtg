@@ -13,6 +13,7 @@ Stack.prototype.resolve = function(game) {
 		case TypeCard.CREATURE :
 			current.enterBattlefield();
 			this.addCapacitiesByTrigger(GameEvent.ON_ENTER_BATTLEFIELD,current, game.players);
+			this.resolve(game);
 			break;
 		case TypeCard.CAPACITY :
 			current.execute({game : game});
