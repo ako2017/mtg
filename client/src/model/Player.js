@@ -219,13 +219,5 @@ Player.prototype.muligane = function() {
 };
 
 Player.prototype.valid = function() {
-		if (this.game.pm.valid(this)) {
-		if (!this.game.stack.isEmpty()) {
-			this.game.unPassAll();
-			this.game.stack.resolve(this.game);
-		} else {
-			this.game.unPassAll();
-			this.game.pm.next();
-		}
-	}
+	return this.game.pm.valid(this);
 };

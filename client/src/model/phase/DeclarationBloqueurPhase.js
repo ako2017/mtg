@@ -10,11 +10,12 @@ DeclarationBloqueurPhase.prototype.execute = function() {
 
 DeclarationBloqueurPhase.prototype.valid = function(player) {
 	if (!this.pm.game.isPlayerActif(player) && !this.hasDonedeclaration) {
+		player.pass();
+		this.pm.game.nextToken();
 		this.hasDonedeclaration = true;
 	}
 	else if (this.pm.game.isPlayerWithToken(player) && this.hasDonedeclaration) {
 		player.pass();
-		this.pm.game.nextToken();
 		if (this.pm.game.checkAllPass()) {
 			this.pm._next = PHASE.ATTRIBUTION_BLESSURE;
 			return true;

@@ -26,6 +26,7 @@ DeclarationAttaquantPhase.prototype.valid = function(player) {
 			
 			//on a des attaquants on va les bloquer
 			if(this.pm.game.getPlayerActif().attaquants.length>0) {
+				this.pm.game.nextToken();
 				this.pm._next = PHASE.DECLARATION_BLOQUEUR;
 				return true;
 			}
