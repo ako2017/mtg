@@ -14,8 +14,7 @@ PrincipalePhase.prototype.valid = function(player) {
 			player.pass();
 			this.pm.game.nextToken();
 			if (this.pm.game.checkAllPass()) {
-				this.pm._next = PHASE.DECLARATION_ATTAQUANT;
-				return true;
+				return PHASE.DECLARATION_ATTAQUANT;
 			}
 		}
 	}
@@ -24,12 +23,11 @@ PrincipalePhase.prototype.valid = function(player) {
 			player.pass();
 			this.pm.game.nextToken();
 			if (this.pm.game.checkAllPass()) {
-				this.pm._next = PHASE.FIN;
-				return true;
+				return PHASE.FIN;
 			}
 		}
 	}
-	return false;
+	return PHASE.WAIT;
 };
 
 PrincipalePhase.prototype.end = function() {

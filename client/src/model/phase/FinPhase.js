@@ -4,8 +4,7 @@ FinPhase = function(pm) {
 };
 
 FinPhase.prototype.execute = function() {
-	setTimeout(this.next.bind(this), Duration.FIN);
-	return PHASE.WAIT;
+	return PHASE.NETTOYAGE;
 };
 
 FinPhase.prototype.valid = function(player) {

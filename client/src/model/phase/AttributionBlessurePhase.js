@@ -22,20 +22,14 @@ AttributionBlessurePhase.prototype.execute = function() {
 			}	
 		}
 	});
-	
-	setTimeout(this.next.bind(this), Duration.ATTRIBUTION_BLESSURE);
-	return PHASE.WAIT;
+
+	return  PHASE.PRINCIPALE;
 };
 
 AttributionBlessurePhase.prototype.valid = function(player) {
 	return false;
 };
 
-AttributionBlessurePhase.prototype.next = function() {
-	this.pm._next = PHASE.PRINCIPALE;
-	this.pm.next();
-};
-
 AttributionBlessurePhase.prototype.end = function() {
-	sendEvent(GameEvent.RESTAURE_BLOQUEURS,this.pm.game.getPlayerNonActif().name,this.pm);
+	sendEvent(GameEvent.RESTAURE_BLOQUEURS,this.pm.game.getPlayerNonActif().name,this.pm.game);
 };

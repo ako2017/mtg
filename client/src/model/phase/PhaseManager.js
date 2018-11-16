@@ -25,7 +25,7 @@ PhaseManager.prototype.isCurrentPhase = function(phase) {
 
 PhaseManager.prototype.start = function() {
 	this.currentPhase = this.phases[PHASE.DISTRIBUTION];
-	sendEvent(GameEvent.CHANGE_PHASE,PHASE.DISTRIBUTION,this);
+	sendEvent(GameEvent.CHANGE_PHASE,PHASE.DISTRIBUTION,this.game);
 	this._next = this.currentPhase.execute(this.game);
 };
 
@@ -34,14 +34,15 @@ PhaseManager.prototype.isPhase = function(phaseId) {
 };
 
 PhaseManager.prototype.valid = function(player) {
-	return this.currentPhase.valid(player);
+	this._next = this.currentPhase.valid(player);
+	this.next();
 };
 
 PhaseManager.prototype.next = function() {
-	if(this._next != PHASE.WAIT) {
+	while (this._next != PHASE.WAIT) {
 		this.currentPhase.end();
 		this.currentPhase = this.phases[this._next];
-		sendEvent(GameEvent.CHANGE_PHASE,this._next,this);
+		sendEvent(GameEvent.CHANGE_PHASE,this._next,this.game);
 		this._next = this.currentPhase.execute(this.game);
 	}
 };

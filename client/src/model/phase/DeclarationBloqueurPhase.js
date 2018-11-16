@@ -5,7 +5,8 @@ DeclarationBloqueurPhase = function(pm) {
 };
 
 DeclarationBloqueurPhase.prototype.execute = function() {
-	return PHASE.WAIT;
+	return PHASE.ATTRIBUTION_BLESSURE;
+	//return PHASE.WAIT;
 };
 
 DeclarationBloqueurPhase.prototype.valid = function(player) {
@@ -17,11 +18,10 @@ DeclarationBloqueurPhase.prototype.valid = function(player) {
 	else if (this.pm.game.isPlayerWithToken(player) && this.hasDonedeclaration) {
 		player.pass();
 		if (this.pm.game.checkAllPass()) {
-			this.pm._next = PHASE.ATTRIBUTION_BLESSURE;
-			return true;
+			return PHASE.ATTRIBUTION_BLESSURE;
 		}
 	}
-	return false;
+	return PHASE.WAIT;
 };
 
 

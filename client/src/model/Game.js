@@ -15,6 +15,7 @@ Game.prototype.addPlayer = function(player) {
 	if (this.players.length < 2) {
 		player.game = this;
 		this.players.push(player);
+		sendEvent(GameEvent.ADD_PLAYER,"coucou",this);
 	}
 };
 
@@ -79,10 +80,7 @@ Game.prototype.nextPlayer = function() {
 
 Game.prototype.nextToken = function() {
 	this.token = (this.token + 1) % this.players.length;
-	var event = {};
-	event.type = GameEvent.NEXT_TOKEN;
-	event.data = this.getPlayerWithToken();
-	this.notify(event);
+	sendEvent(GameEvent.NEXT_TOKEN,this.getPlayerWithToken(),this);
 };
 
 Game.prototype.valid = function(player) {

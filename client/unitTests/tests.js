@@ -1,79 +1,54 @@
-QUnit.test('Test ajout joueurs', function(assert) {
-	var game = new Game();
-	game.addPlayer(createPlayer('lala'));
-	assert.ok(!game.isFull(), 'plateau pas complet');
-	game.addPlayer(createPlayer('pau'));
-	assert.ok(game.isFull(), 'plateau complet');
+QUnit.test('Test création jeu', function(assert) {
+	service = new GameService();
+	game = service.createGame();
+	assert.ok(game != null, 'jeu créé');
 });
 
-/*QUnit.test('Test muligane', function(assert) {
-	var game = new game();
-	var player =  createPlayer('lala','a');
-	game.addPlayer(player);
-	game.addPlayer(createPlayer('pau','a'));
-	game.distribution();
-	for(var i=0;i<6;i++) {
-		player.muligane();	
-		assert.ok(player.hand.length == 6-i, 'muligane reste ' + (6-i) + ' cartes');
-	}
-	player.muligane();
-	assert.ok(player.hand.length == 1, 'muligane reste 1 carte');
-});
-*/
-/*QUnit.test('Test Partie 1er tour', function(assert) {
-	var time = 0;
-	var game = new Game();
-	var lala = createPlayer('lala');
-	var pau = createPlayer('pau');
-	game.addPlayer(lala);
-	game.addPlayer(pau);
-	assert.ok(game.isFull(), 'plateau complet');
-	game.start();
+QUnit.test('Test partie', function(assert) {
+	var service = new GameService();
+	var game = service.createGame();
+	assert.ok(game != null, 'jeu créé');
+	var player1 = createPlayer('joueur1');
+	var player2 = createPlayer('joueur2');
+	service.addPlayer(game, player1);
+	assert.ok(game.handler.getLastSend()[0].type == GameEvent.ADD_PLAYER, 'joueur ajouté');
+	
+	service.addPlayer(game, player2);
+	assert.ok(game.handler.getLastSend()[0].type == GameEvent.ADD_PLAYER, 'joueur ajouté');
+	assert.ok(game.handler.getLastSend()[1].type == GameEvent.CHANGE_PHASE && game.handler.getLastSend()[1].data == PHASE.DISTRIBUTION, 'on passe en phase distribution');
+	assert.ok(game.handler.getLastSend()[2].type == GameEvent.DISTRIBUTION, 'on distribue');
+	
+	service.muligane(game,player1);
+	assert.ok(game.handler.getLastSend()[0].type == GameEvent.MULIGANE, 'un muligane demandé par le joueur 1');
+	assert.ok(game.handler.getLastSend()[0].data.hand.length == 6, 'le joueur a maintenant 6 cartes');
 
-	assert.equal(lala.deck.length,60-7, '53 cartes dans le deck du joueur 1');
-	assert.equal(pau.deck.length,60-7, '53 cartes dans le deck du joueur 2');
-	assert.equal(lala.hand.length,7, '7 cartes dans la main du joueur 1');
-	assert.equal(pau.hand.length,7, '7 cartes dans la main du joueur 2');
-	game.valid(lala);
-	game.valid(pau);
-	assert.ok(game.pm.isCurrentPhase(PHASE.WHO_BEGINS), 'WHO_BEGIN');
-	assert.async();
-	setTimeout(function () {
-		assert.ok(game.pm.isCurrentPhase(PHASE.DEGAGEMENT), 'DEGAGEMENT');
-	}, time+=2000);
-	setTimeout(function () {
-		assert.ok(game.pm.isCurrentPhase(PHASE.ENTRETIENT), 'ENTRETIENT');
-	}, time+=2100);
-	setTimeout(function () {
-		assert.ok(game.pm.isCurrentPhase(PHASE.PIOCHE), 'PIOCHE');
-	}, time+=2100);
-	setTimeout(function () {
-		assert.ok(game.pm.isCurrentPhase(PHASE.PRINCIPALE), 'PRINCIPALE');
-		game.valid(game.getPlayerWithToken());
-		game.valid(game.getPlayerWithToken());
-		assert.ok(game.pm.isCurrentPhase(PHASE.DECLARATION_ATTAQUANT), 'DECLARATION_ATTAQUANT');
-	}, time+=2100);
-	setTimeout(function () {
-		assert.ok(game.pm.isCurrentPhase(PHASE.DECLARATION_BLOQUEUR), 'DECLARATION_BLOQUEUR');
-	}, time+=2100);
-	setTimeout(function () {
-		assert.ok(game.pm.isCurrentPhase(PHASE.ATTRIBUTION_BLESSURE), 'ATTRIBUTION_BLESSURE');
-	}, time+=2100);
-	setTimeout(function () {
-		assert.ok(game.pm.isCurrentPhase(PHASE.PRINCIPALE), 'PRINCIPALE');
-		game.valid(game.getPlayerWithToken());
-		game.valid(game.getPlayerWithToken());
-		assert.ok(game.pm.isCurrentPhase(PHASE.FIN), 'FIN');
-	}, time+=2100);
-	setTimeout(function () {
-		assert.ok(game.pm.isCurrentPhase(PHASE.NETTOYAGE), 'NETTOYAGE');
-	}, time+=2100);
-	setTimeout(function () {
-		assert.ok(game.pm.isCurrentPhase(PHASE.DEGAGEMENT), 'DEGAGEMENT');
-	}, time+=2100);
-});
-*/
+	service.valid(game, player1);
+	service.valid(game, player2);
+	assert.ok(game.handler.getLastSend()[0].type == GameEvent.CHANGE_PHASE, 'on passe en phase qui commence ?');
+	assert.ok(game.handler.getLastSend()[1].type == GameEvent.WHO_BEGIN, 'qui commence');
+	assert.ok(game.handler.getLastSend()[2].type == GameEvent.CHANGE_PHASE, 'on passe à la phase dégagement');
+	assert.ok(game.handler.getLastSend()[3].type == GameEvent.CHANGE_PHASE, 'on passe à la phase entretient');
+	assert.ok(game.handler.getLastSend()[4].type == GameEvent.CHANGE_PHASE, 'on passe à la phase pioche');
+	assert.ok(game.handler.getLastSend()[5].type == GameEvent.CHANGE_PHASE, 'on passe à la phase principale');
+	assert.ok(game.handler.getLastSend().length == 6, 'on est en attente d\'action du joueur principal');
 
+	service.valid(game, game.getPlayerWithToken());
+	service.valid(game, game.getPlayerWithToken());
+	assert.ok(game.handler.getLastSend()[0].type == GameEvent.NEXT_TOKEN, 'on passe le token à l\'autre joueur');
+	assert.ok(game.handler.getLastSend()[1].type == GameEvent.CHANGE_PHASE, 'on passe à la phase déclaration des attaquants');
+	assert.ok(game.handler.getLastSend()[2].type == GameEvent.CHANGE_PHASE && game.handler.getLastSend()[2].data == PHASE.DECLARATION_BLOQUEUR, 'on passe à la phase de déclaration des bloqueurs');
+	assert.ok(game.handler.getLastSend()[3].type == GameEvent.CHANGE_PHASE && game.handler.getLastSend()[3].data == PHASE.ATTRIBUTION_BLESSURE, 'on passe à la phase de attribution des blessures');
+	assert.ok(game.handler.getLastSend()[4].type == GameEvent.RESTAURE_BLOQUEURS, 'on passe à la restauration des bloqueurs');
+	assert.ok(game.handler.getLastSend()[5].type == GameEvent.CHANGE_PHASE && game.handler.getLastSend()[5].data == PHASE.PRINCIPALE, 'on passe à la 2nd phase principale');
+	
+	service.valid(game, game.getPlayerWithToken());
+	assert.ok(game.handler.getLastSend()[0].type == GameEvent.NEXT_TOKEN, 'on passe le token à l\'autre joueur');
+	assert.ok(game.handler.getLastSend()[1].type == GameEvent.CHANGE_PHASE && game.handler.getLastSend()[1].data == PHASE.FIN, 'on passe à la phase de fin');
+	assert.ok(game.handler.getLastSend()[2].type == GameEvent.CHANGE_PHASE && game.handler.getLastSend()[2].data == PHASE.NETTOYAGE, 'on passe à la phase de nettoyage');
+	
+});
+
+/*
 QUnit.test('Test Pile', function(assert) {
 	var game = new Game();
 	var stack = new Stack();
@@ -86,7 +61,7 @@ QUnit.test('Test Pile', function(assert) {
 	stack.resolve(game);
 	assert.ok(game.players[0].name=='lolo', 'lala est lolo');
 });
-
+*/
 function createPlayer(name) {
 	var player = new Player();
 	player.name = name;
@@ -116,7 +91,7 @@ var cardCreature = {
 		vigilance : false,
 		capacities : [{
 			mana : [0,0,0,0,0,0],
-			action : "alert('test'+ this.card.force)",
+			action : "alert('test1'+ this.card.force)",
 			trigger : 14//GameEvent.ON_ENTER_BATTLEFIELD
 		}]
 };
@@ -134,7 +109,7 @@ var cardEphemere = {
 		vigilance : false,
 		capacities : [{
 			mana : [1,0,0,0,0,0],
-			action : "alert('test');ctx.game.players[0].name='lolo'",
+			action : "alert('test2');ctx.game.players[0].name='lolo'",
 			cible : null
 		}]
 };

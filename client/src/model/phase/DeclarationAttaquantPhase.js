@@ -13,7 +13,7 @@ DeclarationAttaquantPhase.prototype.execute = function() {
 		return false;
 	});
 	if(passDeclare) {
-		setTimeout(this.nextFin.bind(this), Duration.DECLARATION_ATTAQUANT);
+		return PHASE.DECLARATION_BLOQUEUR;
 	}
 	return PHASE.WAIT;
 };
@@ -27,26 +27,14 @@ DeclarationAttaquantPhase.prototype.valid = function(player) {
 			//on a des attaquants on va les bloquer
 			if(this.pm.game.getPlayerActif().attaquants.length>0) {
 				this.pm.game.nextToken();
-				this.pm._next = PHASE.DECLARATION_BLOQUEUR;
-				return true;
+				return PHASE.DECLARATION_BLOQUEUR;
 			}
 			else {
-				this.pm._next = PHASE.FIN;
-				return true;	
+				return PHASE.FIN;	
 			}
 		}
 	}
-	return false;
-};
-
-DeclarationAttaquantPhase.prototype.nextFin = function() {
-	this.pm._next = PHASE.FIN;
-	this.pm.next();
-};
-
-DeclarationAttaquantPhase.prototype.next = function() {
-	this.pm._next = PHASE.DECLARATION_BLOQUEUR;
-	this.pm.next();
+	return PHASE.WAIT;
 };
 
 DeclarationAttaquantPhase.prototype.end = function() {

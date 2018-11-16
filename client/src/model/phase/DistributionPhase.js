@@ -11,25 +11,18 @@ DistributionPhase.prototype.execute = function() {
 			player.hand.push(card);
 		}
 	}
-	var event = {};
-	event.type = GameEvent.DISTRIBUTION;
-	for(var i=0;i<this.pm.game.players.length;i++) {
-		event.data = this.pm.game.players[i];
-		this.pm.game.players[i].notify(event);
-	} 
+	sendEvent(GameEvent.DISTRIBUTION,this.pm.game.players,this.pm.game);
 	return PHASE.WAIT;
 };
 
 DistributionPhase.prototype.valid = function(player) {
-	var event = {};
 	player.doneDistrib = true;
 	for (var i = 0; i < this.pm.game.players.length; i++) {
 		if (!this.pm.game.players[i].doneDistrib) {
-			return false;
+			return PHASE.WAIT;
 		}
 	}
-	this.pm._next = PHASE.WHO_BEGINS;
-	return true;
+	return PHASE.WHO_BEGINS;
 };
 
 DistributionPhase.prototype.end = function() {

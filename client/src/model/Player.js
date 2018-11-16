@@ -54,7 +54,7 @@ Player.prototype.degagement = function() {
 Player.prototype.pioche = function() {
 	var card = this.deck.pop();
 	this.hand.push(card);
-	sendEvent(GameEvent.PIOCHE_CARD,{player:this,card:card},this);
+	sendEvent(GameEvent.PIOCHE_CARD,{player:this,card:card},this.game);
 };
 
 Player.prototype.getCardById = function(cardId) {
@@ -213,11 +213,5 @@ Player.prototype.muligane = function() {
 	for(var i=0;i<nbCard;i++) {
 		this.hand.push(this.deck.pop());
 	}
-	event.type = GameEvent.MULIGANE;
-	event.data = {player:this};
-	this.notify(event);
-};
-
-Player.prototype.valid = function() {
-	return this.game.pm.valid(this);
+	sendEvent(GameEvent.MULIGANE,this,this.game);
 };
