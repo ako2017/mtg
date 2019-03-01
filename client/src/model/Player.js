@@ -33,11 +33,16 @@ Player.prototype.canPayMana = function(mana) {
 	return true;
 };
 
+/**
+ * 
+ */
 Player.prototype.payMana = function(mana) {
+	if(!this.canPayMana(mana)) return false;
 	for(var i=0;i<mana.length;i++) {
 		this.mana[i] = this.mana[i] - mana[i];
 	}
 	sendEvent(GameEvent.UPDATE_MANA,this,this);
+	return true;
 };
 
 Player.prototype.degagement = function() {

@@ -3,7 +3,15 @@ AccessHelper = function () {
 };
 
 
-AccessHelper.prototype.canPoseCard = function(game, player,,card, stack) {
+AccessHelper.prototype.canPoseCard = function(game, player,card) {
+	if (!game.isPlayerWithToken(player)) {
+		sendEvent(GameEvent.ERROR,"vous n'avez pas la main",this);
+		return this.error("une carte de ce type est deja dans la pile");;
+	}
+	if (game.stack.needCible()) {
+		sendEvent(GameEvent.ERROR,"cible requise",this);
+		return;
+	}
 	if(card.type == TypeCard.TERRAIN) {
 		if(!game.isPlayerActif(player)) return this.error("vous n'etes pas le joueur actif");
 		if(player.hasPoseTerrain) return this.error("vous ne pouvez poser qu'un terrain par tour");	

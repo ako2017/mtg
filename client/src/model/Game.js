@@ -7,13 +7,13 @@ Game = function() {
 	this.players = [];
 	this.selectedCards = [];
 	this.state;
+	this.maxPlayer = 2;
 };
 
 Game.prototype = new Observable();
 
 Game.prototype.addPlayer = function(player) {
-	if (this.players.length < 2) {
-		player.game = this;
+	if (this.players.length < this.maxPlayer) {
 		this.players.push(player);
 		sendEvent(GameEvent.ADD_PLAYER,player,this);
 		return true;
@@ -22,7 +22,7 @@ Game.prototype.addPlayer = function(player) {
 };
 
 Game.prototype.isFull = function() {
-	return this.players.length == 2;
+	return this.players.length == history.maxPlayer;
 };
 
 Game.prototype.start = function() {
@@ -95,32 +95,6 @@ Game.prototype.valid = function(player) {
 			this.pm.next();
 		}
 	}
-};
-
-Game.prototype.poseCard = function(player, card) {
-	if (this.stack.needCible()) {
-		sendEvent(GameEvent.ERROR,"cible requise",this);
-		return;
-	}
-	if (!this.isPlayerWithToken(player)) {
-		sendEvent(GameEvent.ERROR,"vous n'avez pas la main",this);
-		return;
-	}
-	if (player.poseCard(card, this.stack)) {
-		if (this.stack.needCible()) {
-			event.type = GameEvent.NEED_CIBLE;
-			this.notify(event);
-			this.state = State.NEED_CIBLE;
-		}
-	}
-};
-
-Game.prototype.retirerCard = function(player, card) {
-	player.retirerCard(card);
-};
-
-Game.prototype.muligane = function(player) {
-	player.muligane();		
 };
 
 Game.prototype.declareAttaquant = function(player,card) {
