@@ -1,4 +1,5 @@
 gameState = {
+	view : null,
 	create : function() {
 		this.model = this.createModel();
 		this.createGameView();
@@ -11,11 +12,12 @@ gameState = {
 		return gameModel;
 	},
 	createGameView : function() {
-		var view = new GameView(this.game);
+		view = new GameView(this.game);
 		view.gameModel = this.model;
 		view.gameCtrl = new GameController(this.model);
 		view.gameCtrl.view = view;
-		view.init();
+		view.init(this.model);
+		this.view = view;
 		this.game.add.existing(view);
 	},
 	createPlayer :function(name) {

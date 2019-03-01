@@ -1,21 +1,18 @@
-CardView = function(game, card) {
+CardView = function(game, cardData) {
 	Phaser.Sprite.call(this, game);
-	card.view = this;
 	this.isSelected = false;
-	this.cardModel = card;
-	this.init(card);
+	this.init(cardData);
 };
 
 CardView.prototype = Object.create(Phaser.Sprite.prototype);
 CardView.prototype.constructor = CardView;
 
-CardView.prototype.init = function(card) {
+CardView.prototype.init = function(cardData) {
 	this.back = this.addChild(this.game.make.sprite(0, 0, 'back'));
-	this.front = this.addChild(this.game.make.sprite(0, 0, card.frontPic));
+	this.front = this.addChild(this.game.make.sprite(0, 0, cardData.frontPic));
 	this.front.anchor.setTo(0.5);
 	this.back.anchor.setTo(0.5);
 	this.show(false);
-	this.model = card;
 	this.scale.set(0.5, 0.5);
 };
 

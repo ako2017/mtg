@@ -1,5 +1,4 @@
 CardService = function () {
-	this.style = null;
 };
 
 CardService.prototype.getAvailableCards = function(extensionId) {

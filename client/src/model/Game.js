@@ -15,8 +15,10 @@ Game.prototype.addPlayer = function(player) {
 	if (this.players.length < 2) {
 		player.game = this;
 		this.players.push(player);
-		sendEvent(GameEvent.ADD_PLAYER,"coucou",this);
+		sendEvent(GameEvent.ADD_PLAYER,player,this);
+		return true;
 	}
+	return false;
 };
 
 Game.prototype.isFull = function() {

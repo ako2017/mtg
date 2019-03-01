@@ -11,25 +11,18 @@ NettoyagePhase.prototype.execute = function() {
 	},this);
 	
 	if (this.pm.game.getPlayerWithToken().hand.length > 7) {
-		sendEvent(GameEvent.RETIRER_CARD,null,this.pm);
+		sendEvent(GameEvent.RETIRER_CARD,null,this.pm.game);
 		return PHASE.WAIT;
 	} else {
-		setTimeout(this.next.bind(this), Duration.NETTOYAGE);
-		return PHASE.WAIT;
+		return PHASE.DEGAGEMENT;
 	}
 };
 
 NettoyagePhase.prototype.valid = function(player) {
 	if(this.pm.game.isPlayerActif(player) && player.hand.length <=7) {
-		this.pm._next = PHASE.DEGAGEMENT;
-		return true;
+		return PHASE.DEGAGEMENT;
 	}
-	return false;
-};
-
-NettoyagePhase.prototype.next = function() {
-	this.pm._next = PHASE.DEGAGEMENT;
-	this.pm.next();
+	return PHASE.WAIT;
 };
 
 NettoyagePhase.prototype.end = function() {

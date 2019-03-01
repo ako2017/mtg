@@ -22,6 +22,8 @@ Array.prototype.removeByValues = function(val) {
 	}
 }
 
+UID = 0;
+
 function sendEvent(eventType,data,context) {
 	var event = {};
 	event.type = eventType;
@@ -76,7 +78,8 @@ GameEvent = {
 	PLAYER_LIFE : 23,
 	UPDATE_MANA : 24,
 	RESTAURE_MAL_INVOCATION : 25,
-	ADD_PLAYER : 26
+	ADD_PLAYER : 26,
+	GAME_FULL : 27
 };
 
 const

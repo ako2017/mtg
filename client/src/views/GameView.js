@@ -1,17 +1,17 @@
 GameView = function (game) {
 	Phaser.Group.call(this, game);
 	this.playersView = [];
+	this.test ='tooto';
 };
 
 GameView.prototype = Object.create(Phaser.Group.prototype);
 GameView.prototype.constructor = GameView;
 
-GameView.prototype.init = function() {
+GameView.prototype.init = function(gameModel) {
 	this.back = this.game.make.sprite(0, 0, 'fond');
 	this.back.scale.set(0.5, 0.5);
 	this.addChild(this.back);
-	this.initPlayers(this.gameModel.players);
-	this.registerObserver();
+	this.initPlayers(gameModel.players);
 	this.game.add.text(CONFIG.pilelabel[0], CONFIG.pilelabel[1], 'PILE', { font: '14px Arial Black',fill: '#fff',strokeThickness: 4 });
 	this.game.add.text(CONFIG.cemeterylabel[0][0], CONFIG.cemeterylabel[0][1], 'CEMETERY', {font: '14px Arial Black',fill: '#fff',strokeThickness: 4});
 	this.phaseLabel = this.game.add.text(CONFIG.phase[0], CONFIG.phase[1], '', {font: '14px Arial Black',fill: '#fff',strokeThickness: 4});
@@ -22,19 +22,19 @@ GameView.prototype.init = function() {
 	
 	this.muligageBtn = this.game.add.button(0, 110, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameCtrl.muligane(button.player);},this);
 	this.muligageBtn.text = this.muligageBtn.addChild(this.game.add.text(0, 0, 'muligane', {font: '16px Arial Black'}));
-	this.muligageBtn.player = this.gameModel.players[0];
+	this.muligageBtn.player = gameModel.players[0];
 	
 	this.validBtn = this.game.add.button(380, 270, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameCtrl.valid(button.player);},this);
 	this.validBtn.text = this.validBtn.addChild(this.game.add.text(0, 0, 'valid', {font: '16px Arial Black'}));
-	this.validBtn.player = this.gameModel.players[0];
+	this.validBtn.player = gameModel.players[0];
 	
 	this.muligageBtn2 = this.game.add.button(0, 400, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameCtrl.muligane(button.player);},this);
 	this.muligageBtn2.text = this.muligageBtn2.addChild(this.game.add.text(0, 0, 'muligane', {font: '16px Arial Black'}));
-	this.muligageBtn2.player = this.gameModel.players[1];
+	this.muligageBtn2.player = gameModel.players[1];
 	
 	this.validBtn = this.game.add.button(380, 305, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameCtrl.valid(button.player);},this);
 	this.validBtn.text = this.validBtn.addChild(this.game.add.text(0, 0, 'valid', {font: '16px Arial Black'}));
-	this.validBtn.player = this.gameModel.players[1];
+	this.validBtn.player = gameModel.players[1];
 	
 	this.actionCardGroup = this.game.add.group();
 	this.actionCardGroup.y=300;
@@ -51,12 +51,6 @@ GameView.prototype.init = function() {
 	this.actionCardGroup.engageBtn = this.game.add.button(0, 80, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameCtrl.engage(this.actionCardGroup.player,this.actionCardGroup.card);this.hideActionCard();},this);
 	this.actionCardGroup.engageBtn.text = this.actionCardGroup.engageBtn.addChild(this.game.add.text(0, 0, 'engager', {font: '16px Arial Black'}));
 	this.actionCardGroup.addChild(this.actionCardGroup.engageBtn);
-};
-
-GameView.prototype.registerObserver = function() {
-	this.gameModel.pm.addObserver(this);
-	this.gameModel.stack.addObserver(this);
-	this.gameModel.addObserver(this);
 };
 
 GameView.prototype.hideActionCard = function() {
@@ -124,10 +118,9 @@ GameView.prototype.initPlayers = function(players) {
 			this.playersView[players[i].name].mana[j] = this.game.add.text(j*12, isMe?520:20, '0', {font: '14px Arial Black',fill: '#fff',strokeThickness: 4});			
 		}
 		
-		players[i].addObserver(this);
 		for(var j=0;j<players[i].deck.length;j++) {
-			var card = players[i].deck[j];
-			var cardView = new CardView(this.game, card);
+			var cardData = players[i].deck[j];
+			var cardView = new CardView(this.game, cardData);
 			cardView.ownerView = this.playersView[players[i].name];
 			if(isMe) {
 				cardView.x=CONFIG.deck[0][0];
@@ -142,16 +135,15 @@ GameView.prototype.initPlayers = function(players) {
 			cardView.events.onInputOver.add(cardView.onOver, cardView);
 			cardView.events.onInputOut.add(cardView.onOut, cardView);
 			this.addChild(cardView);
-			card.addObserver(this);
 		}
 	}	
 };
 
-GameView.prototype.distributionAnim = function(player) {
-	var isMe = player.name == "pau";
-	var cards = player.hand;
+GameView.prototype.distributionAnim = function(distributionAnimData) {
+	var isMe = distributionAnimData.name == "pau";
+	var cards = distributionAnimData.hand;
 	for(var j=0;j<cards.length;j++) {
-		var cardView = cards[j].view;
+		var cardView = this.playersView[distributionAnimData.name].getCardById(cards);
 		var posX = 100 + j*80+37;
 		var posY;
 		cardView.slot = j;
@@ -162,12 +154,12 @@ GameView.prototype.distributionAnim = function(player) {
 		cardView.show(true);
 		this.game.add.tween(cardView).to({x: posX,y:posY},1000,Phaser.Easing.Linear.None,true);
 		cardView.slot = j;
-		this.playersView[player.name].hand.push(cardView);
+		this.playersView[distributionAnimData.name].hand.push(cardView);
 	}	
 };
 
-GameView.prototype.muliganeAnim = function(player) {
-	var isMe = player.name == "pau";
+GameView.prototype.muliganeAnim = function(muliganeData) {
+	var isMe = muliganeData.name == "pau";
 	var posY;
 	if(isMe) {
 		posY=this.game.world.height -(208/2)+52;
@@ -175,25 +167,26 @@ GameView.prototype.muliganeAnim = function(player) {
 	else {
 		posY=52;
 	}
-	for(var i=0;i<this.playersView[player.name].hand.length;i++) {
-		this.game.add.tween(this.playersView[player.name].hand[i]).to({x: 37, y:posY},1000,Phaser.Easing.Linear.None,true);
-		this.playersView[player.name].hand[i].show(false);
-		this.playersView[player.name].hand[i] = null;
+	for(var i=0;i<this.playersView[muliganeData.name].hand.length;i++) {
+		this.game.add.tween(this.playersView[muliganeData.name].hand[i]).to({x: 37, y:posY},1000,Phaser.Easing.Linear.None,true);
+		this.playersView[muliganeData.name].hand[i].show(false);
+		this.playersView[muliganeData.name].hand[i] = null;
 	}	
 	setTimeout(function(player){
-		var isMe = player.name == "pau";
+		var isMe = muliganeData.name == "pau";
 		var y = this.game.world.centerY;
 		if(isMe) {
 			y = this.game.world.centerY+52;
 		}
 		else{y = this.game.world.centerY-104+52;}
-		for(var i=0;i<player.hand.length;i++) {
-			this.game.add.tween(player.hand[i].view).to({x: 100+37 + i*80, y:y},1000,Phaser.Easing.Linear.None,true);
-			player.hand[i].view.show(true);
-			player.hand[i].view.slot = i;
-			this.playersView[player.name].hand[i] = player.hand[i].view;
+		for(var i=0;i<muliganeData.cards.length;i++) {
+			var card = player.getCardById(muliganeData.cards[i]);
+			this.game.add.tween(card).to({x: 100+37 + i*80, y:y},1000,Phaser.Easing.Linear.None,true);
+			card.view.show(true);
+			card.slot = i;
+			this.player.hand[i] = card;
 		}
-		}.bind(this,player), 2000);
+		}.bind(this,this.playersView[muliganeData.name]), 2000);
 };
 
 GameView.prototype.moveCard = function(player) {
@@ -369,13 +362,13 @@ GameView.prototype.onReceive = function(event) {
 			this.showPhase(event.data);
 		break;
 		case GameEvent.MULIGANE:
-			this.muliganeAnim(event.data.player);
+			this.muliganeAnim(event.data);
 			break;
 		case GameEvent.WHO_BEGIN:
 			this.muligageBtn.visible = false;
 			this.muligageBtn2.visible = false;
-			this.moveCard(this.gameModel.players[0]);
-			this.moveCard(this.gameModel.players[1]);
+			//this.moveCard(gameModel.players[0]);
+			//this.moveCard(gameModel.players[1]);
 			this.tokenLabel.x=20;
 			this.tokenLabel.y=(event.data.name == 'pau' ? 580:0);
 			this.actifLabel.x=0;

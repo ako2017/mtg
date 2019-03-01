@@ -19,6 +19,7 @@ Card = function (player) {
 	this.blockedBy = null;
 	this.malInvocation = false;
 	this.enduranceCpt = 0;
+	this.uid = UID++;
 };
 
 Card.prototype = Object.create(Observable.prototype);
