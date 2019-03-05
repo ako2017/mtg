@@ -43,11 +43,11 @@ AccessHelper.prototype.canMuligane = function(game, player) {
 	return true;
 };
 
-AccessHelper.prototype.canDeclareAttaquant = function(game, player,card) {
-	if(!this.game.pm.isPhase(PHASE.DECLARATION_ATTAQUANT) || !this.game.isPlayerActif(this)) {
+AccessHelper.prototype.canDeclareAttaquant = function(game, player, card) {
+	if(!game.pm.isPhase(PHASE.DECLARATION_ATTAQUANT) || !game.isPlayerActif(this)) {
 		return this.error("vous ne pouvez pas faire cette action");
 	}
-	if(card.canAttaque()) {
+	if(!card.canAttaque()) {
 		return this.error("vous ne pouvez pas attaquer avec cette carte");
 	}
 	return true;
@@ -69,6 +69,7 @@ AccessHelper.prototype.canDeclareBloqueur = function(game, bloqueur,attaquant) {
 };
 
 AccessHelper.prototype.canEngage = function(game, player, card) {
+	
 	if(game.isPlayerActif(player) && card.type == TypeCard.TERRAIN) {
 		return true;
 	}
