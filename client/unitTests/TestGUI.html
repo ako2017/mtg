@@ -44,7 +44,7 @@
 				var gameSize;
 
 				game = new Phaser.Game(800,600, Phaser.CANVAS, "game-area");
-				
+				gameState = new GameState();
 				game.state.add("Preload",preloadState);
 				game.state.add("MainMenu",mainMenuState);
 				game.state.add("Game",gameState);
