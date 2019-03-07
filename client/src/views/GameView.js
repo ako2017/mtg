@@ -1,5 +1,6 @@
 class GameView extends Phaser.Group {
-	constructor() {
+	constructor(game) {
+		super(game);
 		this.playersView = [];
 		this.myName ='pau';
 		this.game.add.sprite(0, 0, 'logo');
@@ -101,21 +102,30 @@ class GameView extends Phaser.Group {
 			text = 'bloqueur';
 		}
 		this.actionCardGroup.attaquantBtn.text.text = text;
-		this.actionCardGroup.card = cardView.cardModel;
+		this.actionCardGroup.card = cardView;
 		this.actionCardGroup.visible=true;
 	}
 	
+	/**
+	 * Pour chaque joueur on construit sa vue (représentation physique)
+	 * @param {*} playersData 
+	 */
 	initPlayers(players) {
 		for(var i=0;i<players.length;i++) {
 			this.playersView[players[i].name] = {hand:[],terrains:[],battlefield:[],mana:[]}
-			var isMe = players[i].name == "pau";
 			
-			this.playersView[players[i].name].phaseLabel = this.game.add.text(0, isMe?500:0, players[i].life, {font: '14px Arial Black',fill: '#fff',strokeThickness: 4});
+			// on vérifie si c'est nous le joueur que l'on traite (l'affichage des carte sera différent)
+			var isMe = players[i].name == this.myName;
 			
+			// création du label de vie du joueur
+			this.playersView[players[i].name].lifeLabel = this.game.add.text(0, isMe?500:0, players[i].life, {font: '14px Arial Black',fill: '#fff',strokeThickness: 4});
+			
+			//création des labels pour les 5 valeurs de mana
 			for(var j=0;j<5;j++) {
-				this.playersView[players[i].name].mana[j] = this.game.add.text(j*12, isMe?520:20, '0', {font: '14px Arial Black',fill: '#fff',strokeThickness: 4});			
+				this.playersView[players[i].name].manaLabel[j] = this.game.add.text(j*12, isMe?520:20, '0', {font: '14px Arial Black',fill: '#fff',strokeThickness: 4});			
 			}
 			
+			// on contruit le deck du joueur
 			for(var j=0;j<players[i].deck.length;j++) {
 				var cardData = players[i].deck[j];
 				var cardView = new CardView(this.game, cardData);
@@ -254,14 +264,14 @@ class GameView extends Phaser.Group {
 		this.game.add.tween(card.view).to({y:posY,x:100+37+80*slot},1000,Phaser.Easing.Linear.None,true);
 	}
 	
-	function getFreeSlot(tab) {
+	getFreeSlot(tab) {
 		for(var i=0;i<tab.length;i++) {
 			if(tab[i] == null) return i;
 		}
 		return tab.length;
 	}
 	
-	function removeSlot(tab,value) {
+	removeSlot(tab,value) {
 		for(var i=0;i<tab.length;i++) {
 			if(tab[i] == value) {
 				tab[i] = null;
@@ -270,7 +280,7 @@ class GameView extends Phaser.Group {
 		}
 	}
 	
-	function removePlayerSlot(player,value) {
+	removePlayerSlot(player,value) {
 		for(var i=0;i<player.hand.length;i++) {
 			if(player.hand[i] == value) {
 				player.hand[i] = null;

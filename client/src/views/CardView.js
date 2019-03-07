@@ -1,3 +1,6 @@
+/**
+ * Repésente l'aspect visuel d'une carte
+ */
 class CardView extends Phaser.Sprite {
 
 	constructor(game, cardData) {
