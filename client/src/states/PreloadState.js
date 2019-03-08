@@ -1,13 +1,8 @@
 preloadState = {
 	preload: function(){ 
 		this.game.plugins.add(PhaserInput.Plugin);
-		var cards = [];
-		cards.push(cardCreature);
-		cards.push(cardEphemere);
-		cards.push(cardEphemere2);
-		cards.push(island);
-		for(var i=0;i<cards.length;i++) {
-			this.game.load.image(cards[i].extension + '#' + cards[i].numero, 'assets/extensions/'+cards[i].extension+'/'+addzeros(cards[i].numero,3)+'.png');
+		for(var i=0;i<cardBdd.length;i++) {
+			this.game.load.image(cardBdd[i].extension + '#' + cardBdd[i].numero, 'assets/extensions/'+cardBdd[i].extension+'/'+addzeros(cardBdd[i].numero,3)+'.png');
 		}
 		this.game.load.image('back', 'assets/back.png');
 		this.game.load.image('avatar1', 'assets/avatar1.jpg');

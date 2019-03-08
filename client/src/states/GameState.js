@@ -56,27 +56,7 @@ class GameState {
 	}
 */
 
-CONFIG = {
-		pilelabel : [0,180],
-		pile : [37,248],
-		deck : [[37,548],[37,52]],
-		cemeterylabel : [[705,480],[705,0]],
-		cemetery : [[725,496],[725,0]],
-		phase : [680,280],
-		error : [0,120]
-}
 
-/*
-CONFIG = {
-		pilelabel : [0,180],
-		pile : [0,196],
-		deck : [[0,496],[0,0]],
-		cemeterylabel : [[705,480],[705,0]],
-		cemetery : [[725,496],[725,0]],
-		phase : [680,280],
-		error : [0,120]
-}
-*/
 phaseMapping = [];
 
 phaseMapping[PHASE.DISTRIBUTION] ="DISTRIBUTION";

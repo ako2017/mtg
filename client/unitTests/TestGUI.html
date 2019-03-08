@@ -11,6 +11,8 @@
 				<script src="../src/model/Constantes.js"></script>
 				<script src="../src/views/CardView.js"></script>
 				<script src="../src/views/GameView.js"></script>
+				<script src="../src/views/PlayerView.js"></script>
+				<script src="../src/views/CardBDD.js"></script>
 	
 				<script src="../src/controller/GameController.js"></script>
 				
@@ -35,27 +37,34 @@
 					var playersData = [
 						{
 							name : 'p1',
-							deck : [{uid:1,id:1},{uid:1,id:1},{uid:1,id:1},{uid:1,id:1},{uid:1,id:1}]
+							deck : [{uid:1,id:1},{uid:2,id:1},{uid:3,id:1},{uid:4,id:1},{uid:5,id:1}]
 						},
 						{
 							name : 'p2',
-							deck : [{uid:1,id:1},{uid:1,id:1},{uid:1,id:1},{uid:1,id:1},{uid:1,id:1}]
+							deck : [{uid:6,id:2},{uid:7,id:2},{uid:8,id:2},{uid:9,id:2},{uid:10,id:2}]
 						}
 					]
 
+					function initPlayers() {
+						gameState.view.myName = 'p1';
+						gameState.view.initPlayers(playersData);
+					}	
+
 					function distribution() {
+						gameState.view.myName = 'p1';
+						//gameState.view.initPlayers(playersData);
 						var event = {
 							type : GameEvent.DISTRIBUTION, 
-							data : {
-							players : [{
-									name : 'pau',
-									hand:[0,1,2,4,5]
+							data : [
+								{
+									name : 'p1',
+									hand:[1,2]
 								},
 								{
-									name : 'lala',
-									hand:[0,1,2,4,5]
+									name : 'p2',
+									hand:[6,7]
 								}
-							]}};
+							]};
 						gameState.view.onReceive(event);
 					}			
 					
@@ -73,10 +82,11 @@
     </head> 
 
     <body bgcolor="grey">
-		<div id="game-area"></div>
-		<a onClick ="distribution();" href="#">01-TEST DISTRIBUTION</a><br/>
-		<a onClick ="muligane();" href="#">02-TEST MULIGANE</a><br/>
-		<a onClick ="whoBegin();" href="#">03-WHO BEGIN</a><br/>
+			<div id="game-area"></div>
+			<a onClick ="initPlayers();" href="#">01-TEST INIT</a><br/>
+			<a onClick ="distribution();" href="#">01-TEST DISTRIBUTION</a><br/>
+			<a onClick ="muligane();" href="#">02-TEST MULIGANE</a><br/>
+			<a onClick ="whoBegin();" href="#">03-WHO BEGIN</a><br/>
     </body>
 
 </html>

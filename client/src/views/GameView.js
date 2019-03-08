@@ -1,9 +1,19 @@
+CONFIG = {
+	pilelabel : [0,180],
+	pile : [37,248],
+	deck : [[37,548],[37,52]],
+	cemeterylabel : [[705,480],[705,0]],
+	cemetery : [[725,496],[725,0]],
+	phase : [680,280],
+	error : [0,120]
+}
+
 class GameView extends Phaser.Group {
 	constructor(game) {
 		super(game);
 		this.playersView = [];
 		this.myName ='pau';
-		this.game.add.sprite(0, 0, 'logo');
+		//this.game.add.sprite(0, 0, 'logo');
 	}
 
 	init(gameModel) {
@@ -112,11 +122,11 @@ class GameView extends Phaser.Group {
 	 */
 	initPlayers(players) {
 		for(var i=0;i<players.length;i++) {
-			this.playersView[players[i].name] = {hand:[],terrains:[],battlefield:[],mana:[]}
+			this.playersView[players[i].name] = new PlayerView();
 			
 			// on vérifie si c'est nous le joueur que l'on traite (l'affichage des carte sera différent)
 			var isMe = players[i].name == this.myName;
-			
+
 			// création du label de vie du joueur
 			this.playersView[players[i].name].lifeLabel = this.game.add.text(0, isMe?500:0, players[i].life, {font: '14px Arial Black',fill: '#fff',strokeThickness: 4});
 			
@@ -128,8 +138,9 @@ class GameView extends Phaser.Group {
 			// on contruit le deck du joueur
 			for(var j=0;j<players[i].deck.length;j++) {
 				var cardData = players[i].deck[j];
-				var cardView = new CardView(this.game, cardData);
-				cardView.ownerView = this.playersView[players[i].name];
+				var cardView = new CardView(this.game, cardTable[cardData.id],cardData.uid, this);
+				this.playersView[players[i].name].deck.push(cardView);
+
 				if(isMe) {
 					cardView.x=CONFIG.deck[0][0];
 					cardView.y=CONFIG.deck[0][1];
@@ -139,7 +150,7 @@ class GameView extends Phaser.Group {
 					cardView.y=CONFIG.deck[1][1];
 				}
 				cardView.inputEnabled = true;
-				cardView.events.onInputUp.add(cardView.onClick, this);
+				cardView.events.onInputUp.add(cardView.onClick, cardView);
 				cardView.events.onInputOver.add(cardView.onOver, cardView);
 				cardView.events.onInputOut.add(cardView.onOut, cardView);
 				this.addChild(cardView);
@@ -148,22 +159,31 @@ class GameView extends Phaser.Group {
 	}
 	
 	distributionAnim(distributionAnimData) {
-		var isMe = distributionAnimData.name == this.myName;
-		var cards = distributionAnimData.hand;
-		for(var j=0;j<cards.length;j++) {
-			var cardView = this.playersView[distributionAnimData.name].getCardById(cards);
-			var posX = 100 + j*80+37;
-			var posY;
-			cardView.slot = j;
-			if(isMe) {
-				posY = this.game.world.centerY+52;
-			}
-			else{posY = this.game.world.centerY-104+52;}
-			cardView.show(true);
-			this.game.add.tween(cardView).to({x: posX,y:posY},1000,Phaser.Easing.Linear.None,true);
-			cardView.slot = j;
-			this.playersView[distributionAnimData.name].hand.push(cardView);
-		}	
+		for(var i=0;i<distributionAnimData.length;i++) {
+			console.log('distribution pour joueur : ' + distributionAnimData[i].name);
+			var isMe = distributionAnimData[i].name == this.myName;
+			var cards = distributionAnimData[i].hand;	
+			for(var j=0;j<cards.length;j++) {
+				var cardView = this.playersView[distributionAnimData[i].name].getCardById(cards[j]);
+				this.playersView[distributionAnimData[i].name].deck.removeByValue(cardView);
+				console.log('deck'+this.playersView[distributionAnimData[i].name].deck.length)
+				var posX = 100 + j*80+37;
+				var posY;
+				cardView.slot = j;
+				if(isMe) {
+					//console.log('ma carte : ');
+					posY = this.game.world.centerY+52;
+					cardView.show(true);
+				}
+				else{
+					//console.log('sa carte : ');
+					posY = this.game.world.centerY-104;
+					
+				}
+				this.game.add.tween(cardView).to({x: posX,y:posY},1000,Phaser.Easing.Linear.None,true);
+				this.playersView[distributionAnimData[i].name].hand.push(cardView);
+			}	
+		}
 	}
 	
 	muliganeAnim(muliganeData) {
