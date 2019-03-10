@@ -47,12 +47,11 @@
 
 					function initPlayers() {
 						gameState.view.myName = 'p1';
+						gameState.view.init();
 						gameState.view.initPlayers(playersData);
 					}	
 
 					function distribution() {
-						gameState.view.myName = 'p1';
-						//gameState.view.initPlayers(playersData);
 						var event = {
 							type : GameEvent.DISTRIBUTION, 
 							data : [
@@ -66,17 +65,153 @@
 								}
 							]};
 						gameState.view.onReceive(event);
-					}			
+					}	
 					
-					function muligane() {
-						var event = {type : GameEvent.MULIGANE, data : {name : 'pau',cards:[0,1,2,4,5]}};
+					function distributionTest() {
+						this.initPlayers();
+						var event = {
+							type : GameEvent.DISTRIBUTION, 
+							data : [
+								{
+									name : 'p1',
+									hand:[1,2]
+								},
+								{
+									name : 'p2',
+									hand:[6,7]
+								}
+							]};
+						gameState.view.onReceive(event);
+					}	
+					
+					function muliganeValid(playerName) {
+						var event = {type : GameEvent.MULIGANE_VALID, data : {name : playerName}};
 						gameState.view.onReceive(event);
 					}
-					
-					function whoBegin() {
-						var event = {type : GameEvent.WHO_BEGIN, data : {name : 'pau'}};
+
+					function muliganeValidTest() {
+						this.initPlayers();
+						this.distribution();
+						var event = {type : GameEvent.MULIGANE_VALID, data : {name : 'p1'}};
 						gameState.view.onReceive(event);
-						
+					}
+
+					function muligane() {
+						var event = {type : GameEvent.MULIGANE, data : {name : 'p1',cards:[1]}};
+						gameState.view.onReceive(event);
+					}
+				
+					function muliganeTest() {
+						this.initPlayers();
+						this.distribution();
+						var event = {type : GameEvent.MULIGANE, data : {name : 'p1',cards:[1]}};
+						gameState.view.onReceive(event);
+					}
+
+					function whoBegin() {
+						var event = {type : GameEvent.WHO_BEGIN, data : {name : 'p1'}};
+						gameState.view.onReceive(event);		
+					}
+
+					function whoBeginTest() {
+						this.initPlayers();
+						var event = {type : GameEvent.WHO_BEGIN, data : {name : 'p1'}};
+						gameState.view.onReceive(event);		
+					}
+
+					function changePhase() {
+						var event = {type : GameEvent.CHANGE_PHASE, data : {phase : 2}};
+						gameState.view.onReceive(event);		
+					}
+
+					function changePhaseTest() {
+						this.initPlayers();
+						var event = {type : GameEvent.CHANGE_PHASE, data : {phase : 2}};
+						gameState.view.onReceive(event);		
+					}
+
+					function poseTerrain() {
+						var event = {type : GameEvent.POSE_TERRAIN, data : {name : 'p1', card : 2}};
+						gameState.view.onReceive(event);		
+					}
+
+					function poseTerrainTest() {
+						//GIVEN
+						this.initPlayers();
+						this.distribution();
+						this.muliganeValid('p1');
+						//WHEN
+						var event = {type : GameEvent.POSE_TERRAIN, data : {name : 'p1', card : 2}};
+						gameState.view.onReceive(event);		
+					}
+
+					function errorAnimTest() {
+						this.initPlayers();
+						var event = {type : GameEvent.ERROR, data : {error:'test affichage error'}};
+						gameState.view.onReceive(event);
+					}
+
+					function stackAnim() {
+						var event = {type : GameEvent.STACK_CARD, data : {name : 'p1', card : 2}};
+						gameState.view.onReceive(event);		
+					}
+
+					function stackAnimTest() {
+						//GIVEN
+						this.initPlayers();
+						this.distribution();
+						this.muliganeValid('p1');
+						//WHEN
+						var event = {type : GameEvent.STACK_CARD, data : {name : 'p1', card : 1}};
+						gameState.view.onReceive(event);		
+					}
+
+					function enterBattlefield(playerName, cardId) {
+						var event = {type : GameEvent.ENTER_BATTLEFIELD, data : {name : playerName, card : cardId}};
+						gameState.view.onReceive(event);		
+					}
+
+					function enterBattlefieldTest() {
+						//GIVEN
+						this.initPlayers();
+						this.distribution();
+						this.muliganeValid('p1');
+						//WHEN
+						var event = {type : GameEvent.ENTER_BATTLEFIELD, data : {name : 'p1', card : 2, malInvocation : true}};
+						gameState.view.onReceive(event);		
+					}
+
+					function piocheCard() {
+						var event = {type : GameEvent.PIOCHE_CARD, data : {name : 'p1', card : 3}};
+						gameState.view.onReceive(event);		
+					}
+
+					function piocheCardTest() {
+						//GIVEN
+						this.initPlayers();
+						this.distribution();
+						this.muliganeValid('p1');
+						//WHEN
+						var event = {type : GameEvent.PIOCHE_CARD, data : {name : 'p1', card : 3}};
+						gameState.view.onReceive(event);		
+					}
+
+					function attack() {
+						var event = {type : GameEvent.ENTER_BATTLEFIELD, data : {name : 'p1', card : 2}};
+						gameState.view.onReceive(event);		
+					}
+
+					function attackTest() {
+						//GIVEN
+						this.initPlayers();
+						this.distribution();
+						this.muliganeValid('p1');
+						this.muliganeValid('p2');
+						this.enterBattlefield('p1',2);
+						this.enterBattlefield('p2',6);
+						//WHEN
+						var event = {type : GameEvent.ATTACK, data : {nameA : 'p1',nameB:'p2', cardA : 2, cardB : 6}};
+						gameState.view.onReceive(event);		
 					}
 				</script>
     </head> 
@@ -84,9 +219,17 @@
     <body bgcolor="grey">
 			<div id="game-area"></div>
 			<a onClick ="initPlayers();" href="#">01-TEST INIT</a><br/>
-			<a onClick ="distribution();" href="#">01-TEST DISTRIBUTION</a><br/>
-			<a onClick ="muligane();" href="#">02-TEST MULIGANE</a><br/>
-			<a onClick ="whoBegin();" href="#">03-WHO BEGIN</a><br/>
+			<a onClick ="distributionTest();" href="#">02-TEST DISTRIBUTION</a><br/>
+			<a onClick ="muliganeValidTest();" href="#">03-TEST MULIGANE VALID</a><br/>
+			<a onClick ="muliganeTest();" href="#">04-TEST MULIGANE</a><br/>
+			<a onClick ="whoBeginTest();" href="#">05-WHO BEGIN</a><br/>
+			<a onClick ="changePhaseTest();" href="#">06-CHANGE PHASE</a><br/>
+			<a onClick ="poseTerrainTest();" href="#">07-POSE TERRAIN</a><br/>
+			<a onClick ="errorAnimTest();" href="#">08-ERROR</a><br/>
+			<a onClick ="stackAnimTest();" href="#">09-STACK</a><br/>
+			<a onClick ="enterBattlefieldTest();" href="#">10-ENTER BATTLEFIELD</a><br/>
+			<a onClick ="piocheCardTest();" href="#">11-PIOCHE CARD</a><br/>
+			<a onClick ="attackTest();" href="#">12-ATTACK</a><br/>
     </body>
 
 </html>

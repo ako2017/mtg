@@ -44,14 +44,14 @@ class CardView extends Phaser.Sprite {
 	 * @param {CardView} cardView la carte cliquée
 	 */
 	onClick() {
-		this.gameView.unselectAllCards(this.owner.hand);
+	/*	this.gameView.unselectAllCards(this.owner.hand);
 		this.isSelected = !this.isSelected;
 		if(!this.isSelected) {
 			this.gameView.hideActionCard();
 		}
 		else {
 			this.gameView.showActionCard(this);
-		}
+		}*/
 	}
 
 	onOver() {

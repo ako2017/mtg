@@ -9,14 +9,26 @@ class PlayerView {
 		this.manaLabel = [];
 	}
 
-	getCardById(cardId) {
-		for(var i=0;i<this.deck.length;i++) {
-			if(this.deck[i].uid == cardId) {
-				return this.deck[i];
+	getCardById(cards,cardId) {
+		for(var i=0;i<cards.length;i++) {
+			if(cards[i].uid == cardId) {
+				return cards[i];
 			}
 				
 		}
 		return null;
+	}
+
+	getDeckById(cardId) {
+		return this.getCardById(this.deck, cardId);
+	}
+
+	getHandById(cardId) {
+		return this.getCardById(this.hand, cardId);
+	}
+
+	getBattlefieldById(cardId) {
+		return this.getCardById(this.battlefield, cardId);
 	}
 
 }

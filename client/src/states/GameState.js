@@ -56,21 +56,6 @@ class GameState {
 	}
 */
 
-
-phaseMapping = [];
-
-phaseMapping[PHASE.DISTRIBUTION] ="DISTRIBUTION";
-phaseMapping[PHASE.WHO_BEGINS] = "WHO_BEGINS";
-phaseMapping[PHASE.DEGAGEMENT] = "DEGAGEMENT";
-phaseMapping[PHASE.ENTRETIENT] = "ENTRETIENT";
-phaseMapping[PHASE.PIOCHE] = "PIOCHE";
-phaseMapping[PHASE.PRINCIPALE] = "PRINCIPALE";
-phaseMapping[PHASE.DECLARATION_ATTAQUANT] = "DECLARATION\nATTAQUANT";
-phaseMapping[PHASE.DECLARATION_BLOQUEUR] = "DECLARATION\nBLOQUEUR";
-phaseMapping[PHASE.ATTRIBUTION_BLESSURE] = "ATTRIBUTION\nBLESSURE";
-phaseMapping[PHASE.FIN] = "FIN";
-phaseMapping[PHASE.NETTOYAGE] = "NETTOYAGE";
-
 var cardCreature = {
 		extension : 0,
 		numero : 1,
