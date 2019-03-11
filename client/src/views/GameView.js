@@ -46,6 +46,7 @@ class GameView extends Phaser.Group {
 		this.tokenLabel = this.game.add.image(800, 0, this.game.cache.getBitmapData('token'));
 		this.actifLabel = this.game.add.image(800, 0, this.game.cache.getBitmapData('actif'));
 		this.bandeau = this.game.add.image(0, 295, this.game.cache.getBitmapData('bandeau'));
+
 		/*
 		this.muligageBtn = this.game.add.button(0, 110, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameCtrl.muligane(button.player);},this);
 		this.muligageBtn.text = this.muligageBtn.addChild(this.game.add.text(0, 0, 'muligane', {font: '16px Arial Black'}));
@@ -349,8 +350,23 @@ class GameView extends Phaser.Group {
 		this.game.add.tween(card.view).to({y:posY,x:posX},1000,Phaser.Easing.Linear.None,true);
 	}
 	
-	declareBloqueurAnim(card) {
-		this.game.add.tween(card.blockedBy.view).to({y:300,x:100+37+80*card.view.slot},1000,Phaser.Easing.Linear.None,true);
+	declareBloqueurAnim(declareBloqueurAnim) {
+		this.lockAnimation();
+		var cardA = this.playersView[declareBloqueurAnim.nameA].getBattlefieldById(declareBloqueurAnim.cardA);
+		var cardB = this.playersView[declareBloqueurAnim.nameB].getBattlefieldById(declareBloqueurAnim.cardB);
+
+		var dist = Phaser.Math.distance(cardA.x, cardA.y,cardB.x, cardB.y);
+		var deg = Phaser.Math.radToDeg(Phaser.Math.angleBetween(cardA.x, cardA.y,cardB.x, cardB.y));
+		var line = this.game.add.tileSprite(cardA.x, cardA.y, dist, 5, 'line');
+		line.angle = deg;
+		this.unlockAnimation(1);
+	}
+
+	declareAttaquantAnim(declareAttaquantAnim)
+	{
+		this.lockAnimation();
+		this.game.add.tween(this.playersView[declareAttaquantAnim.name].getBattlefieldById(declareAttaquantAnim.card)).to({angle:90},500,Phaser.Easing.Linear.None,true);
+		this.unlockAnimation(1);
 	}
 	
 	restaureBloqueurAnim(playerName) {
@@ -428,6 +444,14 @@ class GameView extends Phaser.Group {
 		.to({ y: cardB.y }, 1000, Phaser.Easing.Linear.None,true)
 		this.unlockAnimation(5);
 	}
+
+	nextTokenAnim(nextTokenAnimData) {
+		this.tokenLabel.y=(nextTokenAnimData.name == this.myName ? 580:0);
+	}
+
+	nextPlayerAnim(nextPlayerAnimData) {
+		this.actifLabel.y=(event.data.name == this.myName ? 580:0);
+	}
 	
 	onReceive(event) {
 		this.events.push(event);
@@ -471,11 +495,14 @@ class GameView extends Phaser.Group {
 			case GameEvent.DECLARE_BLOQUEUR:
 				this.declareBloqueurAnim(event.data);
 				break;
+			case GameEvent.DECLARE_ATTAQUANT:
+				this.declareAttaquantAnim(event.data);
+				break;
 			case GameEvent.NEXT_TOKEN:
-				this.tokenLabel.y=(event.data.name == 'pau' ? 580:0);
+				this.nextTokenAnim(event.data);
 				break;
 			case GameEvent.NEXT_PLAYER:
-				this.actifLabel.y=(event.data.name == 'pau' ? 580:0);
+				this.nextPlayerAnim(event.data);
 				break;
 			case GameEvent.GOTO_CEMETERY:
 				this.gotoCemeteryAnim(event.data);

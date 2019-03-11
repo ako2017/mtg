@@ -82,7 +82,8 @@ GameEvent = {
 	ADD_PLAYER : 26,
 	GAME_FULL : 27,
 	MULIGANE_VALID : 28,
-	ATTACK : 29
+	ATTACK : 29,
+	DECLARE_ATTAQUANT : 30
 };
 
 const

@@ -7,6 +7,7 @@ preloadState = {
 		this.game.load.image('back', 'assets/back.png');
 		this.game.load.image('avatar1', 'assets/avatar1.jpg');
 		this.game.load.image('avatar2', 'assets/avatar2.jpg');
+		this.game.load.image('line', 'assets/line.png');
 		this.game.load.image('titleBg', 'assets/bg.jpg');
 		this.game.load.image('logo', 'assets/logo-magic.png');
 		this.game.load.image('fond', 'assets/fond.jpg');

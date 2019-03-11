@@ -119,30 +119,26 @@
 						gameState.view.onReceive(event);		
 					}
 
-					function changePhase() {
-						var event = {type : GameEvent.CHANGE_PHASE, data : {phase : 2}};
+					function changePhase(phaseId) {
+						var event = {type : GameEvent.CHANGE_PHASE, data : {phase : phaseId}};
 						gameState.view.onReceive(event);		
 					}
 
 					function changePhaseTest() {
 						this.initPlayers();
-						var event = {type : GameEvent.CHANGE_PHASE, data : {phase : 2}};
-						gameState.view.onReceive(event);		
+						this.changePhase(2);
 					}
 
-					function poseTerrain() {
-						var event = {type : GameEvent.POSE_TERRAIN, data : {name : 'p1', card : 2}};
+					function poseTerrain(playerName, cardId) {
+						var event = {type : GameEvent.POSE_TERRAIN, data : {name : playerName, card : cardId}};
 						gameState.view.onReceive(event);		
 					}
 
 					function poseTerrainTest() {
-						//GIVEN
 						this.initPlayers();
 						this.distribution();
 						this.muliganeValid('p1');
-						//WHEN
-						var event = {type : GameEvent.POSE_TERRAIN, data : {name : 'p1', card : 2}};
-						gameState.view.onReceive(event);		
+						this.poseTerrain('p1', 2);		
 					}
 
 					function errorAnimTest() {
@@ -151,19 +147,16 @@
 						gameState.view.onReceive(event);
 					}
 
-					function stackAnim() {
-						var event = {type : GameEvent.STACK_CARD, data : {name : 'p1', card : 2}};
+					function stackAnim(playerName, cardId) {
+						var event = {type : GameEvent.STACK_CARD, data : {name : playerName, card : cardId}};
 						gameState.view.onReceive(event);		
 					}
 
 					function stackAnimTest() {
-						//GIVEN
 						this.initPlayers();
 						this.distribution();
 						this.muliganeValid('p1');
-						//WHEN
-						var event = {type : GameEvent.STACK_CARD, data : {name : 'p1', card : 1}};
-						gameState.view.onReceive(event);		
+						this.stackAnim('p1', 1);
 					}
 
 					function enterBattlefield(playerName, cardId) {
@@ -181,37 +174,66 @@
 						gameState.view.onReceive(event);		
 					}
 
-					function piocheCard() {
-						var event = {type : GameEvent.PIOCHE_CARD, data : {name : 'p1', card : 3}};
+					function piocheCard(playerName, cardId) {
+						var event = {type : GameEvent.PIOCHE_CARD, data : {name : playerName, card : cardId}};
 						gameState.view.onReceive(event);		
 					}
 
 					function piocheCardTest() {
-						//GIVEN
 						this.initPlayers();
 						this.distribution();
 						this.muliganeValid('p1');
-						//WHEN
-						var event = {type : GameEvent.PIOCHE_CARD, data : {name : 'p1', card : 3}};
-						gameState.view.onReceive(event);		
+						this.piocheCard('p1', 3);
 					}
 
-					function attack() {
-						var event = {type : GameEvent.ENTER_BATTLEFIELD, data : {name : 'p1', card : 2}};
+					function attack(pA,pB,cA,cB) {
+						var event = {type : GameEvent.ATTACK, data : {nameA : pA ,nameB:pB, cardA : cA, cardB : cB}};
 						gameState.view.onReceive(event);		
 					}
 
 					function attackTest() {
-						//GIVEN
 						this.initPlayers();
 						this.distribution();
 						this.muliganeValid('p1');
 						this.muliganeValid('p2');
 						this.enterBattlefield('p1',2);
 						this.enterBattlefield('p2',6);
-						//WHEN
-						var event = {type : GameEvent.ATTACK, data : {nameA : 'p1',nameB:'p2', cardA : 2, cardB : 6}};
+						this.enterBattlefield('p2',7);
+						this.declareAttaquant('p1', 2);
+						this.declareBloqueur('p1', 'p2', 2, 7);	
+						this.attack('p1','p2',2,7);		
+					}
+
+					function declareAttaquant(pA,cA) {
+						var event = {type : GameEvent.DECLARE_ATTAQUANT, data : {name : pA, card : cA}};
 						gameState.view.onReceive(event);		
+					}
+
+					function declareAttaquantTest() {
+						this.initPlayers();
+						this.distribution();
+						this.muliganeValid('p1');
+						this.muliganeValid('p2');
+						this.enterBattlefield('p1',2);
+						this.enterBattlefield('p2',6);
+						this.declareAttaquant('p1', 2);
+					}
+
+					function declareBloqueur(pA,pB,cA,cB) {
+						var event = {type : GameEvent.DECLARE_BLOQUEUR,  data : {nameA : pA, nameB:pB, cardA : cA, cardB : cB}};
+						gameState.view.onReceive(event);		
+					}
+
+					function declareBloqueurTest() {
+						this.initPlayers();
+						this.distribution();
+						this.muliganeValid('p1');
+						this.muliganeValid('p2');
+						this.enterBattlefield('p1',2);
+						this.enterBattlefield('p2',6);
+						this.enterBattlefield('p2',7);
+						this.declareAttaquant('p1', 2);
+						this.declareBloqueur('p1', 'p2', 2, 7);	
 					}
 				</script>
     </head> 
@@ -230,6 +252,8 @@
 			<a onClick ="enterBattlefieldTest();" href="#">10-ENTER BATTLEFIELD</a><br/>
 			<a onClick ="piocheCardTest();" href="#">11-PIOCHE CARD</a><br/>
 			<a onClick ="attackTest();" href="#">12-ATTACK</a><br/>
+			<a onClick ="declareAttaquantTest();" href="#">13-DECLARE ATTAQUANT</a><br/>
+			<a onClick ="declareBloqueurTest();" href="#">13-DECLARE BLOQUEUR</a><br/>
     </body>
 
 </html>
