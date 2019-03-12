@@ -18,6 +18,10 @@ class CardView extends Phaser.Sprite {
 		this.front.anchor.setTo(0.5);
 		this.back.anchor.setTo(0.5);
 		this.show(false);
+		this.front.force = this.front.addChild(this.game.add.text(-50, 0, cardData.force, { font: '28px Arial Black',fill: '#fff',strokeThickness: 4 }));
+		this.front.force.anchor.setTo(0.5);
+		this.front.endurance = this.front.addChild(this.game.add.text(50, 0, cardData.endurance, { font: '28px Arial Black',fill: '#fff',strokeThickness: 4 }));
+		this.front.endurance.anchor.setTo(0.5);
 		this.scale.set(0.5, 0.5);
 	}
 

@@ -186,8 +186,8 @@
 						this.piocheCard('p1', 3);
 					}
 
-					function attack(pA,pB,cA,cB) {
-						var event = {type : GameEvent.ATTACK, data : {nameA : pA ,nameB:pB, cardA : cA, cardB : cB}};
+					function attack(pA,pB,cA,cB, cAEndur, cBEndur) {
+						var event = {type : GameEvent.ATTACK, data : {nameA : pA ,nameB:pB, cardA : {uid : cA, endur:cAEndur},cardB : {uid : cB, endur:cBEndur}}};
 						gameState.view.onReceive(event);		
 					}
 
@@ -201,7 +201,7 @@
 						this.enterBattlefield('p2',7);
 						this.declareAttaquant('p1', 2);
 						this.declareBloqueur('p1', 'p2', 2, 7);	
-						this.attack('p1','p2',2,7);		
+						this.attack('p1','p2',2,7,1,1);		
 					}
 
 					function declareAttaquant(pA,cA) {

@@ -431,18 +431,29 @@ class GameView extends Phaser.Group {
 
 	attackAnim(attackAnimData) {
 		this.lockAnimation();
-		var cardA = this.playersView[attackAnimData.nameA].getBattlefieldById(attackAnimData.cardA);
-		var cardB = this.playersView[attackAnimData.nameB].getBattlefieldById(attackAnimData.cardB);
+		var cardA = this.playersView[attackAnimData.nameA].getBattlefieldById(attackAnimData.cardA.uid);
+		var cardB = this.playersView[attackAnimData.nameB].getBattlefieldById(attackAnimData.cardB.uid);
 
-		var posX = this.game.world.centerX;		
+		var posXA = cardA.x;
+		var posXB = cardB.x;
 
-		this.game.add.tween(cardA).to({x:posX},1000,Phaser.Easing.Linear.None)
+		var centerX = this.game.world.centerX;		
+
+		this.game.add.tween(cardA).to({x:centerX},1000,Phaser.Easing.Linear.None)
 		.to({ y: cardB.y - cardB.height/2}, 2000, Phaser.Easing.Bounce.In)
-		.to({y:cardA.y},1000,Phaser.Easing.Linear.None, true);
-		this.game.add.tween(cardB).to({x:posX},1000,Phaser.Easing.Linear.None)
+		.to({y:cardA.y},1000,Phaser.Easing.Linear.None, true)
+		.onComplete.add(function(){
+			cardB.front.endurance.text = attackAnimData.cardA.endur;
+		},this);
+		this.game.add.tween(cardB).to({x:centerX},1000,Phaser.Easing.Linear.None)
 		.to({ y: cardA.y }, 2000, Phaser.Easing.Bounce.In,false,3000)
 		.to({ y: cardB.y }, 1000, Phaser.Easing.Linear.None,true)
-		this.unlockAnimation(5);
+		.onComplete.add(function(){
+			cardA.front.endurance.text = attackAnimData.cardB.endur;
+			this.game.add.tween(cardA).to({x:posXA},2000,Phaser.Easing.Linear.None, true);
+			this.game.add.tween(cardB).to({x:posXB},2000,Phaser.Easing.Linear.None, true);
+		},this);
+		this.unlockAnimation(10);
 	}
 
 	nextTokenAnim(nextTokenAnimData) {
