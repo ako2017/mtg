@@ -5,7 +5,6 @@ class CardView extends Phaser.Sprite {
 
 	constructor(game, cardData, uid, gameView) {
 		super(game);
-		this.isSelected = false;
 		this.uid = uid;
 		this.gameView = gameView;
 		this.init(cardData);
@@ -30,16 +29,8 @@ class CardView extends Phaser.Sprite {
 		this.back.visible = !isVisible;
 	}
 
-		/**
-	 * Désélectionne les cartes de la liste cards
-	 * @param {Array} cards tableau de cartes
-	 */
-	unselectAllCards(cards) {
-		for (i = 0; i < cards.length; i++) {
-			if (cards[i]!=null && cards[i].isSelected) {
-				cards[i].isSelected = false;
-			}
-		}
+	isEngaged() {
+		return this.angle == 90;
 	}
 
 	/**
@@ -48,14 +39,15 @@ class CardView extends Phaser.Sprite {
 	 * @param {CardView} cardView la carte cliquée
 	 */
 	onClick() {
-	/*	this.gameView.unselectAllCards(this.owner.hand);
-		this.isSelected = !this.isSelected;
-		if(!this.isSelected) {
+		var oldCardSelected = this.gameView.cardSelected;
+		this.gameView.cardSelected = this;
+
+		if(oldCardSelected == this) {
 			this.gameView.hideActionCard();
 		}
 		else {
 			this.gameView.showActionCard(this);
-		}*/
+		}
 	}
 
 	onOver() {

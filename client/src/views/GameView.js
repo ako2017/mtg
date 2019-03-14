@@ -30,6 +30,7 @@ class GameView extends Phaser.Group {
 		this.myName = '';
 		this.isRunningAnimation = false;
 		this.events = [];
+		this.cardSelected = null;
 	}
 
 	init() {
@@ -47,30 +48,31 @@ class GameView extends Phaser.Group {
 		this.actifLabel = this.game.add.image(800, 0, this.game.cache.getBitmapData('actif'));
 		this.bandeau = this.game.add.image(0, 295, this.game.cache.getBitmapData('bandeau'));
 
-		/*
-		this.muligageBtn = this.game.add.button(0, 110, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameCtrl.muligane(button.player);},this);
+		var gameController = new GameController(this);
+
+		this.muligageBtn = this.game.add.button(0, 110, this.game.cache.getBitmapData('buttonsmall'), function(button){gameController.muliganeBtn();},this);
 		this.muligageBtn.text = this.muligageBtn.addChild(this.game.add.text(0, 0, 'muligane', {font: '16px Arial Black'}));
-		this.muligageBtn.player = gameModel.players[0];
+		this.muligageBtn.player = null;//gameModel.players[0];
 		
-		this.validBtn = this.game.add.button(380, 270, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameCtrl.valid(button.player);},this);
+		this.validBtn = this.game.add.button(380, 270, this.game.cache.getBitmapData('buttonsmall'), function(button){gameController.validBtn();},this);
 		this.validBtn.text = this.validBtn.addChild(this.game.add.text(0, 0, 'valid', {font: '16px Arial Black'}));
-		this.validBtn.player = gameModel.players[0];
+		this.validBtn.player = null;//gameModel.players[0];
 		
 		this.actionCardGroup = this.game.add.group();
 		this.actionCardGroup.y=300;
 		this.actionCardGroup.visible = false;
-		this.actionCardGroup.poseBtn = this.game.add.button(0, 0, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameCtrl.poseCard(this.actionCardGroup.player,this.actionCardGroup.card);this.hideActionCard();},this);
+		this.actionCardGroup.poseBtn = this.game.add.button(0, 0, this.game.cache.getBitmapData('buttonsmall'), function(button){gameController.poseCard(this.actionCardGroup.card);this.hideActionCard();},this);
 		this.actionCardGroup.poseBtn.text = this.actionCardGroup.poseBtn.addChild(this.game.add.text(0, 0, 'pose', {font: '16px Arial Black'}));
 		this.actionCardGroup.addChild(this.actionCardGroup.poseBtn);
-		this.actionCardGroup.attaquantBtn = this.game.add.button(0, 20, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameCtrl.declareAttaquantOrBloqueur(this.actionCardGroup.card);this.hideActionCard();},this);
+		this.actionCardGroup.attaquantBtn = this.game.add.button(0, 20, this.game.cache.getBitmapData('buttonsmall'), function(button){gameController.declareAttaquantOrBloqueur(this.actionCardGroup.card);this.hideActionCard();},this);
 		this.actionCardGroup.attaquantBtn.text = this.actionCardGroup.attaquantBtn.addChild(this.game.add.text(0, 0, 'attaquant', {font: '16px Arial Black'}));
 		this.actionCardGroup.addChild(this.actionCardGroup.attaquantBtn);
-		this.actionCardGroup.retirerBtn = this.game.add.button(0, 60, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameCtrl.retirerCard(this.actionCardGroup.player,this.actionCardGroup.card);this.hideActionCard();},this);
+		this.actionCardGroup.retirerBtn = this.game.add.button(0, 60, this.game.cache.getBitmapData('buttonsmall'), function(button){gameController.retirerCard(this.actionCardGroup.card);this.hideActionCard();},this);
 		this.actionCardGroup.retirerBtn.text = this.actionCardGroup.retirerBtn.addChild(this.game.add.text(0, 0, 'retirer', {font: '16px Arial Black'}));
 		this.actionCardGroup.addChild(this.actionCardGroup.retirerBtn);
-		this.actionCardGroup.engageBtn = this.game.add.button(0, 80, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameCtrl.engage(this.actionCardGroup.player,this.actionCardGroup.card);this.hideActionCard();},this);
+		this.actionCardGroup.engageBtn = this.game.add.button(0, 80, this.game.cache.getBitmapData('buttonsmall'), function(button){gameController.engage(this.actionCardGroup.card);this.hideActionCard();},this);
 		this.actionCardGroup.engageBtn.text = this.actionCardGroup.engageBtn.addChild(this.game.add.text(0, 0, 'engager', {font: '16px Arial Black'}));
-		this.actionCardGroup.addChild(this.actionCardGroup.engageBtn);*/
+		this.actionCardGroup.addChild(this.actionCardGroup.engageBtn);
 	}
 
 	update() {
@@ -92,7 +94,7 @@ class GameView extends Phaser.Group {
 		this.actionCardGroup.retirerBtn.visible = false;
 		this.actionCardGroup.engageBtn.visible = false;
 		
-		if(cardView.ownerView.terrains.contains(cardView) && cardView.cardModel.type == TypeCard.TERRAIN && !cardView.cardModel.isEngaged) {
+		if(cardView.type == TypeCard.TERRAIN && !cardView.isEngaged()) {
 			this.actionCardGroup.engageBtn.visible = true;
 		}
 		
