@@ -56,14 +56,6 @@ class GameView extends Phaser.Group {
 		this.validBtn.text = this.validBtn.addChild(this.game.add.text(0, 0, 'valid', {font: '16px Arial Black'}));
 		this.validBtn.player = gameModel.players[0];
 		
-		this.muligageBtn2 = this.game.add.button(0, 400, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameCtrl.muligane(button.player);},this);
-		this.muligageBtn2.text = this.muligageBtn2.addChild(this.game.add.text(0, 0, 'muligane', {font: '16px Arial Black'}));
-		this.muligageBtn2.player = gameModel.players[1];
-		
-		this.validBtn = this.game.add.button(380, 305, this.game.cache.getBitmapData('buttonsmall'), function(button){this.gameCtrl.valid(button.player);},this);
-		this.validBtn.text = this.validBtn.addChild(this.game.add.text(0, 0, 'valid', {font: '16px Arial Black'}));
-		this.validBtn.player = gameModel.players[1];
-		
 		this.actionCardGroup = this.game.add.group();
 		this.actionCardGroup.y=300;
 		this.actionCardGroup.visible = false;
@@ -216,9 +208,14 @@ class GameView extends Phaser.Group {
 	}
 
 	unlockAnimation(delay) {
-		this.game.time.events.add(Phaser.Timer.SECOND * delay, function(){
+		if(delay) {
+			this.game.time.events.add(Phaser.Timer.SECOND * delay, function(){
+				this.isRunningAnimation = false;
+			}, this);
+		}
+		else {
 			this.isRunningAnimation = false;
-		}, this);
+		}
 	}
 	
 	muliganeAnim(muliganeData) {
@@ -292,6 +289,7 @@ class GameView extends Phaser.Group {
 	}
 	
 	piocheCardAnim(piocheCardAnimData) {
+		this.lockAnimation();
 		var isMe = piocheCardAnimData.name == this.myName;
 		var posY;
 		if(isMe) {
@@ -309,11 +307,16 @@ class GameView extends Phaser.Group {
 		for(var i =0;i<this.playersView[piocheCardAnimData.name].hand.length;i++) {
 			this.game.add.tween(this.playersView[piocheCardAnimData.name].hand[i]).to({x:100+37+80*i, y:posY},1000,Phaser.Easing.Linear.None,true);
 		}
+		this.unlockAnimation(1);
 	}
 	
 	stackAnim(stackAnimData) {
+		this.lockAnimation();
 		var card = this.playersView[stackAnimData.name].getHandById(stackAnimData.card);
-		this.game.add.tween(card).to({x:CONFIG.pile[0],y:CONFIG.pile[1]},1000,Phaser.Easing.Linear.None,true);
+		this.game.add.tween(card).to({x:CONFIG.pile[0],y:CONFIG.pile[1]},1000,Phaser.Easing.Linear.None,true)
+		.onComplete.add(function(){
+			this.unlockAnimation();
+		},this);
 	}
 	
 	enterBattlefieldAnim(enterBattlefieldAnimData) {
@@ -388,21 +391,19 @@ class GameView extends Phaser.Group {
 	damageAnim(card) {
 	}
 	
-	manaAnim(player) {
+	manaAnim(manaAnimData) {
 		for(var i =0;i<5;i++)
-			this.playersView[player.name].mana[i].text=player.mana[i];
+			this.playersView[manaAnimData.name].mana[i].text=manaAnimData.mana[i];
 	}
 	
 	changePhaseAnim(changePhaseAnimData) {
 		this.phaseLabel.text = phaseMapping[changePhaseAnimData.phase];
 	}
 		
-	playerLifeAnim(player) {
-		this.playersView[player.name].phaseLabel.text = player.life;
-		if(player.life <=0) {
-			alert("partie terminée");
-			this.game.state.start("MainMenu");
-		}
+	playerLifeAnim(playerLifeAnimData) {
+		this.playersView[playerLifeAnimData.name].lifeLabel.text = playerLifeAnimData.life;
+
+		this.game.add.tween(this.playersView[playerLifeAnimData.name].lifeLabel.scale).to( { x: 2, y: 2 }, 500, Phaser.Easing.Linear.None, true,0,0,true);
 	}
 
 	whoBeginAnim(whoBeginAnimData) {
@@ -415,11 +416,21 @@ class GameView extends Phaser.Group {
 	}
 
 	engagementAnim(engagementAnimData) {
-		this.game.add.tween(engagementAnimData.card).to({angle:90},500,Phaser.Easing.Linear.None,true);
+		this.lockAnimation();
+		var card = this.playersView[engagementAnimData.name].getCardByIdAll(engagementAnimData.card);
+		this.game.add.tween(card).to({angle:90},500,Phaser.Easing.Linear.None,true)
+		.onComplete.add(function(){
+			this.unlockAnimation();
+		},this);	
 	}
 
 	degagementAnim(degagementAnimData) {
-		this.game.add.tween(degagementAnimData.card).to({angle:0},500,Phaser.Easing.Linear.None,true);
+		this.lockAnimation();
+		var card = this.playersView[degagementAnimData.name].getCardByIdAll(degagementAnimData.card);
+		this.game.add.tween(card).to({angle:0},500,Phaser.Easing.Linear.None,true)
+		.onComplete.add(function(){
+			this.unlockAnimation();
+		},this);	
 	}
 
 	errorAnim(errorAnimData) {
@@ -456,12 +467,38 @@ class GameView extends Phaser.Group {
 		this.unlockAnimation(10);
 	}
 
+	attackPlayerAnim(attackPlayerAnimData) {
+		this.lockAnimation();
+		var card = this.playersView[attackPlayerAnimData.nameA].getBattlefieldById(attackPlayerAnimData.card);
+
+		var posXB = this.playersView[attackPlayerAnimData.nameB].lifeLabel.x;
+		var posYB = this.playersView[attackPlayerAnimData.nameB].lifeLabel.y;
+
+		var posXA = card.x;
+		var posYA = card.y;
+
+		var centerX = this.game.world.centerX;		
+
+		this.game.add.tween(card).to({x:centerX},1000,Phaser.Easing.Linear.None)
+		.to({ x:posXB, y: posYB }, 1000, Phaser.Easing.Linear.None,false)
+		.to({ x:posXA, y: posYA }, 2000, Phaser.Easing.Linear.None,true)
+		.onComplete.add(function(){
+			this.unlockAnimation();
+		},this);
+	}
+
 	nextTokenAnim(nextTokenAnimData) {
 		this.tokenLabel.y=(nextTokenAnimData.name == this.myName ? 580:0);
 	}
 
 	nextPlayerAnim(nextPlayerAnimData) {
-		this.actifLabel.y=(event.data.name == this.myName ? 580:0);
+		this.actifLabel.y=(nextPlayerAnimData.name == this.myName ? 580:0);
+	}
+
+	retirerCardAnim(retirerCardAnimData) {
+		if(retirerCardAnimData.name == this.myName) {
+			this.errorLabel.text = 'veuillez retirer une carte';
+		}
 	}
 	
 	onReceive(event) {
@@ -522,7 +559,7 @@ class GameView extends Phaser.Group {
 				this.piocheCardAnim(event.data);
 				break;
 			case GameEvent.RETIRER_CARD:
-					this.showError('retirez des cartes');
+				this.retirerCardAnim(event.data)
 				break;
 			case GameEvent.RESTAURE_BLOQUEURS:
 				this.restaureBloqueurAnim(event.data);
@@ -540,7 +577,11 @@ class GameView extends Phaser.Group {
 			case GameEvent.ATTACK:
 				this.attackAnim(event.data);
 				break;
-			break;
+			case GameEvent.ATTACK_PLAYER:
+				this.attackPlayerAnim(event.data);
+				break;
+			default :
+				alert('evenement inconnu');
 		}
 	}
 

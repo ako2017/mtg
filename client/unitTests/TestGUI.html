@@ -37,10 +37,12 @@
 					var playersData = [
 						{
 							name : 'p1',
+							life : 21,
 							deck : [{uid:1,id:1},{uid:2,id:1},{uid:3,id:1},{uid:4,id:1},{uid:5,id:1}]
 						},
 						{
 							name : 'p2',
+							life : 21,
 							deck : [{uid:6,id:2},{uid:7,id:2},{uid:8,id:2},{uid:9,id:2},{uid:10,id:2}]
 						}
 					]
@@ -235,6 +237,83 @@
 						this.declareAttaquant('p1', 2);
 						this.declareBloqueur('p1', 'p2', 2, 7);	
 					}
+
+					function engagement(playerName, cardId) {
+						var event = {type : GameEvent.ENGAGEMENT,  data : {name : playerName, card : cardId}};
+						gameState.view.onReceive(event);		
+					}
+
+					function engagementTest() {
+						this.initPlayers();
+						this.distribution();
+						this.muliganeValid('p1');
+						this.muliganeValid('p2');
+						this.enterBattlefield('p1',2);
+						this.enterBattlefield('p2',6);
+						this.engagement('p1',2);
+					}
+
+					function degagement(playerName, cardId) {
+						var event = {type : GameEvent.DEGAGEMENT,  data : {name : playerName, card : cardId}};
+						gameState.view.onReceive(event);		
+					}
+
+					function degagementTest() {
+						this.initPlayers();
+						this.distribution();
+						this.muliganeValid('p1');
+						this.muliganeValid('p2');
+						this.enterBattlefield('p1',2);
+						this.enterBattlefield('p2',6);
+						this.engagement('p1',2);
+						this.engagement('p2',6);
+						this.degagement('p1',2);
+					}
+
+
+					function retirerCard(playerName) {
+						var event = {type : GameEvent.RETIRER_CARD,  data : {name : playerName}};
+						gameState.view.onReceive(event);		
+					}
+
+					function retirerCardTest() {
+						this.initPlayers();
+						this.distribution();
+						this.muliganeValid('p1');
+						this.muliganeValid('p2');
+						this.piocheCard('p1', 3);
+						this.retirerCard('p1');
+					}		
+
+					function playerLife(playerName, life) {
+						var event = {type : GameEvent.PLAYER_LIFE, data : {name : playerName ,life:life}};
+						gameState.view.onReceive(event);		
+					}
+
+					function playerLifeTest() {
+						this.initPlayers();
+						this.playerLife('p2', 15);
+					}
+
+					function attackPlayer(pA,pB,cardId) {
+						var event = {type : GameEvent.ATTACK_PLAYER, data : {nameA : pA ,nameB:pB, card : cardId}};
+						gameState.view.onReceive(event);		
+					}
+
+					function attackPlayerTest() {
+						this.initPlayers();
+						this.distribution();
+						this.muliganeValid('p1');
+						this.muliganeValid('p2');
+						this.enterBattlefield('p1',2);
+						this.enterBattlefield('p2',6);
+						this.enterBattlefield('p2',7);
+						this.declareAttaquant('p1', 2);
+						this.attackPlayer('p1','p2',2);		
+						this.playerLife('p2', 15);
+					}
+
+
 				</script>
     </head> 
 
@@ -254,6 +333,11 @@
 			<a onClick ="attackTest();" href="#">12-ATTACK</a><br/>
 			<a onClick ="declareAttaquantTest();" href="#">13-DECLARE ATTAQUANT</a><br/>
 			<a onClick ="declareBloqueurTest();" href="#">13-DECLARE BLOQUEUR</a><br/>
+			<a onClick ="engagementTest();" href="#">14-ENGAGEMENT</a><br/>
+			<a onClick ="degagementTest();" href="#">15-DEGAGEMENT</a><br/>
+			<a onClick ="retirerCardTest();" href="#">16-RETIRER CARD</a><br/>
+			<a onClick ="attackPlayerTest();" href="#">17-ATTACK PLAYER</a><br/>
+			<a onClick ="playerLifeTest();" href="#">18-PLAYER LIFE</a><br/>
     </body>
 
 </html>

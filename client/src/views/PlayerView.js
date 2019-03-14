@@ -19,6 +19,19 @@ class PlayerView {
 		return null;
 	}
 
+	getCardByIdAll(cardId) {
+		var list = [
+			this.hand,this.battlefield,this.terrains,this.deck
+		];
+		for(var i=0; i< list.length;i++) {
+			var card = this.getCardById(list[i],cardId); 
+			if(card != null) {
+				return card;
+			}
+		}
+		return null;
+	}
+
 	getDeckById(cardId) {
 		return this.getCardById(this.deck, cardId);
 	}
