@@ -33,11 +33,11 @@ class GameView extends Phaser.Group {
 		this.cardSelected = null;
 	}
 
-	init() {
+	init(players) {
 		/*this.back = this.game.make.sprite(0, 0, 'fond');
 		this.back.scale.set(0.5, 0.5);
-		this.addChild(this.back);
-		this.initPlayers(gameModel.players);*/
+		this.addChild(this.back);*/
+		this.initPlayers(players);
 		this.game.add.text(CONFIG.pilelabel[0], CONFIG.pilelabel[1], 'PILE', { font: '14px Arial Black',fill: '#fff',strokeThickness: 4 });
 		this.game.add.text(CONFIG.cemeterylabel[0][0], CONFIG.cemeterylabel[0][1], 'CEMETERY', {font: '14px Arial Black',fill: '#fff',strokeThickness: 4});
 		this.game.add.text(CONFIG.cemeterylabel[1][0], CONFIG.cemeterylabel[1][1], 'CEMETERY', {font: '14px Arial Black',fill: '#fff',strokeThickness: 4});
@@ -50,13 +50,15 @@ class GameView extends Phaser.Group {
 
 		var gameController = new GameController(this);
 
-		this.muligageBtn = this.game.add.button(0, 110, this.game.cache.getBitmapData('buttonsmall'), function(button){gameController.muliganeBtn();},this);
+		this.muligageBtn = this.addChild(this.game.add.button(0, 110, this.game.cache.getBitmapData('buttonsmall'), function(button){gameController.muliganeBtn();},this));
 		this.muligageBtn.text = this.muligageBtn.addChild(this.game.add.text(0, 0, 'muligane', {font: '16px Arial Black'}));
-		this.muligageBtn.player = null;//gameModel.players[0];
+		this.muligageBtn.player = this.playersView[this.myName];
+		this.muligageBtn.visible = false;
 		
-		this.validBtn = this.game.add.button(380, 270, this.game.cache.getBitmapData('buttonsmall'), function(button){gameController.validBtn();},this);
+		this.validBtn = this.addChild(this.game.add.button(380, 270, this.game.cache.getBitmapData('buttonsmall'), function(button){gameController.validBtn();},this));
 		this.validBtn.text = this.validBtn.addChild(this.game.add.text(0, 0, 'valid', {font: '16px Arial Black'}));
-		this.validBtn.player = null;//gameModel.players[0];
+		this.validBtn.player = this.playersView[this.myName];
+		this.validBtn.visible = false;
 		
 		this.actionCardGroup = this.game.add.group();
 		this.actionCardGroup.y=300;
@@ -73,6 +75,7 @@ class GameView extends Phaser.Group {
 		this.actionCardGroup.engageBtn = this.game.add.button(0, 80, this.game.cache.getBitmapData('buttonsmall'), function(button){gameController.engage(this.actionCardGroup.card);this.hideActionCard();},this);
 		this.actionCardGroup.engageBtn.text = this.actionCardGroup.engageBtn.addChild(this.game.add.text(0, 0, 'engager', {font: '16px Arial Black'}));
 		this.actionCardGroup.addChild(this.actionCardGroup.engageBtn);
+		this.addChild(this.actionCardGroup);
 	}
 
 	update() {
@@ -87,6 +90,10 @@ class GameView extends Phaser.Group {
 	hideActionCard() {
 		this.actionCardGroup.visible=false;
 	}
+
+	isPhase(phaseId) {
+		return false;
+	}
 	
 	showActionCard(cardView) {
 		this.actionCardGroup.poseBtn.visible = false;
@@ -94,26 +101,26 @@ class GameView extends Phaser.Group {
 		this.actionCardGroup.retirerBtn.visible = false;
 		this.actionCardGroup.engageBtn.visible = false;
 		
-		if(cardView.type == TypeCard.TERRAIN && !cardView.isEngaged()) {
+		if(cardView.isType(TypeCard.TERRAIN) && !cardView.isEngaged()) {
 			this.actionCardGroup.engageBtn.visible = true;
 		}
 		
-		if(this.gameCtrl.isCurrentPhase(PHASE.PRINCIPALE) && (!cardView.ownerView.terrains.contains(cardView) &&  !cardView.ownerView.battlefield.contains(cardView))) {
+		if(this.isPhase(PHASE.PRINCIPALE) && (!cardView.ownerView.terrains.contains(cardView) &&  !cardView.ownerView.battlefield.contains(cardView))) {
 			this.actionCardGroup.poseBtn.visible = true;
 		}
 		
-		if(this.gameCtrl.isCurrentPhase(PHASE.DECLARATION_BLOQUEUR) && !this.gameCtrl.hasDonedeclaration()) {
+		if(this.isPhase(PHASE.DECLARATION_BLOQUEUR) && !this.gameCtrl.hasDonedeclaration()) {
 			this.actionCardGroup.player = this.gameCtrl.getPlayerNonActif();
 		}
 		else {
 			this.actionCardGroup.player = cardView.cardModel.owner;	
 		}
 		
-		if(this.gameCtrl.isCurrentPhase(PHASE.DECLARATION_ATTAQUANT)) {
+		if(this.isPhase(PHASE.DECLARATION_ATTAQUANT)) {
 			this.actionCardGroup.attaquantBtn.visible = cardView.cardModel.owner == this.gameCtrl.getPlayerActif();
 		}
-		else if(this.gameCtrl.isCurrentPhase(PHASE.DECLARATION_BLOQUEUR)){
-			if(this.bloqueur==null && cardView.cardModel.owner == this.gameCtrl.getPlayerNonActif() && cardView.cardModel.type == TypeCard.CREATURE) {
+		else if(this.isPhase(PHASE.DECLARATION_BLOQUEUR)){
+			if(this.bloqueur==null && cardView.cardModel.owner == this.gameCtrl.getPlayerNonActif() && cardView.isType(TypeCard.CREATURE)) {
 				this.actionCardGroup.attaquantBtn.visible =true;
 			}
 			if(this.bloqueur!=null && cardView.cardModel.owner == this.gameCtrl.getPlayerActif()) {
@@ -121,7 +128,7 @@ class GameView extends Phaser.Group {
 			}
 		}
 		
-		if(this.gameCtrl.isCurrentPhase(PHASE.NETTOYAGE) && cardView.cardModel.owner == this.gameCtrl.getPlayerActif()) {
+		if(this.isPhase(PHASE.NETTOYAGE) && cardView.cardModel.owner == this.gameCtrl.getPlayerActif()) {
 			this.actionCardGroup.retirerBtn.visible = true;
 			this.actionCardGroup.player = cardView.cardModel.owner;
 		}
@@ -409,8 +416,6 @@ class GameView extends Phaser.Group {
 	}
 
 	whoBeginAnim(whoBeginAnimData) {
-		//this.muligageBtn.visible = false;
-		//this.muligageBtn2.visible = false;
 		this.tokenLabel.x=20;
 		this.tokenLabel.y=(whoBeginAnimData.name == this.myName ? 580:0);
 		this.actifLabel.x=0;

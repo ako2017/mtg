@@ -33,6 +33,12 @@ class CardView extends Phaser.Sprite {
 		return this.angle == 90;
 	}
 
+	isType(type) {
+		return this.type == type;
+	}
+
+
+
 	/**
 	 * Lors du click sur une carte on affiche le menu des actions possibles 
 	 * ou on le cache si c'est une désélection
