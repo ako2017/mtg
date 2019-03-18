@@ -7,6 +7,7 @@ class CardView extends Phaser.Sprite {
 		super(game);
 		this.uid = uid;
 		this.gameView = gameView;
+		this.isEngaged = false;
 		this.init(cardData);
 	}
 
@@ -27,10 +28,6 @@ class CardView extends Phaser.Sprite {
 	show(isVisible) {
 		this.front.visible = isVisible;
 		this.back.visible = !isVisible;
-	}
-
-	isEngaged() {
-		return this.angle == 90;
 	}
 
 	isType(type) {

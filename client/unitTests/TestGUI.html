@@ -311,6 +311,27 @@
 						this.playerLife('p2', 15);
 					}
 
+					function gotoCemetery(playerName,cardId) {
+						var event = {type : GameEvent.GOTO_CEMETERY, data : {name : playerName ,card : cardId}};
+						gameState.view.onReceive(event);		
+					}
+
+					function gotoCemeteryTest() {
+						this.initPlayers();
+						this.distribution();
+						this.muliganeValid('p1');
+						this.muliganeValid('p2');
+						this.enterBattlefield('p1',2);
+						this.enterBattlefield('p2',6);
+						this.gotoCemetery('p1',2);
+						this.gotoCemetery('p2',6);
+					}
+
+					function showInfoCardTest() {
+						this.initPlayers();
+						gameState.view.showInfoCard(1);
+					}
+
 
 				</script>
     </head> 
@@ -336,6 +357,8 @@
 			<a onClick ="retirerCardTest();" href="#">16-RETIRER CARD</a><br/>
 			<a onClick ="attackPlayerTest();" href="#">17-ATTACK PLAYER</a><br/>
 			<a onClick ="playerLifeTest();" href="#">18-PLAYER LIFE</a><br/>
+			<a onClick ="gotoCemeteryTest();" href="#">19-GOTO CEMETERY</a><br/>
+			<a onClick ="showInfoCardTest();" href="#">20-SHOW INFO CARD</a><br/>
     </body>
 
 </html>

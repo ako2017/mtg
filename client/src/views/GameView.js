@@ -30,6 +30,7 @@ class GameView extends Phaser.Group {
 		this.myName = '';
 		this.isRunningAnimation = false;
 		this.events = [];
+		this.phaseId = null;
 		this.cardSelected = null;
 	}
 
@@ -92,7 +93,7 @@ class GameView extends Phaser.Group {
 	}
 
 	isPhase(phaseId) {
-		return false;
+		return this.phaseId == phaseId;
 	}
 	
 	showActionCard(cardView) {
@@ -193,8 +194,9 @@ class GameView extends Phaser.Group {
 			var isMe = distributionAnimData[i].name == this.myName;
 			var cards = distributionAnimData[i].hand;	
 			for(var j=0;j<cards.length;j++) {
-				var cardView = this.playersView[distributionAnimData[i].name].getDeckById(cards[j]);
-				this.playersView[distributionAnimData[i].name].deck.removeByValue(cardView);
+				var cardView = this.playersView[distributionAnimData[i].name].getDeckById(cards[j], true);
+				this.playersView[distributionAnimData[i].name].hand.push(cardView);
+
 				var posX = 100 + j*80+37;
 				var posY;
 				if(isMe) {
@@ -205,8 +207,7 @@ class GameView extends Phaser.Group {
 					posY = this.game.world.centerY-52;
 					
 				}
-				this.game.add.tween(cardView).to({x: posX,y:posY},1000,Phaser.Easing.Linear.None,true);
-				this.playersView[distributionAnimData[i].name].hand.push(cardView);
+				this.game.add.tween(cardView).to({x: posX,y:posY},1000,Phaser.Easing.Linear.None,true);	
 			}	
 		}
 		this.unlockAnimation(1);
@@ -251,8 +252,7 @@ class GameView extends Phaser.Group {
 			}
 			else{y = this.game.world.centerY-104+52;}
 			for(var i=0;i<muliganeData.cards.length;i++) {
-				var card = player.getDeckById(muliganeData.cards[i]);
-				player.deck.removeByValue(card);
+				var card = player.getDeckById(muliganeData.cards[i], true);
 				this.game.add.tween(card).to({x: 100+37 + i*80, y:y},1000,Phaser.Easing.Linear.None,true);
 				card.show(true);
 				card.slot = i;
@@ -288,8 +288,7 @@ class GameView extends Phaser.Group {
 		else {
 			posY=104+52;
 		}
-		var card = this.playersView[poseTerrainAnimData.name].getHandById(poseTerrainAnimData.card);
-		this.playersView[poseTerrainAnimData.name].hand.removeByValue(card);
+		var card = this.playersView[poseTerrainAnimData.name].getHandById(poseTerrainAnimData.card, true);
 		this.playersView[poseTerrainAnimData.name].terrains.push(card);
 		for(var i = 0;i<this.playersView[poseTerrainAnimData.name].terrains.length;i++) {
 			this.game.add.tween(this.playersView[poseTerrainAnimData.name].terrains[i]).to({x:100+37+80*i, y:posY},1000,Phaser.Easing.Linear.None,true);
@@ -307,9 +306,7 @@ class GameView extends Phaser.Group {
 		else {
 			posY=52;
 		}
-		var card = this.playersView[piocheCardAnimData.name].getDeckById(piocheCardAnimData.card);
-
-		this.playersView[piocheCardAnimData.name].deck.removeByValue(card);
+		var card = this.playersView[piocheCardAnimData.name].getDeckById(piocheCardAnimData.card, true);
 		this.playersView[piocheCardAnimData.name].hand.push(card);
 		card.show(true);
 
@@ -330,7 +327,8 @@ class GameView extends Phaser.Group {
 	
 	enterBattlefieldAnim(enterBattlefieldAnimData) {
 		this.lockAnimation();
-		var card = this.playersView[enterBattlefieldAnimData.name].getHandById(enterBattlefieldAnimData.card);
+		var card = this.playersView[enterBattlefieldAnimData.name].getHandById(enterBattlefieldAnimData.card, true);
+
 		if(enterBattlefieldAnimData.malInvocation)
 			card.front.tint = 0x696969;
 		var posY = this.game.world.centerY;
@@ -349,23 +347,29 @@ class GameView extends Phaser.Group {
 		this.unlockAnimation(1);
 	}
 	
-	gotoCemeteryAnim(card) {
-		var isMe = card.owner.name == "pau";
-		posX = this.game.world.width - (156/2)+37;
+	gotoCemeteryAnim(gotoCemeteryAnimData) {
+		this.lockAnimation();
+		var isMe = gotoCemeteryAnimData.name == this.myName;
+		var card = this.playersView[gotoCemeteryAnimData.name].getCardByIdAll(gotoCemeteryAnimData.card, true);
+		
+		this.playersView[gotoCemeteryAnimData.name].cemetery.push(card);
+
+		var posX = this.game.world.width - (156/2)+37;
+		var posY = 0;
 		if(isMe){
 			posY = this.game.world.height - (208/2)+52;
 		}
 		else{
 			posY = 52;		
 		}
-		removePlayerSlot(this.playersView[card.owner.name],card.view);
-		this.game.add.tween(card.view).to({y:posY,x:posX},1000,Phaser.Easing.Linear.None,true);
+		this.game.add.tween(card).to({y:posY,x:posX},1000,Phaser.Easing.Linear.None,true);
+		this.unlockAnimation(1);
 	}
 	
-	declareBloqueurAnim(declareBloqueurAnim) {
+	declareBloqueurAnim(declareBloqueurAnimData) {
 		this.lockAnimation();
-		var cardA = this.playersView[declareBloqueurAnim.nameA].getBattlefieldById(declareBloqueurAnim.cardA);
-		var cardB = this.playersView[declareBloqueurAnim.nameB].getBattlefieldById(declareBloqueurAnim.cardB);
+		var cardA = this.playersView[declareBloqueurAnimData.nameA].getBattlefieldById(declareBloqueurAnimData.cardA);
+		var cardB = this.playersView[declareBloqueurAnimData.nameB].getBattlefieldById(declareBloqueurAnimData.cardB);
 
 		var dist = Phaser.Math.distance(cardA.x, cardA.y,cardB.x, cardB.y);
 		var deg = Phaser.Math.radToDeg(Phaser.Math.angleBetween(cardA.x, cardA.y,cardB.x, cardB.y));
@@ -374,27 +378,11 @@ class GameView extends Phaser.Group {
 		this.unlockAnimation(1);
 	}
 
-	declareAttaquantAnim(declareAttaquantAnim)
+	declareAttaquantAnim(declareAttaquantAnimData)
 	{
 		this.lockAnimation();
-		this.game.add.tween(this.playersView[declareAttaquantAnim.name].getBattlefieldById(declareAttaquantAnim.card)).to({angle:90},500,Phaser.Easing.Linear.None,true);
+		this.game.add.tween(this.playersView[declareAttaquantAnimData.name].getBattlefieldById(declareAttaquantAnimData.card)).to({angle:90},500,Phaser.Easing.Linear.None,true);
 		this.unlockAnimation(1);
-	}
-	
-	restaureBloqueurAnim(playerName) {
-		var isMe = playerName == "pau";
-		var game = this.game;
-	
-		this.playersView[playerName].battlefield.forEach(function(card){
-			if(card != null && card.cardModel.blockCard != null) {
-				var posY =0;
-				if(isMe) {
-					posY = game.world.centerY+52;
-				}
-				else{posY = game.world.centerY-104+52;}
-				game.add.tween(card).to({x:100+37+80*card.slot,y:posY},1000,Phaser.Easing.Linear.None,true);
-			}
-		});
 	}
 	
 	damageAnim(card) {
@@ -406,6 +394,7 @@ class GameView extends Phaser.Group {
 	}
 	
 	changePhaseAnim(changePhaseAnimData) {
+		this.phaseId = changePhaseAnimData.phase;
 		this.phaseLabel.text = phaseMapping[changePhaseAnimData.phase];
 	}
 		
@@ -425,6 +414,7 @@ class GameView extends Phaser.Group {
 	engagementAnim(engagementAnimData) {
 		this.lockAnimation();
 		var card = this.playersView[engagementAnimData.name].getCardByIdAll(engagementAnimData.card);
+		card.isEngaged = true;
 		this.game.add.tween(card).to({angle:90},500,Phaser.Easing.Linear.None,true)
 		.onComplete.add(function(){
 			this.unlockAnimation();
@@ -434,6 +424,7 @@ class GameView extends Phaser.Group {
 	degagementAnim(degagementAnimData) {
 		this.lockAnimation();
 		var card = this.playersView[degagementAnimData.name].getCardByIdAll(degagementAnimData.card);
+		card.isEngaged = false;
 		this.game.add.tween(card).to({angle:0},500,Phaser.Easing.Linear.None,true)
 		.onComplete.add(function(){
 			this.unlockAnimation();
@@ -507,6 +498,12 @@ class GameView extends Phaser.Group {
 			this.errorLabel.text = 'veuillez retirer une carte';
 		}
 	}
+
+	showInfoCard(card) {
+		var text = this.game.add.text(200, 20, 'un exemple de texte, blablabla bliblibli btest 1234', {font: '14px Arial Black',fill: '#fff',strokeThickness: 4,wordWrap: true, wordWrapWidth: 250});
+	
+		//this.text.setTextBounds(0, 0, 100, 100);
+	}
 	
 	onReceive(event) {
 		this.events.push(event);
@@ -567,9 +564,6 @@ class GameView extends Phaser.Group {
 				break;
 			case GameEvent.RETIRER_CARD:
 				this.retirerCardAnim(event.data)
-				break;
-			case GameEvent.RESTAURE_BLOQUEURS:
-				this.restaureBloqueurAnim(event.data);
 				break;
 			case GameEvent.PLAYER_LIFE:
 				this.playerLifeAnim(event.data);
