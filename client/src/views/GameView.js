@@ -32,6 +32,8 @@ class GameView extends Phaser.Group {
 		this.events = [];
 		this.phaseId = null;
 		this.cardSelected = null;
+		this.playerActifName = null;
+		this.playerTokenName = null;
 	}
 
 	init(players) {
@@ -95,53 +97,61 @@ class GameView extends Phaser.Group {
 	isPhase(phaseId) {
 		return this.phaseId == phaseId;
 	}
+
+	isMeActif() {
+		return this.myName == this.playerActifName;
+	}
+
+	isMeToken() {
+		return this.myName == this.playerTokenName;
+	}
+
+	myself() {
+		return this.playersView[this.myName];
+	}
 	
-	showActionCard(cardView) {
+	showActionCard(card) {
 		this.actionCardGroup.poseBtn.visible = false;
 		this.actionCardGroup.attaquantBtn.visible = false;
 		this.actionCardGroup.retirerBtn.visible = false;
 		this.actionCardGroup.engageBtn.visible = false;
 		
-		if(cardView.isType(TypeCard.TERRAIN) && !cardView.isEngaged()) {
-			this.actionCardGroup.engageBtn.visible = true;
-		}
-		
-		if(this.isPhase(PHASE.PRINCIPALE) && (!cardView.ownerView.terrains.contains(cardView) &&  !cardView.ownerView.battlefield.contains(cardView))) {
-			this.actionCardGroup.poseBtn.visible = true;
-		}
-		
-		if(this.isPhase(PHASE.DECLARATION_BLOQUEUR) && !this.gameCtrl.hasDonedeclaration()) {
-			this.actionCardGroup.player = this.gameCtrl.getPlayerNonActif();
-		}
-		else {
-			this.actionCardGroup.player = cardView.cardModel.owner;	
-		}
-		
-		if(this.isPhase(PHASE.DECLARATION_ATTAQUANT)) {
-			this.actionCardGroup.attaquantBtn.visible = cardView.cardModel.owner == this.gameCtrl.getPlayerActif();
-		}
-		else if(this.isPhase(PHASE.DECLARATION_BLOQUEUR)){
-			if(this.bloqueur==null && cardView.cardModel.owner == this.gameCtrl.getPlayerNonActif() && cardView.isType(TypeCard.CREATURE)) {
-				this.actionCardGroup.attaquantBtn.visible =true;
+
+		if(this.isPhase(PHASE.PRINCIPALE)) {
+			if(this.isMeActif() && this.isMeToken()) {
+				if(this.myself().getHandById(card.uid) != null && card.isType(TypeCard.TERRAIN)) {
+					this.actionCardGroup.poseBtn.visible = true;
+				}
+				else if(this.myself().getHandById(card.uid) != null && card.isType(TypeCard.CREATURE)) {
+					this.actionCardGroup.poseBtn.visible = true;
+				}
+				else if(this.myself().getTerrainById(card.uid) != null && card.isType(TypeCard.CREATURE) && !card.isEngaged()) {
+					this.actionCardGroup.engageBtn.visible = true;
+				}
 			}
-			if(this.bloqueur!=null && cardView.cardModel.owner == this.gameCtrl.getPlayerActif()) {
-				this.actionCardGroup.attaquantBtn.visible =true;
+			else if(this.isMeToken()){
+				if(this.myself().getHandById(card.uid) != null && card.isType(TypeCard.EPHEMERE)) {
+					this.actionCardGroup.poseBtn.visible = true;
+				}
 			}
 		}
-		
-		if(this.isPhase(PHASE.NETTOYAGE) && cardView.cardModel.owner == this.gameCtrl.getPlayerActif()) {
-			this.actionCardGroup.retirerBtn.visible = true;
-			this.actionCardGroup.player = cardView.cardModel.owner;
+		else if(this.isPhase(PHASE.DECLARATION_ATTAQUANT)) {
+			if(this.isMeActif() && this.isMeToken()) {
+				if(this.myself().getBattlefieldById(card.uid) != null && card.isType(TypeCard.CREATURE)) {
+					this.actionCardGroup.attaquantBtn.text.text = 'attaquant';
+					this.actionCardGroup.attaquantBtn.visible = true;
+				}
+			}
 		}
-		
-		var text = '';
-		if(cardView.model.owner == this.gameCtrl.getPlayerActif()) {
-			text = 'attaquant';
+		else if(this.isPhase(PHASE.DECLARATION_BLOQUEUR)) {
+			if(!this.isMeActif() && this.isMeToken()) {
+				if(this.myself().getBattlefieldById(card.uid) != null && card.isType(TypeCard.CREATURE)) {
+					this.actionCardGroup.attaquantBtn.text.text = 'bloqueur';
+					this.actionCardGroup.attaquantBtn.visible = true;
+				}
+			}
 		}
-		else {
-			text = 'bloqueur';
-		}
-		this.actionCardGroup.attaquantBtn.text.text = text;
+
 		this.actionCardGroup.card = cardView;
 		this.actionCardGroup.visible=true;
 	}
@@ -486,11 +496,13 @@ class GameView extends Phaser.Group {
 	}
 
 	nextTokenAnim(nextTokenAnimData) {
-		this.tokenLabel.y=(nextTokenAnimData.name == this.myName ? 580:0);
+		this.playerTokenName = nextTokenAnimData.name; 
+		this.tokenLabel.y = (nextTokenAnimData.name == this.myName ? 580:0);
 	}
 
 	nextPlayerAnim(nextPlayerAnimData) {
-		this.actifLabel.y=(nextPlayerAnimData.name == this.myName ? 580:0);
+		this.playerActifName = nextPlayerAnimData.name;
+		this.actifLabel.y = (nextPlayerAnimData.name == this.myName ? 580:0);
 	}
 
 	retirerCardAnim(retirerCardAnimData) {
@@ -501,8 +513,6 @@ class GameView extends Phaser.Group {
 
 	showInfoCard(card) {
 		var text = this.game.add.text(200, 20, 'un exemple de texte, blablabla bliblibli btest 1234', {font: '14px Arial Black',fill: '#fff',strokeThickness: 4,wordWrap: true, wordWrapWidth: 250});
-	
-		//this.text.setTextBounds(0, 0, 100, 100);
 	}
 	
 	onReceive(event) {

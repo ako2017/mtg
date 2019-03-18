@@ -17,6 +17,7 @@ class CardView extends Phaser.Sprite {
 		this.front = this.addChild(this.game.make.sprite(0, 0, cardData.extension + '#' + cardData.numero));
 		this.front.anchor.setTo(0.5);
 		this.back.anchor.setTo(0.5);
+		this.type = cardData.type;
 		this.show(false);
 		this.front.force = this.front.addChild(this.game.add.text(-50, 0, cardData.force, { font: '28px Arial Black',fill: '#fff',strokeThickness: 4 }));
 		this.front.force.anchor.setTo(0.5);

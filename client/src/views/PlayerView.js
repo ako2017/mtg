@@ -48,4 +48,8 @@ class PlayerView {
 		return this.getCardById(this.battlefield, cardId, toRemove);
 	}
 
+	getTerrainById(cardId, toRemove) {
+		return this.getCardById(this.terrains, cardId, toRemove);
+	}
+
 }
