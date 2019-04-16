@@ -128,6 +128,15 @@ class Player extends Observable {
 		return false;
 	};
 
+	canPoseCard(card) {
+		if(card.type == TypeCard.TERRAIN && this.hasPoseTerrain) {
+			return this.error("vous ne pouvez poser qu'un terrain par tour");
+		}
+		else if(!this.canPayMana()) {
+			return this.error("vous n'avez pas assez de mana");
+		}
+	}
+
 	/**
 	 * Pose une carte si on  a assez de mana
 	 * @param {Card} card  la carte à poser
