@@ -57,8 +57,9 @@ class Game extends Observable {
 		return false;
 	}
 
-	unPassAll() {
+	unPassAll(player) {
 		for (var i = 0; i < this.players.length; i++) {
+			if(player && this.players[i] == player) continue;
 			this.players[i].hasPass = false;
 		}
 	}
@@ -91,6 +92,13 @@ class Game extends Observable {
 		this.notify(event);
 	}
 
+	pass(player) {
+		if(!this.isAuthorized('pass',{player:player})) 
+			return false;
+		player.hasPass = true;
+		this.nextToken();
+	}
+
 	nextToken() {
 		this.token = (this.token + 1) % this.players.length;
 		sendEvent(GameEvent.NEXT_TOKEN,this.getPlayerWithToken(),this);
@@ -100,13 +108,30 @@ class Game extends Observable {
 		if(!this.isAuthorized('valid',{player:player})) 
 			return false;
 		if (this.pm.valid(player)) {
+			this.unPassAll();
 			if (!this.stack.isEmpty()) {
 				this.unPassAll();
 				this.stack.resolve(this);
 			} else {
-				this.unPassAll();
 				this.pm.next();
 			}
+		}
+	}
+
+	poseCard(player, card) {
+		if(!this.isAuthorized('poseCard',{player:player, card:card})) 
+			return false;
+		player.poseCard(card, this.stack);
+		this.unPassAll(player);
+	}
+
+	/**
+	 * 
+	 * @param {*} player 
+	 */
+	muligane(player) {
+		if(this.isAuthorized('muligane', player)) {
+			player.muligane();
 		}
 	}
 

@@ -26,4 +26,8 @@ class AbstractPhase extends Observable{
 		return false;
 	}
 
+	next(phaseId) {
+		this.pm._next = phaseId;
+	}
+
 }

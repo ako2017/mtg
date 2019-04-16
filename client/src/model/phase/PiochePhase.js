@@ -1,21 +1,46 @@
-PiochePhase = function(pm) {
-	this.pm = pm;
-	this.phaseId = PHASE.PIOCHE;
-};
-
-PiochePhase.prototype.execute = function() {
-	if (!this.pm.game.getPlayerActif().canPioche) {
-		this.pm.game.getPlayerActif().canPioche = true;
-		return PHASE.PRINCIPALE;
-	} else {
-		this.pm.game.getPlayerActif().pioche();
-		return PHASE.PRINCIPALE;
+class PiochePhase extends AbstractPhase {
+	constructor(pm) {
+		super(pm,PHASE.PIOCHE);
+		this.firstPioche = true;
 	}
-};
 
-PiochePhase.prototype.valid = function(player) {
-	return false;
-};
+	execute() {
+		if(this.firstPioche) {
+			this.firstPioche = false;
+			return PHASE.WAIT;
+		}
+		else {
+			this.pm.game.getPlayerActif().pioche();
+			return PHASE.WAIT;
+		}
+	}
+	
+	valid(player) {
+		this.pm.game.pass(player);
+		var players = this.getPlayers();
+		for (var i = 0; i < players.length; i++) {
+			if (!players[i].hasPass) {
+				return false;
+			}
+		}
+		this.next(PHASE.PRINCIPALE);
+		return true;
+	}
+	
+	end() {
+	}
 
-PiochePhase.prototype.end = function() {
-};
+	isAuthorized(action, data) {
+		if('poseCard' == action) {
+			if(this.pm.game.isPlayerWithToken(data.player) && data.card.type == TypeCard.EPHEMERE && !this.pm.game.stack.needCible() && data.player.canPoseCard(data.card)) {
+				return true;
+			}
+		}
+		else if('valid' == action) {
+			if(this.pm.game.isPlayerWithToken(data.player))
+				return true;
+		}
+		return false;
+	}
+
+}

@@ -52,14 +52,4 @@ class DistributionPhase extends AbstractPhase {
 		return false;
 	}
 
-	/**
-	 * 
-	 * @param {*} player 
-	 */
-	muligane(player) {
-		if(this.isAuthorized('muligane', player)) {
-			player.muligane();
-		}
-	}
-
 }

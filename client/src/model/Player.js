@@ -144,7 +144,7 @@ class Player extends Observable {
 	 * @returns {boolean} true en cas de succès false sinon
 	 */
 	poseCard(card,stack) {
-		if(!this.canPayMana()) return false;
+		if(!this.canPoseCard(card)) return false;
 		player.payMana(card.mana);
 		if(card.type == TypeCard.TERRAIN) {
 			this.hasPoseTerrain = true;
