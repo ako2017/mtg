@@ -332,6 +332,18 @@
 						gameState.view.showInfoCard(1);
 					}
 
+					function manaAnim(playerName,mana) {
+						var event = {type : GameEvent.UPDATE_MANA, data : {name : playerName , mana : mana}};
+						gameState.view.onReceive(event);		
+					}
+
+					function manaAnimTest() {
+						this.initPlayers();
+						this.distribution();
+						this.muliganeValid('p1');
+						this.muliganeValid('p2');
+						this.manaAnim('p1',[1,2,0,0,0]);
+					}
 
 				</script>
     </head> 
@@ -359,6 +371,7 @@
 			<a onClick ="playerLifeTest();" href="#">18-PLAYER LIFE</a><br/>
 			<a onClick ="gotoCemeteryTest();" href="#">19-GOTO CEMETERY</a><br/>
 			<a onClick ="showInfoCardTest();" href="#">20-SHOW INFO CARD</a><br/>
+			<a onClick ="manaAnimTest();" href="#">21-MANA ANIM</a><br/>
     </body>
 
 </html>

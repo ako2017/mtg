@@ -400,7 +400,7 @@ class GameView extends Phaser.Group {
 	
 	manaAnim(manaAnimData) {
 		for(var i =0;i<5;i++)
-			this.playersView[manaAnimData.name].mana[i].text=manaAnimData.mana[i];
+			this.playersView[manaAnimData.name].manaLabel[i].text=manaAnimData.mana[i];
 	}
 	
 	changePhaseAnim(changePhaseAnimData) {
@@ -511,6 +511,10 @@ class GameView extends Phaser.Group {
 		}
 	}
 
+	malInvocationAnim(malInvocationAnimData) {
+		this.playersView[malInvocationAnimData.name].getCardByIdAll(malInvocationAnimData.card);
+	}
+
 	showInfoCard(card) {
 		var text = this.game.add.text(200, 20, 'un exemple de texte, blablabla bliblibli btest 1234', {font: '14px Arial Black',fill: '#fff',strokeThickness: 4,wordWrap: true, wordWrapWidth: 250});
 	}
@@ -590,6 +594,9 @@ class GameView extends Phaser.Group {
 				break;
 			case GameEvent.ATTACK_PLAYER:
 				this.attackPlayerAnim(event.data);
+				break;
+			case GameEvent.MAL_INVOCATION:
+				this.malInvocationAnim(event.data);
 				break;
 			default :
 				alert('evenement inconnu');
