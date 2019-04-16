@@ -128,7 +128,15 @@ class Player extends Observable {
 		return false;
 	};
 
+	/**
+	 * Pose une carte si on  a assez de mana
+	 * @param {Card} card  la carte à poser
+	 * @param {Stack} stack la carte est mise sur la pile dan certains cas
+	 * @returns {boolean} true en cas de succès false sinon
+	 */
 	poseCard(card,stack) {
+		if(!this.canPayMana()) return false;
+		player.payMana(card.mana);
 		if(card.type == TypeCard.TERRAIN) {
 			this.hasPoseTerrain = true;
 			this.terrains.push(card);
@@ -142,12 +150,13 @@ class Player extends Observable {
 			this.hand.removeByValue(card);
 			stack.push(card);
 		}
+		return false;
 	};
 
 	/**
 	 * Déclare la carte comme attaquant
 	 * @param {Card} card la carte attaquante
-	 * @returns {boolean} true si ok fakse sinon
+	 * @returns {boolean} true si ok false sinon
 	 */
 	declareAttaquant(card) {
 		if(!card.canAttaque()) {
@@ -163,7 +172,7 @@ class Player extends Observable {
 	}
 
 	/**
-	 * Engage la carte sélectionnée
+	 * Engage la carte sélectionnée si elle n'est pas déjà engagée
 	 * @param {Card} card la carte à engager
 	 * @returns {boolean} true en cas de succès false sinon
 	 */
@@ -177,6 +186,10 @@ class Player extends Observable {
 		return true;
 	}
 
+	/**
+	 * Appelé lors de l'exécution d'un nouveau tour de jeu pour ce joueur.
+	 * Cette méthode réinitialise certains attributs.
+	 */
 	newTurn() {
 		this.attaquants.length=0;
 		this.hasPoseTerrain = false;
@@ -192,8 +205,8 @@ class Player extends Observable {
 
 	/**
 	 * Déclare un bloqueur sur un attaquant
-	 * @param {*} bloqueur le bloqueur est une carte que vous possédez
-	 * @param {*} attaquant l'attaquant est une carte adverse
+	 * @param {Card} bloqueur le bloqueur est une carte que vous possédez
+	 * @param {Card} attaquant l'attaquant est une carte adverse
 	 */
 	declareBloqueur(bloqueur, attaquant) {
 		if(bloqueur.owner != this || attaquant.owner == this) 
@@ -204,12 +217,20 @@ class Player extends Observable {
 	}
 
 	/**
+	 * Vérifie si un muligane est possible
+	 * @returns {boolean} true si succès false sinon
+	 */
+	canMuligane() {
+		return this.hand.length>1;
+	}
+
+	/**
 	 * Effectue un muligane 
 	 * @returns {boolean} true si succès false sinon
 	 */
 	muligane() {
+		if(!this.canMuligane()) return false;
 		var nbCard = this.hand.length-1;
-		if(nbCard<=0) return false;
 		for(var i=0;i<this.hand.length;i++) {
 			this.deck.push(this.hand[i]);
 		}

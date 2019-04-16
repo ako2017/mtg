@@ -1,5 +1,6 @@
 class Card extends Observable {
-	constructor() {
+	constructor(player) {
+		super();
 		this.force = 0;
 		this.endurance = 0;
 		this.nom="nom";
@@ -169,13 +170,14 @@ class Card extends Observable {
 		this.degage();
 	}
 
+	canDegage() {
+		return !this.isEngaged;
+	}
+
 	degage() {
-		if(!this.isEngaged) return false;
+		if(!this.canDegage()) return false;
 		this.isEngaged = false;
-		var event = {};
-		event.type = GameEvent.DEGAGEMENT;
-		event.data = this;
-		this.notify(event);
+		sendEvent(GameEvent.DEGAGEMENT, this, this);
 		return true;
 	}
 
@@ -238,12 +240,14 @@ class Card extends Observable {
 		return this.malInvocation;
 	}
 
+	setMalInvocation(malInvocation) {
+		this.malInvocation = malInvocation;
+		sendEvent(GameEvent.MAL_INVOCATION, {value : this.malInvocation}, this);
+	}
+
 	enterBattlefield() {
 		this.owner.battlefield.push(this);
-		this.malInvocation = true;
-		var event = {};
-		event.type = GameEvent.ENTER_BATTLEFIELD;
-		event.data = this;
-		this.notify(event);
+		this.setMalInvocation(true);
+		sendEvent(GameEvent.ENTER_BATTLEFIELD, {value : this}, this);
 	}
 }

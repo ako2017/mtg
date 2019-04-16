@@ -1,20 +1,29 @@
-WhoBeginsPhase = function(pm) {
-	this.pm = pm;
-	this.phaseId = PHASE.WHO_BEGINS;
-};
+class WhoBeginsPhase extends AbstractPhase {
+	constructor(pm) {
+		super(pm, PHASE.WHO_BEGINS);
+	}
 
-WhoBeginsPhase.prototype.execute = function() {
-	this.pm.game.playerActif = Math.floor((Math.random() * 10))%2;
-	this.pm.game.token = this.pm.game.playerActif;
-	this.pm.game.getPlayerActif().canPioche = false;
+	execute() {
+		this.setPlayerActif();
+		sendEvent(GameEvent.WHO_BEGIN,this.getPlayerActif(),this);
+		return PHASE.DEGAGEMENT;
+	}
 
-	sendEvent(GameEvent.WHO_BEGIN,this.pm.game.getPlayerActif(),this.pm.game);
-	return PHASE.DEGAGEMENT;
-};
+	setPlayerActif() {
+		this.pm.game.playerActif = Math.floor((Math.random() * 10))%2;
+		this.pm.game.token = this.pm.game.playerActif;
+		this.pm.game.getPlayerActif().canPioche = false;
+	}
 
-WhoBeginsPhase.prototype.valid = function(player, game) {
-	return false;
-};
-
-WhoBeginsPhase.prototype.end = function() {
-};
+	getPlayerActif() {
+		return this.pm.game.getPlayerActif();
+	}
+	
+	valid(player) {
+		return false;
+	}
+	
+	end() {
+	}
+	
+}

@@ -97,6 +97,8 @@ class Game extends Observable {
 	}
 
 	valid(player) {
+		if(!this.isAuthorized('valid',{player:player})) 
+			return false;
 		if (this.pm.valid(player)) {
 			if (!this.stack.isEmpty()) {
 				this.unPassAll();
@@ -117,5 +119,9 @@ class Game extends Observable {
 				this.state = null;
 			}
 		}
+	}
+
+	isAuthorized(action, data) {
+		return this.pm.isAuthorized(action, data);
 	}
 }

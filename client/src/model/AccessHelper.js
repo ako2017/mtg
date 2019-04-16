@@ -31,13 +31,7 @@ AccessHelper.prototype.canPoseCard = function(game, player,card) {
 };
 
 AccessHelper.prototype.canMuligane = function(game, player) {
-	if(!game.pm.isPhase(PHASE.DISTRIBUTION)) {
-		return this.error("vous ne pouvez pas faire de muligane");
-	}
-	
-	var nbCard = player.hand.length-1;
-	
-	if(nbCard <= 0) {
+	if(!game.pm.isPhase(PHASE.DISTRIBUTION) && !player.canMuligane()) {
 		return this.error("vous ne pouvez pas faire de muligane");
 	}
 	return true;

@@ -38,6 +38,10 @@ PhaseManager.prototype.valid = function(player) {
 	this.next();
 };
 
+PhaseManager.prototype.isAuthorized = function(action, data) {
+	return this.currentPhase.isAuthorized(action, data);
+};
+
 PhaseManager.prototype.next = function() {
 	while (this._next != PHASE.WAIT) {
 		this.currentPhase.end();

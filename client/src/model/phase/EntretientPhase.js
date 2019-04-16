@@ -1,15 +1,17 @@
-EntretientPhase = function(pm) {
-	this.pm = pm;
-	this.phaseId = PHASE.ENTRETIENT;
-};
+class EntretientPhase extends AbstractPhase {
+	constructor(pm) {
+		super(pm,PHASE.ENTRETIENT);
+	}
 
-EntretientPhase.prototype.execute = function() {
-	return PHASE.PIOCHE;
-};
+	execute() {
+		return PHASE.PIOCHE;
+	}
+	
+	valid(player) {
+		return false;
+	}
+	
+	end() {
+	}
 
-EntretientPhase.prototype.valid = function(player) {
-	return false;
-};
-
-EntretientPhase.prototype.end = function() {
-};
+}

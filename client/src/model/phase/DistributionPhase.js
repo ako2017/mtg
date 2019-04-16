@@ -1,29 +1,65 @@
-DistributionPhase = function(pm) {
-	this.pm=pm;
-	this.phaseId = PHASE.DISTRIBUTION;
-};
-
-DistributionPhase.prototype.execute = function() {
-	for (var i = 0; i < this.pm.game.players.length; i++) {
-		var player = this.pm.game.players[i];
-		for (var j = 0; j < 7; j++) {
-			var card = player.deck.pop();
-			player.hand.push(card);
-		}
+/**
+ * Représente la phase de DISTRIBUTION du jeu
+ * Dans celle-ci nous distribuons 7 cartes aux joueurs, il leur est possible de faire un muligane
+ * si leur main ne convient pas
+ */
+class DistributionPhase extends AbstractPhase {
+	constructor(pm) {
+		super(pm,PHASE.DISTRIBUTION);
 	}
-	sendEvent(GameEvent.DISTRIBUTION,this.pm.game.players,this.pm.game);
-	return PHASE.WAIT;
-};
 
-DistributionPhase.prototype.valid = function(player) {
-	player.doneDistrib = true;
-	for (var i = 0; i < this.pm.game.players.length; i++) {
-		if (!this.pm.game.players[i].doneDistrib) {
+	execute() {
+		var players = this.getPlayers();
+		for (var i = 0; i < players.length; i++) {
+			var player = players[i];
+			for (var j = 0; j < 7; j++) {
+				var card = player.deck.pop();
+				player.hand.push(card);
+			}
+		}
+		sendEvent(GameEvent.DISTRIBUTION, players, this);
+		return PHASE.WAIT;
+	}
+	
+	valid(player) {
+		if(!this.isAuthorized('valid', {player : player})) {
 			return PHASE.WAIT;
 		}
+		player.doneDistrib = true;
+		var players = this.getPlayers();
+		for (var i = 0; i < players.length; i++) {
+			if (!players[i].doneDistrib) {
+				return PHASE.WAIT;
+			}
+		}
+		return PHASE.WHO_BEGINS;
 	}
-	return PHASE.WHO_BEGINS;
-};
+	
+	end() {
+	}
 
-DistributionPhase.prototype.end = function() {
-};
+	isAuthorized(action, data) {
+		if('muligane' == action) {
+			if(data.player.canMuligane()) {
+				return true;
+			}
+		}
+		else if('valid' == action) {
+			if(!data.player.doneDistrib) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * 
+	 * @param {*} player 
+	 */
+	muligane(player) {
+		if(this.isAuthorized('muligane', player)) {
+			player.muligane();
+		}
+	}
+
+}

@@ -55,9 +55,7 @@ class GameService {
 	 * @param {Player} player 
 	 */
 	valid(game, player) {
-		if(AccessHelper.canValid(player,game)) {
-			game.valid(player);
-		}
+		game.valid(player)
 	}
 	
 	/**
@@ -68,8 +66,7 @@ class GameService {
 	 * @param {Card} card la carte que l'on souhaire poser
 	 */
 	poseCard(game, player, card) {
-		if(AccessHelper.canPoseCard(player, game, card, game.stack)) {
-			player.payMana(card.mana);
+		if(game.isAuthorized(player, game, card, game.stack)) {
 			player.poseCard(card, game.stack);
 			if (game.stack.needCible()) {
 				game.state = State.NEED_CIBLE;
