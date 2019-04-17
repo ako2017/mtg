@@ -1,35 +1,35 @@
-PrincipalePhase = function(pm) {
-	this.pm = pm;
-	this.phaseNum = 0;
-	this.phaseId = PHASE.PRINCIPALE;
-};
+class PrincipalePhase extends AbstractPhase {
+	constructor(pm) {
+		super(pm,PHASE.PRINCIPALE);
+		this.phaseNum = 0;
+	}
 
-PrincipalePhase.prototype.execute = function() {
-	return PHASE.WAIT;
-};
+	execute() {
+		return PHASE.WAIT;
+	}
 
-PrincipalePhase.prototype.valid = function(player) {
-	if (this.phaseNum == 0) {
-		if (this.pm.game.isPlayerWithToken(player)) {
-			player.pass();
-			this.pm.game.nextToken();
-			if (this.pm.game.checkAllPass()) {
-				return PHASE.DECLARATION_ATTAQUANT;
+	valid(player) {
+		if (this.phaseNum == 0) {
+			if (this.pm.game.isPlayerWithToken(player)) {
+				this.pass(player);
+				if (this.pm.game.checkAllPass()) {
+					return PHASE.DECLARATION_ATTAQUANT;
+				}
 			}
 		}
-	}
-	if (this.phaseNum == 1) {
-		if (this.pm.game.isPlayerWithToken(player)) {
-			player.pass();
-			this.pm.game.nextToken();
-			if (this.pm.game.checkAllPass()) {
-				return PHASE.FIN;
+		if (this.phaseNum == 1) {
+			if (this.pm.game.isPlayerWithToken(player)) {
+				this.pass(player);
+				if (this.pm.game.checkAllPass()) {
+					return PHASE.FIN;
+				}
 			}
 		}
+		return PHASE.WAIT;
 	}
-	return PHASE.WAIT;
-};
 
-PrincipalePhase.prototype.end = function() {
-	this.phaseNum = (this.phaseNum + 1) % 2;
-};
+	end() {
+		this.phaseNum = (this.phaseNum + 1) % 2;
+	}
+
+}

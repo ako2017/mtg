@@ -16,12 +16,9 @@ class PiochePhase extends AbstractPhase {
 	}
 	
 	valid(player) {
-		this.pm.game.pass(player);
-		var players = this.getPlayers();
-		for (var i = 0; i < players.length; i++) {
-			if (!players[i].hasPass) {
-				return false;
-			}
+		this.pass(player);
+		if(!this.checkAllPass()) {
+			return false;
 		}
 		this.next(PHASE.PRINCIPALE);
 		return true;

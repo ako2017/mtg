@@ -40,3 +40,13 @@ QUnit.test('validShouldReturnWAIT', function(assert) {
 	//THEN
 	assert.ok(result1 == PHASE.WAIT && result2 == PHASE.WAIT, 'on retourne WAIT');
 });
+
+QUnit.test('isAuthorizedPoseCardShouldReturnFalse', function(assert) {
+	//GIVEN
+	var distributionPhase = new DistributionPhase(null);
+	var player = createPlayer('p1');
+	//WHEN
+	var result = distributionPhase.isAuthorized('poseCard', player, null);
+	//THEN
+	assert.ok(result == false, 'on retourne false');
+});

@@ -36,19 +36,6 @@ class Game extends Observable {
 		this.pm.start();
 	}
 
-	/**
-	 * Vérifie si tous les joueurs on passé leur tour
-	 * @returns {boolean} true si c'est le cas false sinon
-	 */
-	checkAllPass() {
-		for (var i = 0; i < this.players.length; i++) {
-			var player = this.players[i];
-			if (!player.hasPass)
-				return false;
-		}
-		return true;
-	}
-
 	endOfGame() {
 		for (var i = 0; i < this.players.length; i++) {
 			if (this.players[i].life<0)
@@ -95,7 +82,7 @@ class Game extends Observable {
 	pass(player) {
 		if(!this.isAuthorized('pass',{player:player})) 
 			return false;
-		player.hasPass = true;
+		player.pass();
 		this.nextToken();
 	}
 

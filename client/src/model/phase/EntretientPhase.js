@@ -8,12 +8,9 @@ class EntretientPhase extends AbstractPhase {
 	}
 	
 	valid(player) {
-		this.pm.game.pass(player);
-		var players = this.getPlayers();
-		for (var i = 0; i < players.length; i++) {
-			if (!players[i].hasPass) {
-				return false;
-			}
+		this.pass(player);
+		if(!this.checkAllPass()) {
+			return false;
 		}
 		this.next(PHASE.PIOCHE);
 		return true;
@@ -24,7 +21,7 @@ class EntretientPhase extends AbstractPhase {
 
 	isAuthorized(action, data) {
 		if('poseCard' == action) {
-			if(this.pm.game.isPlayerWithToken(data.player) && data.card.type == TypeCard.EPHEMERE && !this.pm.game.stack.needCible() && data.player.canPoseCard(data.card)) {
+			if(this.pm.game.isPlayerWithToken(data.player) && (data.card.type == TypeCard.EPHEMERE || data.card.type == TypeCard.CAPACITY) && !this.pm.game.stack.needCible() && data.player.canPoseCard(data.card)) {
 				return true;
 			}
 		}
