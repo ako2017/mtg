@@ -80,8 +80,6 @@ class Game extends Observable {
 	}
 
 	pass(player) {
-		if(!this.isAuthorized('pass',{player:player})) 
-			return false;
 		player.pass();
 		this.nextToken();
 	}

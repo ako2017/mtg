@@ -10,7 +10,7 @@ class PiochePhase extends AbstractPhase {
 			return PHASE.WAIT;
 		}
 		else {
-			this.pm.game.getPlayerActif().pioche();
+			this.getPlayerActif().pioche();
 			return PHASE.WAIT;
 		}
 	}

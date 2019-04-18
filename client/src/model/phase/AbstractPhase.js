@@ -30,6 +30,10 @@ class AbstractPhase extends Observable{
 		this.pm.game.pass(player);
 	}
 
+	getPlayerActif() {
+		return this.pm.game.getPlayerActif();
+	}
+
 	/**
 	 * Vérifie si tous les joueurs on passé leur tour
 	 * @returns {boolean} true si c'est le cas false sinon

@@ -85,7 +85,7 @@ class Player extends Observable {
 		if(this.deck.length == 0) return null;
 		var card = this.deck.pop();
 		this.hand.push(card);
-		sendEvent(GameEvent.PIOCHE_CARD,{player:this,card:card},this.game);
+		sendEvent(GameEvent.PIOCHE_CARD,{player:this,card:card},this);
 		return card;
 	};
 
