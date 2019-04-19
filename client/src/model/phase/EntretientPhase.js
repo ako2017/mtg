@@ -10,10 +10,9 @@ class EntretientPhase extends AbstractPhase {
 	valid(player) {
 		this.pass(player);
 		if(!this.checkAllPass()) {
-			return false;
+			return PHASE.WAIT;
 		}
-		this.next(PHASE.PIOCHE);
-		return true;
+		return PHASE.PIOCHE;
 	}
 	
 	end() {

@@ -18,10 +18,9 @@ class PiochePhase extends AbstractPhase {
 	valid(player) {
 		this.pass(player);
 		if(!this.checkAllPass()) {
-			return false;
+			return PHASE.WAIT;
 		}
-		this.next(PHASE.PRINCIPALE);
-		return true;
+		return PHASE.PRINCIPALE;
 	}
 	
 	end() {

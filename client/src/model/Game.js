@@ -92,15 +92,8 @@ class Game extends Observable {
 	valid(player) {
 		if(!this.isAuthorized('valid',{player:player})) 
 			return false;
-		if (this.pm.valid(player)) {
-			this.unPassAll();
-			if (!this.stack.isEmpty()) {
-				this.unPassAll();
-				this.stack.resolve(this);
-			} else {
-				this.pm.next();
-			}
-		}
+		this.pm.valid(player);
+		this.pm.next();
 	}
 
 	poseCard(player, card) {

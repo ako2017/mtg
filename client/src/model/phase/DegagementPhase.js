@@ -19,7 +19,7 @@ class DegagementPhase extends AbstractPhase {
 	}
 	
 	valid(player) {
-		return false;
+		return PHASE.WAIT;
 	}
 	
 	end() {

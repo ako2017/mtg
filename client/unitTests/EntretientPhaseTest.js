@@ -1,4 +1,4 @@
-QUnit.test('validAllPlayerShouldReturnTrue', function(assert) {
+QUnit.test('validAllPlayerShouldReturnPIOCHE', function(assert) {
 	//GIVEN
 	var entretientPhase = new EntretientPhase(null);
 	var player = createPlayer('p1');
@@ -8,5 +8,5 @@ QUnit.test('validAllPlayerShouldReturnTrue', function(assert) {
 	//WHEN
 	var result = entretientPhase.valid(player);
 	//THEN
-	assert.ok(result == true, 'on retourne true');
+	assert.ok(result == PHASE.PIOCHE, 'on retourne PIOCHE');
 });

@@ -35,7 +35,22 @@ PhaseManager.prototype.isPhase = function(phaseId) {
 
 PhaseManager.prototype.valid = function(player) {
 	this._next = this.currentPhase.valid(player);
-	this.next();
+};
+
+PhaseManager.prototype.checkStack = function() {
+	if(this.currentPhase.checkStack()) {
+		this.unPassAll();
+		if (!this.game.stack.isEmpty()) {
+			this.game.unPassAll();
+			this.game.stack.resolve(this);
+			return false;
+		} else {
+			return true;
+		}
+	}
+	else {
+		return true;
+	}
 };
 
 PhaseManager.prototype.isAuthorized = function(action, data) {
@@ -43,7 +58,7 @@ PhaseManager.prototype.isAuthorized = function(action, data) {
 };
 
 PhaseManager.prototype.next = function() {
-	while (this._next != PHASE.WAIT) {
+	while (this._next != PHASE.WAIT && this.checkStack(this._next)) {
 		this.currentPhase.end();
 		this.currentPhase = this.phases[this._next];
 		sendEvent(GameEvent.CHANGE_PHASE,this._next,this.game);

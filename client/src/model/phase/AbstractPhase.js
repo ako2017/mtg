@@ -3,6 +3,7 @@ class AbstractPhase extends Observable{
 		super();
 		this.pm=pm;
 		this.phaseId = phaseId;
+		this.ischeckStack = false;
 	}
 
 	execute() {
@@ -47,8 +48,8 @@ class AbstractPhase extends Observable{
 		return true;
 	}
 
-	next(phaseId) {
-		this.pm._next = phaseId;
+	checkStack() {
+		return this.ischeckStack;
 	}
 
 }
