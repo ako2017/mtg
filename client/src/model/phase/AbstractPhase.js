@@ -48,7 +48,7 @@ class AbstractPhase extends Observable{
 		return true;
 	}
 
-	checkStack() {
+	needCheckStack() {
 		return this.ischeckStack;
 	}
 
