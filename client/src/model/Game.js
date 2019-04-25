@@ -6,7 +6,6 @@ class Game extends Observable {
 		this.stack = new Stack();
 		this.players = [];
 		this.selectedCards = [];
-		this.state;
 		this.maxPlayer = 2;
 	}
 
@@ -114,13 +113,8 @@ class Game extends Observable {
 	}
 
 	validCible(player, cards) {
-		if (this.state != State.NEED_CIBLE)
-			return;
-		var event = {};
-		if (this.isPlayerWithToken(player)) {
-			if (this.stack.validCible(cards)) {
-				this.state = null;
-			}
+		if(this.isAuthorized('validCible', cards)) {
+			this.stack.validCible(cards);
 		}
 	}
 

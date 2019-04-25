@@ -9,17 +9,9 @@ class PrincipalePhase extends AbstractPhase {
 	}
 
 	valid(player) {
-		if (this.phaseNum == 0) {
-			this.pass(player);
-			if (this.pm.game.checkAllPass()) {
-				return PHASE.DECLARATION_ATTAQUANT;
-			}
-		}
-		if (this.phaseNum == 1) {
-			this.pass(player);
-			if (this.pm.game.checkAllPass()) {
-				return PHASE.FIN;
-			}
+		this.pass(player);
+		if (this.checkAllPass()) {
+			return this.phaseNum == 0 ? PHASE.DECLARATION_ATTAQUANT : PHASE.FIN;
 		}
 		return PHASE.WAIT;
 	}
@@ -29,15 +21,14 @@ class PrincipalePhase extends AbstractPhase {
 	}
 
 	isAuthorized(action, data) {
+		if(this.pm.game.stack.needCible()) 
+			return false;
 		if('poseCard' == action) {
 			if(this.pm.game.isPlayerWithToken(data.player)) {
 				if(this.pm.game.isPlayerActif(data.player)) {
-					if(this.pm.game.stack.containsType(data.card.type))
-						return false;
-					else
-						return true;
+					return this.pm.game.stack.canPlayCardOfType(data.card.type) && data.player.canPoseCard(data.card);
 				}
-				else if(data.card.type == TypeCard.EPHEMERE || data.card.type == TypeCard.CAPACITY && !this.pm.game.stack.needCible() && data.player.canPoseCard(data.card)) {
+				else if(data.card.type == TypeCard.EPHEMERE || data.card.type == TypeCard.CAPACITY && data.player.canPoseCard(data.card)) {
 					return true;
 				}
 			}

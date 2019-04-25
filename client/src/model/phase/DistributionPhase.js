@@ -22,9 +22,6 @@ class DistributionPhase extends AbstractPhase {
 	}
 	
 	valid(player) {
-		if(!this.isAuthorized('valid', {player : player})) {
-			return PHASE.WAIT;
-		}
 		player.doneDistrib = true;
 		var players = this.getPlayers();
 		for (var i = 0; i < players.length; i++) {

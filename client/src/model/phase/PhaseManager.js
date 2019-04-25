@@ -38,9 +38,8 @@ class PhaseManager extends Observable {
 	
 	canGoNext() {
 		if(this.currentPhase.needCheckStack()) {
-			this.unPassAll();
+			this.game.unPassAll();
 			if (!this.game.stack.isEmpty()) {
-				this.game.unPassAll();
 				this.game.stack.resolve(this.game);
 				return false;
 			} else {
