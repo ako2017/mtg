@@ -165,19 +165,14 @@ class Player extends Observable {
 	/**
 	 * Déclare la carte comme attaquant
 	 * @param {Card} card la carte attaquante
-	 * @returns {boolean} true si ok false sinon
 	 */
 	declareAttaquant(card) {
-		if(!card.canAttaque()) {
-			return false;
-		}
 		card.engage();
 		this.attaquants.push(card);
 		var event = {};
 		event.type = GameEvent.DECLARE_ATTAQUANT;
 		event.data = card;
 		this.notify(event);
-		return true;
 	}
 
 	/**

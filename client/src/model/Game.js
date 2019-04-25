@@ -95,6 +95,18 @@ class Game extends Observable {
 		this.pm.next();
 	}
 
+	passDeclarationAttaquant(player) {
+		if(!this.isAuthorized('passDeclarationAttaquant',{player:player})) 
+			return false;
+		this.pm.getCurrentPhase.passDeclarationAttaquant(player);
+	}
+
+	declarationAttaquant(player, card) {
+		if(!this.isAuthorized('declarationAttaquant',{player:player,card:card})) 
+			return false;
+		player.declareAttaquant(card);
+	}
+
 	poseCard(player, card) {
 		if(!this.isAuthorized('poseCard',{player:player, card:card})) 
 			return false;
@@ -107,7 +119,7 @@ class Game extends Observable {
 	 * @param {*} player 
 	 */
 	muligane(player) {
-		if(this.isAuthorized('muligane', player)) {
+		if(this.isAuthorized('muligane', {player:player})) {
 			player.muligane();
 		}
 	}

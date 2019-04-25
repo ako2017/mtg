@@ -55,7 +55,7 @@ class DeclarationAttaquantPhase extends AbstractPhase {
 				return true;
 		}
 		else if('declarationAttaquant' == action && !this.passDeclarationAttaquant) {
-			if(this.pm.game.isPlayerActif(data.player))
+			if(this.pm.game.isPlayerActif(data.player) && data.card.canAttaque())
 				return true;
 		}
 		else if('passDeclarationAttaquant' == action) {

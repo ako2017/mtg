@@ -31,6 +31,10 @@ class PhaseManager extends Observable {
 	isPhase(phaseId) {
 		return this.currentPhase.phaseId == phaseId;
 	};
+
+	getCurrentPhase() {
+		return this.currentPhase;
+	}
 	
 	valid(player) {
 		this._next = this.currentPhase.valid(player);
