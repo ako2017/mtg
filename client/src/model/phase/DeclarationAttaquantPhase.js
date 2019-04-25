@@ -1,6 +1,7 @@
 class DeclarationAttaquantPhase extends AbstractPhase {
 	constructor(pm) {
 		super(pm,PHASE.DECLARATION_ATTAQUANT);
+		this.passDeclarationAttaquant = false;
 	}
 
 	execute() {
@@ -35,6 +36,10 @@ class DeclarationAttaquantPhase extends AbstractPhase {
 	end() {
 	}
 
+	passDeclarationAttaquant() {
+		this.passDeclarationAttaquant = true;
+	}
+
 	isAuthorized(action, data) {
 		if(this.pm.game.stack.needCible()) 
 			return false;
@@ -49,11 +54,15 @@ class DeclarationAttaquantPhase extends AbstractPhase {
 			if(this.pm.game.isPlayerWithToken(data.player))
 				return true;
 		}
-		else if('declarationAttaquant' == action) {
+		else if('declarationAttaquant' == action && !this.passDeclarationAttaquant) {
 			if(this.pm.game.isPlayerActif(data.player))
 				return true;
 		}
-		
+		else if('passDeclarationAttaquant' == action) {
+			if(this.pm.game.isPlayerActif(data.player))
+				return true;
+		}
+
 		return false;
 	}
 
