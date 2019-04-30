@@ -34,6 +34,7 @@ class DeclarationAttaquantPhase extends AbstractPhase {
 	}
 	
 	end() {
+		this.passDeclarationAttaquant = false;
 	}
 
 	passDeclarationAttaquant() {
@@ -58,7 +59,7 @@ class DeclarationAttaquantPhase extends AbstractPhase {
 			if(this.pm.game.isPlayerActif(data.player) && data.card.canAttaque())
 				return true;
 		}
-		else if('passDeclarationAttaquant' == action) {
+		else if('passDeclarationAttaquant' == action && !this.passDeclarationAttaquant) {
 			if(this.pm.game.isPlayerActif(data.player))
 				return true;
 		}

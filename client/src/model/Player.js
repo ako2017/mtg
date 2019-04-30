@@ -207,6 +207,16 @@ class Player extends Observable {
 		sendEvent(GameEvent.RESTAURE_MAL_INVOCATION,this.battlefield,this);
 	}
 
+	canDeclareBloqueur() {
+		for(var i=0;i<this.battlefield.length;i++) {
+			var card = this.battlefield[i];
+			if(card.isEngaged || card.type != TypeCard.CREATURE) {
+				return false;
+			}
+		}
+		return  true;
+	}
+
 	/**
 	 * Déclare un bloqueur sur un attaquant
 	 * @param {Card} bloqueur le bloqueur est une carte que vous possédez
