@@ -39,16 +39,7 @@ class DeclarationBloqueurPhase extends AbstractPhase {
 		this.passDeclarationBloqueur = false;
 	}
 
-
-	declarationBloqueur(player, card) {
-		if(!this.isAuthorized('declarationBloqueur',{player:player,card:card})) 
-			return false;
-		player.declarationBloqueur(card);
-	}
-
 	passDeclarationBloqueur() {
-		if(!this.isAuthorized('passDeclarationAttaquant',{player:player})) 
-			return;
 		this.passDeclarationBloqueur = true;
 	}
 

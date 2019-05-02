@@ -107,6 +107,18 @@ class Game extends Observable {
 		player.declareAttaquant(card);
 	}
 
+	declarationBloqueur(player, card) {
+		if(!this.isAuthorized('declarationBloqueur',{player:player,card:card})) 
+			return false;
+		player.declarationBloqueur(card);
+	}
+
+	passDeclarationBloqueur() {
+		if(!this.isAuthorized('passDeclarationBloqueur',{player:player})) 
+			return;
+		this.pm.getCurrentPhase.passDeclarationBloqueur(player);
+	}
+
 	poseCard(player, card) {
 		if(!this.isAuthorized('poseCard',{player:player, card:card})) 
 			return false;
