@@ -136,6 +136,19 @@ class Game extends Observable {
 		}
 	}
 
+	/**
+	 * Retire une carte de la main du joueur si possible
+	 * @param {Game} game le contexte du jeu
+	 * @param {Player} player le joueur voulant retirer une carte
+	 * @param {Card} card  la carte à retirer
+	 */
+	retirerCard(player, card) {
+		if(this.isAuthorized('retirerCard', {player:player, card:card})) {
+			player.retirerCard(card);
+			this.valid(player);
+		}
+	}
+
 	validCible(player, cards) {
 		if(this.isAuthorized('validCible', cards)) {
 			this.stack.validCible(cards);
