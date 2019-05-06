@@ -15,7 +15,7 @@ class DegagementPhase extends AbstractPhase {
 	}
 
 	getPlayerActif() {
-		return this.pm.game.getPlayerActif();
+		return this.game.getPlayerActif();
 	}
 	
 	valid(player) {

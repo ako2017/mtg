@@ -21,12 +21,12 @@ class PrincipalePhase extends AbstractPhase {
 	}
 
 	isAuthorized(action, data) {
-		if(this.pm.game.stack.needCible()) 
+		if(this.game.stack.needCible()) 
 			return false;
 		if('poseCard' == action) {
-			if(this.pm.game.isPlayerWithToken(data.player)) {
-				if(this.pm.game.isPlayerActif(data.player)) {
-					return this.pm.game.stack.canPlayCardOfType(data.card.type) && data.player.canPoseCard(data.card);
+			if(this.game.isPlayerWithToken(data.player)) {
+				if(this.game.isPlayerActif(data.player)) {
+					return this.game.stack.canPlayCardOfType(data.card.type) && data.player.canPoseCard(data.card);
 				}
 				else if(data.card.type == TypeCard.EPHEMERE || data.card.type == TypeCard.CAPACITY && data.player.canPoseCard(data.card)) {
 					return true;
@@ -34,7 +34,7 @@ class PrincipalePhase extends AbstractPhase {
 			}
 		}
 		else if('valid' == action) {
-			if(this.pm.game.isPlayerWithToken(data.player))
+			if(this.game.isPlayerWithToken(data.player))
 				return true;
 		}
 		return false;

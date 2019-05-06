@@ -2,6 +2,7 @@ class AbstractPhase extends Observable{
 	constructor(pm, phaseId) {
 		super();
 		this.pm=pm;
+		this.game = game;
 		this.phaseId = phaseId;
 		this.ischeckStack = false;
 	}
@@ -20,19 +21,15 @@ class AbstractPhase extends Observable{
 	 * @returns  {Player} les joueurs de la partie
 	 */
 	getPlayers() {
-		return this.pm.game.players;
+		return this.game.players;
 	}
 
 	isAuthorized(action, data) {
 		return false;
 	}
 
-	pass(player) {
-		this.pm.game.pass(player);
-	}
-
 	getPlayerActif() {
-		return this.pm.game.getPlayerActif();
+		return this.game.getPlayerActif();
 	}
 
 	/**
@@ -40,8 +37,8 @@ class AbstractPhase extends Observable{
 	 * @returns {boolean} true si c'est le cas false sinon
 	 */
 	checkAllPass() {
-		for (var i = 0; i < this.pm.game.players.length; i++) {
-			var player = this.pm.game.players[i];
+		for (var i = 0; i < this.game.players.length; i++) {
+			var player = this.game.players[i];
 			if (!player.hasPass)
 				return false;
 		}

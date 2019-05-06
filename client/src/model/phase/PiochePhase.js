@@ -16,7 +16,7 @@ class PiochePhase extends AbstractPhase {
 	}
 	
 	valid(player) {
-		this.pass(player);
+		this.game.pass(player);
 		if(!this.checkAllPass()) {
 			return PHASE.WAIT;
 		}
@@ -28,12 +28,12 @@ class PiochePhase extends AbstractPhase {
 
 	isAuthorized(action, data) {
 		if('poseCard' == action) {
-			if(this.pm.game.isPlayerWithToken(data.player) && data.card.type == TypeCard.EPHEMERE && !this.pm.game.stack.needCible() && data.player.canPoseCard(data.card)) {
+			if(this.game.isPlayerWithToken(data.player) && data.card.type == TypeCard.EPHEMERE && !this.game.stack.needCible() && data.player.canPoseCard(data.card)) {
 				return true;
 			}
 		}
 		else if('valid' == action) {
-			if(this.pm.game.isPlayerWithToken(data.player))
+			if(this.game.isPlayerWithToken(data.player))
 				return true;
 		}
 		return false;

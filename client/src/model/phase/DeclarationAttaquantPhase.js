@@ -6,7 +6,7 @@ class DeclarationAttaquantPhase extends AbstractPhase {
 
 	execute() {
 		var passDeclare = true;
-		this.pm.game.getPlayerActif().battlefield.every(function(card, index) {
+		this.game.getPlayerActif().battlefield.every(function(card, index) {
 			if(card.canAttaque()) {
 				passDeclare = false;
 				return true;
@@ -21,9 +21,9 @@ class DeclarationAttaquantPhase extends AbstractPhase {
 	
 	valid(player) {
 		this.pass(player);
-		if (this.pm.game.checkAllPass()) {
-			if(this.pm.game.getPlayerActif().attaquants.length>0) {
-				this.pm.game.nextToken();
+		if (this.game.checkAllPass()) {
+			if(this.game.getPlayerActif().attaquants.length>0) {
+				this.game.nextToken();
 				return PHASE.DECLARATION_BLOQUEUR;
 			}
 			else {
@@ -42,25 +42,25 @@ class DeclarationAttaquantPhase extends AbstractPhase {
 	}
 
 	isAuthorized(action, data) {
-		if(this.pm.game.stack.needCible()) 
+		if(this.game.stack.needCible()) 
 			return false;
 		if('poseCard' == action) {
-			if(this.pm.game.isPlayerWithToken(data.player)) {
+			if(this.game.isPlayerWithToken(data.player)) {
 				if(data.card.type == TypeCard.EPHEMERE || data.card.type == TypeCard.CAPACITY && data.player.canPoseCard(data.card)) {
 					return true;
 				}
 			}
 		}
 		else if('valid' == action) {
-			if(this.pm.game.isPlayerWithToken(data.player))
+			if(this.game.isPlayerWithToken(data.player))
 				return true;
 		}
 		else if('declarationAttaquant' == action && !this.passDeclarationAttaquant) {
-			if(this.pm.game.isPlayerActif(data.player) && data.card.canAttaque())
+			if(this.game.isPlayerActif(data.player) && data.card.canAttaque())
 				return true;
 		}
 		else if('passDeclarationAttaquant' == action && !this.passDeclarationAttaquant) {
-			if(this.pm.game.isPlayerActif(data.player))
+			if(this.game.isPlayerActif(data.player))
 				return true;
 		}
 

@@ -5,21 +5,21 @@ class DeclarationBloqueurPhase extends AbstractPhase {
 	}
 
 	execute() {
-		if(!this.pm.game.getPlayerWithToken().canDeclareBloqueur()) {
+		if(!this.game.getPlayerWithToken().canDeclareBloqueur()) {
 			return PHASE.ATTRIBUTION_BLESSURE;
 		}
 		return PHASE.WAIT;
 	}
 	
 	valid(player) {
-		if (!this.pm.game.isPlayerActif(player) && !this.hasDonedeclaration) {
+		if (!this.game.isPlayerActif(player) && !this.hasDonedeclaration) {
 			player.pass();
 			this.pm.game.nextToken();
 			this.hasDonedeclaration = true;
 		}
-		else if (this.pm.game.isPlayerWithToken(player) && this.hasDonedeclaration) {
+		else if (this.game.isPlayerWithToken(player) && this.hasDonedeclaration) {
 			player.pass();
-			if (this.pm.game.checkAllPass()) {
+			if (this.game.checkAllPass()) {
 				return PHASE.ATTRIBUTION_BLESSURE;
 			}
 		}
@@ -28,7 +28,7 @@ class DeclarationBloqueurPhase extends AbstractPhase {
 
 
 	valid(player) {
-		this.pass(player);
+		this.game.pass(player);
 		if(!this.checkAllPass()) {
 			return PHASE.WAIT;
 		}
@@ -45,25 +45,25 @@ class DeclarationBloqueurPhase extends AbstractPhase {
 
 
 	isAuthorized(action, data) {
-		if(this.pm.game.stack.needCible()) 
+		if(this.game.stack.needCible()) 
 			return false;
 		if('poseCard' == action) {
-			if(this.pm.game.isPlayerWithToken(data.player)) {
+			if(this.game.isPlayerWithToken(data.player)) {
 				if(data.card.type == TypeCard.EPHEMERE || data.card.type == TypeCard.CAPACITY && data.player.canPoseCard(data.card)) {
 					return true;
 				}
 			}
 		}
 		else if('valid' == action) {
-			if(this.pm.game.isPlayerWithToken(data.player))
+			if(this.game.isPlayerWithToken(data.player))
 				return true;
 		}
 		else if('declarationBloqueur' == action && !this.passDeclarationBloqueur) {
-			if(this.pm.game.isPlayerWithToken(data.player) && data.card.canBloque())
+			if(this.game.isPlayerWithToken(data.player) && data.card.canBloque())
 				return true;
 		}
 		else if('passDeclarationBloqueur' == action && !this.passDeclarationBloqueur) {
-			if(this.pm.game.isPlayerWithToken(data.player))
+			if(this.game.isPlayerWithToken(data.player))
 				return true;
 		}
 		return false;
