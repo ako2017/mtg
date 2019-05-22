@@ -1,4 +1,4 @@
-QUnit.module( "DegagementPhase" );
+QUnit.module( "DegagementPhase" );;
 
 QUnit.test('execute_should_returnENTRETIENT', function(assert) {
 	//GIVEN
