@@ -202,7 +202,6 @@ class Card extends Observable {
 		}
 		else {
 			player.damage(-this.getForce());
-			}
 		}
 	}
 
@@ -211,7 +210,8 @@ class Card extends Observable {
 		if(this.enduranceCpt <= 0) {
 			this.gotoCemetery();
 			this.owner.battlefield.removeByValues(this);
-	};
+		}
+	}
 
 	restaure() {
 		this.enduranceCpt = this.getForce();
