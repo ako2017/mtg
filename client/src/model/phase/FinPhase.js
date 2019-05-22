@@ -1,22 +1,33 @@
-FinPhase = function(pm) {
-	this.pm = pm;
-	this.phaseId = PHASE.FIN;
-};
+class FinPhase extends AbstractPhase {
+	constructor(pm) {
+		super(pm,PHASE.FIN);
+	}
 
-FinPhase.prototype.execute = function() {
-	return PHASE.NETTOYAGE;
-};
+	execute() {
+		return PHASE.WAIT;
+	}
+	
+	valid(player) {
+		this.game.pass(player);
+		if (this.game.checkAllPass()) {
+			return PHASE.NETTOYAGE;
+		}
+		return PHASE.WAIT;
+	}
+		
+	end() {
+	}
 
-FinPhase.prototype.valid = function(player) {
-	return false;
-};
-
-FinPhase.prototype.next = function() {
-	this.pm._next = PHASE.NETTOYAGE;
-	this.pm.game.nextToken();
-	this.pm.game.nextPlayer();
-	this.pm.next();
-};
-
-FinPhase.prototype.end = function() {
-};
+	isAuthorized(action, data) {
+		if('poseCard' == action) {
+			if(this.game.isPlayerWithToken(data.player) && (data.card.type == TypeCard.EPHEMERE || data.card.type == TypeCard.CAPACITY) && !this.game.stack.needCible() && data.player.canPoseCard(data.card)) {
+				return true;
+			}
+		}
+		else if('valid' == action) {
+			if(this.game.isPlayerWithToken(data.player))
+				return true;
+		}
+		return false;
+	}
+}

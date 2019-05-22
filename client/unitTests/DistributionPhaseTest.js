@@ -1,52 +1,52 @@
-QUnit.test('executeShouldGive7CardsToPlayer', function(assert) {
-	//GIVEN
-	var distributionPhase = new DistributionPhase(null); 
-	var player = createPlayer('p1');
-	distributionPhase.getPlayers = function() {
-		return [player];
+QUnit.module( "DistributionPhase", {
+	before: function() {
+	  // prepare something once for all tests
+	},
+	beforeEach: function() {
+		this.game = new Game();
+		var player = createPlayer('p1');
+		this.game.addPlayer(player);
+		var player2 = createPlayer('p2');
+		this.game.addPlayer(player2);
+		this.distributionPhase = new DistributionPhase(this.game.pm); 
+	},
+	afterEach: function() {
+	  // clean up after each test
+	},
+	after: function() {
+	  // clean up once after all tests are done
 	}
+  });
+
+QUnit.test('execute_should_give7CardsToPlayer', function(assert) {
+	//GIVEN
 	//WHEN
-	distributionPhase.execute();
+	this.distributionPhase.execute();
 	//THEN
-	assert.ok(player.hand.length == 7, 'on a 7 cartes');
+	assert.ok(this.game.getPlayers()[0].hand.length == 7, 'on a 7 cartes');
 });
 
-QUnit.test('validShouldReturnWHO_BEGINS', function(assert) {
+QUnit.test('valid_should_returnWHO_BEGINS_when_allPlayersValid', function(assert) {
 	//GIVEN
-	var distributionPhase = new DistributionPhase(null); 
-	var player = createPlayer('p1');
-	var player2 = createPlayer('p2');
-	distributionPhase.getPlayers = function() {
-		return [player, player2];
-	}
 	//WHEN
-	var result1 = distributionPhase.valid(player);
-	var result2 = distributionPhase.valid(player2);
+	var result1 = this.distributionPhase.valid(this.game.getPlayers()[0]);
+	var result2 = this.distributionPhase.valid(this.game.getPlayers()[1]);
 	//THEN
 	assert.ok(result1 == PHASE.WAIT && result2 == PHASE.WHO_BEGINS, 'on retourne WHO_BEGINS');
 });
 
-QUnit.test('validShouldReturnWAIT', function(assert) {
+QUnit.test('valid_should_returnWAIT_ifNotAllPlayersValid', function(assert) {
 	//GIVEN
-	var distributionPhase = new DistributionPhase(null); 
-	var player = createPlayer('p1');
-	var player2 = createPlayer('p2');
-	distributionPhase.getPlayers = function() {
-		return [player, player2];
-	}
 	//WHEN
-	var result1 = distributionPhase.valid(player);
-	var result2 = distributionPhase.valid(player);
+	var result = this.distributionPhase.valid(this.game.getPlayers()[0]);
 	//THEN
-	assert.ok(result1 == PHASE.WAIT && result2 == PHASE.WAIT, 'on retourne WAIT');
+	assert.ok(result == PHASE.WAIT, 'on retourne WAIT');
 });
 
-QUnit.test('isAuthorizedPoseCardShouldReturnFalse', function(assert) {
+QUnit.test('isAuthorized_shouldReturnFalse_ifAnyPlayerPoseCard', function(assert) {
 	//GIVEN
-	var distributionPhase = new DistributionPhase(null);
-	var player = createPlayer('p1');
 	//WHEN
-	var result = distributionPhase.isAuthorized('poseCard', player, null);
+	var result = this.distributionPhase.isAuthorized('poseCard', this.game.getPlayers()[0], null);
 	//THEN
 	assert.ok(result == false, 'on retourne false');
 });

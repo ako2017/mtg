@@ -4,7 +4,7 @@ class DegagementPhase extends AbstractPhase {
 	}
 
 	execute() {
-		var player = this.getPlayerActif();
+		var player = this.game.getPlayerActif();
 		for(var i = 0; i < player.battlefield.length; i++) {
 			player.battlefield[i].degage();
 		}
@@ -12,10 +12,6 @@ class DegagementPhase extends AbstractPhase {
 			player.terrains[i].degage();
 		}
 		return PHASE.ENTRETIENT;
-	}
-
-	getPlayerActif() {
-		return this.pm.game.getPlayerActif();
 	}
 	
 	valid(player) {

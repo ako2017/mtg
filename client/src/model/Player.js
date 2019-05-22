@@ -20,7 +20,6 @@ class Player extends Observable {
 		this.attaquants = [];
 		this.hasPass = false;
 		this.avatar = "";
-		this.game = null;
 		this.uid = UID++;
 	}
 
@@ -163,24 +162,6 @@ class Player extends Observable {
 	};
 
 	/**
-	 * Déclare la carte comme attaquant
-	 * @param {Card} card la carte attaquante
-	 * @returns {boolean} true si ok false sinon
-	 */
-	declareAttaquant(card) {
-		if(!card.canAttaque()) {
-			return false;
-		}
-		card.engage();
-		this.attaquants.push(card);
-		var event = {};
-		event.type = GameEvent.DECLARE_ATTAQUANT;
-		event.data = card;
-		this.notify(event);
-		return true;
-	}
-
-	/**
 	 * Engage la carte sélectionnée si elle n'est pas déjà engagée
 	 * @param {Card} card la carte à engager
 	 * @returns {boolean} true en cas de succès false sinon
@@ -212,13 +193,36 @@ class Player extends Observable {
 		sendEvent(GameEvent.RESTAURE_MAL_INVOCATION,this.battlefield,this);
 	}
 
+	canDeclareAttaquant(card) {
+		return this.battlefield.contains(card) && card.canAttaque();
+	}
+
+	/**
+	 * Déclare la carte comme attaquant
+	 * @param {Card} card la carte attaquante
+	 * @returns {boolean} true si ok false sinon
+	 */
+	declareAttaquant(card) {
+		if(!this.canDeclareAttaquant(card)) {
+			return false;
+		}
+		card.engage();
+		this.attaquants.push(card);
+		sendEvent(GameEvent.DECLARE_ATTAQUANT,card,this);
+		return true;
+	}
+
+	canDeclareBloqueur(bloqueur, attaquant) {
+		return this.battlefield.contains(bloqueur) && card.canBloque(attaquant);
+	}
+
 	/**
 	 * Déclare un bloqueur sur un attaquant
 	 * @param {Card} bloqueur le bloqueur est une carte que vous possédez
 	 * @param {Card} attaquant l'attaquant est une carte adverse
 	 */
 	declareBloqueur(bloqueur, attaquant) {
-		if(bloqueur.owner != this || attaquant.owner == this) 
+		if(this.canDeclareBloqueur(bloqueur, attaquant)) 
 			return false;
 		attaquant.blockedBy = bloqueur;
 		bloqueur.blockCard = attaquant;

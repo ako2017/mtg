@@ -1,5 +1,6 @@
 class Game extends Observable {
 	constructor() {
+		super();
 		this.pm = new PhaseManager(this);
 		this.playerActif = 0;
 		this.token = 0;
@@ -22,6 +23,10 @@ class Game extends Observable {
 			return true;
 		}
 		return false;
+	}
+
+	getPlayers() {
+		return this.players;
 	}
 
 	/**
@@ -79,6 +84,19 @@ class Game extends Observable {
 		this.notify(event);
 	}
 
+	/**
+	 * Vérifie si tous les joueurs on passé leur tour
+	 * @returns {boolean} true si c'est le cas false sinon
+	 */
+	checkAllPass() {
+		for (var i = 0; i < this.players.length; i++) {
+			var player = this.players[i];
+			if (!player.hasPass)
+				return false;
+		}
+		return true;
+	}
+
 	pass(player) {
 		player.pass();
 		this.nextToken();
@@ -101,6 +119,18 @@ class Game extends Observable {
 			return false;
 		player.poseCard(card, this.stack);
 		this.unPassAll(player);
+	}
+
+	retirerCard(player, card) {
+		if(!this.isAuthorized('retirerCard',{player:player, card:card})) 
+			return false;
+		player.retirerCard(card);
+	}
+
+	declareAttaquant(player, card) {
+		if(!this.isAuthorized('declareAttaquant',{player:player, card:card})) 
+			return false;
+		player.declareAttaquant(card);
 	}
 
 	/**

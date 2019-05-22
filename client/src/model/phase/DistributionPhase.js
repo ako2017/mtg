@@ -9,7 +9,7 @@ class DistributionPhase extends AbstractPhase {
 	}
 
 	execute() {
-		var players = this.getPlayers();
+		var players = this.game.getPlayers();
 		for (var i = 0; i < players.length; i++) {
 			var player = players[i];
 			for (var j = 0; j < 7; j++) {
@@ -22,11 +22,8 @@ class DistributionPhase extends AbstractPhase {
 	}
 	
 	valid(player) {
-		if(!this.isAuthorized('valid', {player : player})) {
-			return PHASE.WAIT;
-		}
 		player.doneDistrib = true;
-		var players = this.getPlayers();
+		var players = this.game.getPlayers();
 		for (var i = 0; i < players.length; i++) {
 			if (!players[i].doneDistrib) {
 				return PHASE.WAIT;

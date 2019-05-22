@@ -5,18 +5,14 @@ class WhoBeginsPhase extends AbstractPhase {
 
 	execute() {
 		this.setPlayerActif();
-		sendEvent(GameEvent.WHO_BEGIN,this.getPlayerActif(),this);
+		sendEvent(GameEvent.WHO_BEGIN,this.game.getPlayerActif(),this);
 		return PHASE.DEGAGEMENT;
 	}
 
 	setPlayerActif() {
-		this.pm.game.playerActif = Math.floor((Math.random() * 10))%2;
-		this.pm.game.token = this.pm.game.playerActif;
-		this.pm.game.getPlayerActif().canPioche = false;
-	}
-
-	getPlayerActif() {
-		return this.pm.game.getPlayerActif();
+		this.game.playerActif = Math.floor((Math.random() * 10))%2;
+		this.game.token = this.game.playerActif;
+		this.game.getPlayerActif().canPioche = false;
 	}
 	
 	valid(player) {

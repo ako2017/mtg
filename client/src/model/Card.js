@@ -155,19 +155,13 @@ class Card extends Observable {
 
 	engage() {
 		this.isEngaged = true;
-		var event = {};
-		event.type = GameEvent.ENGAGEMENT;
-		event.data = this;
-		this.notify(event);
+		sendEvent(GameEvent.ENGAGEMENT, this, this);
 	}
 
 	gotoCemetery() {
 		this.owner.cemetery.push(this);
-		var event = {};
-		event.type = GameEvent.GOTO_CEMETERY;
-		event.data = this;
-		this.notify(event);
 		this.degage();
+		sendEvent(GameEvent.GOTO_CEMETERY, this, this);
 	}
 
 	canDegage() {
@@ -208,12 +202,15 @@ class Card extends Observable {
 		}
 		else {
 			player.damage(-this.getForce());
-			console.log(player.name + ' ' + player.life);
+			}
 		}
 	}
 
 	damage(force) {
 		this.enduranceCpt-=force;
+		if(this.enduranceCpt <= 0) {
+			this.gotoCemetery();
+			this.owner.battlefield.removeByValues(this);
 	};
 
 	restaure() {
@@ -245,8 +242,8 @@ class Card extends Observable {
 		sendEvent(GameEvent.MAL_INVOCATION, {value : this.malInvocation}, this);
 	}
 
-	enterBattlefield() {
-		this.owner.battlefield.push(this);
+	enterBattlefield(battlefield) {
+		battlefield.push(this);
 		this.setMalInvocation(true);
 		sendEvent(GameEvent.ENTER_BATTLEFIELD, {value : this}, this);
 	}

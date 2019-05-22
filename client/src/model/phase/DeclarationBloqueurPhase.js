@@ -1,30 +1,46 @@
-DeclarationBloqueurPhase = function(pm) {
-	this.pm = pm;
-	this.hasDonedeclaration = false;
-	this.phaseId = PHASE.DECLARATION_BLOQUEUR;
-};
-
-DeclarationBloqueurPhase.prototype.execute = function() {
-	return PHASE.ATTRIBUTION_BLESSURE;
-	//return PHASE.WAIT;
-};
-
-DeclarationBloqueurPhase.prototype.valid = function(player) {
-	if (!this.pm.game.isPlayerActif(player) && !this.hasDonedeclaration) {
-		player.pass();
-		this.pm.game.nextToken();
-		this.hasDonedeclaration = true;
+class DeclarationBloqueurPhase extends AbstractPhase {
+	constructor(pm) {
+		super(pm,PHASE.DECLARATION_BLOQUEUR);
+		this.hasDonedeclaration = false;
 	}
-	else if (this.pm.game.isPlayerWithToken(player) && this.hasDonedeclaration) {
-		player.pass();
-		if (this.pm.game.checkAllPass()) {
+
+	execute() {
+		return PHASE.WAIT;
+	}
+	
+	valid(player) {
+		if (this.hasDonedeclaration) {
+			this.hasDonedeclaration = true;
+			return PHASE.WAIT;
+		}
+		this.game.pass(player);
+		if (this.game.checkAllPass()) {
 			return PHASE.ATTRIBUTION_BLESSURE;
 		}
+		return PHASE.WAIT;
 	}
-	return PHASE.WAIT;
-};
+	
+	end() {
+		this.hasDonedeclaration = false;
+	}
 
+	isAuthorized(action, data) {
+		if('poseCard' == action) {
+			if(this.hasDonedeclaration && this.game.isPlayerWithToken(data.player) && (data.card.type == TypeCard.EPHEMERE || data.card.type == TypeCard.CAPACITY) && !this.game.stack.needCible() && data.player.canPoseCard(data.card)) {
+				return true;
+			}
+		}
+		else if('declareBloqueur' == action) {
+			if(!this.hasDonedeclaration && this.game.isPlayerWithToken(data.player) && data.player.canDeclareBloqueur(data.bloqueur,data.attaquant) && this.game.getPlayerActif().battlefield.contains(data.attaquant)) {
+				return true;
+			}
+		}
+		else if('valid' == action) {
+			if((!this.game.isPlayerActif(data.player) && !this.hasDonedeclaration)
+			 	|| (this.game.isPlayerWithToken(data.player) && this.hasDonedeclaration))
+				return true;
+		}
+		return false;
+	}
 
-DeclarationBloqueurPhase.prototype.end = function() {
-	this.hasDonedeclaration = false;
-};
+}
