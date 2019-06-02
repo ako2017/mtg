@@ -9,7 +9,7 @@ class DeclarationBloqueurPhase extends AbstractPhase {
 	}
 	
 	valid(player) {
-		if (this.hasDonedeclaration) {
+		if (!this.hasDonedeclaration) {
 			this.hasDonedeclaration = true;
 			return PHASE.WAIT;
 		}

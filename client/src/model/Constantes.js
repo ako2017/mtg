@@ -85,7 +85,8 @@ GameEvent = {
 	ATTACK : 29,
 	DECLARE_ATTAQUANT : 30,
 	ATTACK_PLAYER : 31,
-	MAL_INVOCATION : 32
+	MAL_INVOCATION : 32,
+	WAIT_INFO : 33
 };
 
 const
@@ -159,7 +160,7 @@ TimeToLive = {
 };
 
 const
-Capacity = {
+Capability = {
 	VOL : 0,
 	CELERITE : 1,
 	VIGILANCE : 2

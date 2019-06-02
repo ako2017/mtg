@@ -113,6 +113,10 @@ class Player extends Observable {
 		sendEvent(GameEvent.PLAYER_LIFE,this,this);
 	};
 
+	addLife(life) {
+		this.life += life;
+	}
+
 	/**
 	 * Retire une carte de la main du joueur
 	 * @param {Card} card la carte à retirer
@@ -128,12 +132,16 @@ class Player extends Observable {
 	};
 
 	canPoseCard(card) {
+		if(card.owner != this) {
+			return this.error("vous ne possédez pas cette carte");
+		}
 		if(card.type == TypeCard.TERRAIN && this.hasPoseTerrain) {
 			return this.error("vous ne pouvez poser qu'un terrain par tour");
 		}
-		else if(!this.canPayMana()) {
+		else if(!this.canPayMana(card.mana)) {
 			return this.error("vous n'avez pas assez de mana");
 		}
+		return true;
 	}
 
 	/**
@@ -158,7 +166,11 @@ class Player extends Observable {
 			this.hand.removeByValue(card);
 			stack.push(card);
 		}
-		return false;
+		var info = stack.waitInfo(); 
+		if(info.result) {
+			sendEvent(GameEvent.WAIT_INFO,{player:this,info:info},this);
+		}
+		return true;
 	};
 
 	/**

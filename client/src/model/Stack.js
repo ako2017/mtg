@@ -2,44 +2,63 @@ class Stack extends Observable {
 	constructor() {
 		super();
 		this.stack = [];
+		this.currentSort = null;
+		this.capacityToAdd = [];
 	}
 
+
+	/**
+	 * Résout un sort de la pile
+	 * Tant que le sort courant n'est pas résolu on ne peut pas faire d'autre action dans le jeu
+	 * @param {Game} game 
+	 * @returns true si il a été résolu
+	 */
 	resolve(game) {
-		var current = this.stack.pop();
-	
-		if (current != undefined) {
-			switch(current.type) {
-			case TypeCard.CREATURE :
-				current.enterBattlefield();
-				this.addCapacitiesByTrigger(GameEvent.ON_ENTER_BATTLEFIELD,current, game.players);
-				this.resolve(game);
-				break;
-			case TypeCard.CAPACITY :
-				current.execute({game : game});
-				break;
-			case TypeCard.EPHEMERE :
-				var capacity = current.capacities[0];
-				capacity.execute({game : game});
-				current.gotoCemetery();
-				break;
-			}
+		if(this.currentSort != null && this.currentSort.isFinished() && this.isEmpty()) {
+			throw "la pile est vide!";
+		}
+		if(this.currentSort== null || this.currentSort.isFinished()) {
+			this.currentSort = this.stack.pop();
+		}		
+		this.currentSort.resolve(game,this);
+		//
+		if(this.currentSort.getType() == TypeCard.CREATURE) {
+			this.addCapacitiesByTrigger(GameEvent.ON_ENTER_BATTLEFIELD,this.currentCard, game.players);
 		}
 	}
+
+	/**
+	 * 
+	 */
+	onFinishedSort() {
+		//this.addCapacitiesByTrigger(GameEvent.ON_ENTER_BATTLEFIELD,this.currentCard, game.players);
+	}
+
 	
 	addCapacitiesByTrigger(trigger, card, players) {
 		for (var i = 0; i < players.length; i++) {
 			var battlefield = players[i].battlefield;
 			for (var j = 0; j < battlefield.length; j++) {
 				var capacity = battlefield[j].getCapacityByTrigger(trigger,card);
-				if (capacity) {
+				if(capacity) {
 					this.push(capacity);
 				}
 			}
 		}
 	}
+
+	addCapacityUntilWait() {
+		var capacity;
+		do {
+			capacity = this.capacityToAdd.pop();
+			this.stack.push(this.capacityToAdd.pop());
+		}
+		while(this.capacityToAdd.length > 0 && capacity.waitInfo().resut);
+	}
 	
 	push(card) {
-		this.stack.push(card);
+		var sort = new Sort(card);
+		this.stack.push(sort);
 		sendEvent(GameEvent.STACK_CARD,{card:card},this);
 	}
 	
@@ -62,8 +81,16 @@ class Stack extends Observable {
 	}
 	
 	setCible(cibles) {
-		var elt = this.stack[this.stack.length-1];
-		elt.setCibles(cibles);
+		if(this.needCible()) {
+			var elt = this.stack[this.stack.length-1];
+			return elt.setCibles(cibles);
+		}
+		return false;
+	}
+
+	needCible() {
+		var result = this.waitInfo();
+		return result.result && result.typeInfo == 'target';
 	}
 	
 	containsType(type) {
@@ -75,16 +102,27 @@ class Stack extends Observable {
 		}
 		return false;
 	}
-	
-	needCible() {
-		if(this.stack.length != 0) {
-			var elt = this.stack[this.stack.length-1];
-			return elt.type == TypeCard.CAPACITY && elt.needCible();
-		}
-		return false;
+
+	/**
+	 * Sélectionne l'effet désiré d'une liste d'effets proposée par une capacité de carte
+	 * @param {*} effectNumber 
+	 */
+	setEffectNumber(effectNumber) {
+		return this.currentSort.setEffectNumber(effectNumber);
 	}
 	
 	isEmpty() {
 		return this.stack.length == 0;
+	}
+
+	waitInfo() {
+		if(this.currentSort != null) {
+			return this.currentSort.waitInfo();
+		}
+		else if(this.stack.length != 0) {
+			var elt = this.stack[this.stack.length-1];
+			return elt.waitInfo();
+		}
+		return {result:false};
 	}
 }

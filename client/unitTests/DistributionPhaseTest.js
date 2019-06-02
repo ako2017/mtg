@@ -16,7 +16,7 @@ QUnit.module( "DistributionPhase", {
 	after: function() {
 	  // clean up once after all tests are done
 	}
-  });
+});
 
 QUnit.test('execute_should_give7CardsToPlayer', function(assert) {
 	//GIVEN
@@ -46,7 +46,7 @@ QUnit.test('valid_should_returnWAIT_ifNotAllPlayersValid', function(assert) {
 QUnit.test('isAuthorized_shouldReturnFalse_ifAnyPlayerPoseCard', function(assert) {
 	//GIVEN
 	//WHEN
-	var result = this.distributionPhase.isAuthorized('poseCard', this.game.getPlayers()[0], null);
+	var result = this.distributionPhase.isAuthorized('poseCard', this.game.getPlayers()[0]);
 	//THEN
 	assert.ok(result == false, 'on retourne false');
 });

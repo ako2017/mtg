@@ -1,9 +1,3 @@
-function createGame(name1,name2) {
-	
-};
-
-
-
 function createPlayer(name) {
 	var player = new Player();
 	player.name = name;
@@ -20,6 +14,12 @@ function createCard(player, data) {
 	return card;
 };
 
+function giveCardFromDecktoHand(player, number) {
+	for(var i=0;i<number;i++) {
+		player.hand.push(player.deck.pop());
+	}
+}
+
 function createCardCreature(player) {
 	var card = new Card(player);
 	card.init(cardCreature);
@@ -32,10 +32,40 @@ function createCardTerrain(player) {
 	return card;
 };
 
+function createCardEphemere(player) {
+	var card = new Card(player);
+	card.init(cardEphemere);
+	return card;
+};
+
 function giveInHand(player, nbCard) {
 	for(var i=0;i<nbCard;i++) {
 		player.hand.push(player.deck.pop());
 	}
+};
+
+function createCreatureAddOneLife(player) {
+	var card = new Card(player);
+	card.force = 0;
+	card.endurance = 0;
+	card.mana = [1,0,0,0,0,0];
+	card.type = TypeCard.CREATURE;
+	var capacity = new Capacity([1,0,0,0,0,0], null);
+	capacity.addEffect(new AddLifeEffect(null,5));
+	card.addCapacity(capacity);
+	return card;
+};
+
+function createCreatureTriggerOnEnterBattlefieldAddOneLife(player) {
+	var card = new Card(player);
+	card.force = 0;
+	card.endurance = 0;
+	card.mana = [1,0,0,0,0,0];
+	card.type = TypeCard.CREATURE;
+	var capacity = new Capacity([0,0,0,0,0,0], function(trigger,source) {return trigger == GameEvent.ON_ENTER_BATTLEFIELD});
+	capacity.addEffect(new AddLifeEffect(null,10));
+	card.addCapacity(capacity);
+	return card;
 };
 
 var cardCreature = {

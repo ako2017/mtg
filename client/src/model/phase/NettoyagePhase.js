@@ -27,12 +27,12 @@ class NettoyagePhase extends AbstractPhase {
 		this.game.getPlayerNonActif().battlefield.forEach(function(card, index) {
 			card.restaure();
 		},this);
-		this.phases[PHASE.PRINCIPALE].phaseNum = 0;
+		this.game.pm.phases[PHASE.PRINCIPALE].phaseNum = 0;
 	}
 
 	isAuthorized(action, data) {
 		if('retirerCard' == action) {
-			if(this.game.isPlayerActif(data.player)) {
+			if(this.game.isPlayerActif(data.player) && this.game.getPlayerActif(data.player).hand.length >7 && this.game.getPlayerActif(data.player).hand.contains(data.card)) {
 				return true;
 			}
 		}

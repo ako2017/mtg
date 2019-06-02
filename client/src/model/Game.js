@@ -1,7 +1,7 @@
 class Game extends Observable {
 	constructor() {
 		super();
-		this.pm = new PhaseManager(this);
+		this.pm = this.createPhaseManager();
 		this.playerActif = 0;
 		this.token = 0;
 		this.stack = new Stack();
@@ -9,6 +9,24 @@ class Game extends Observable {
 		this.selectedCards = [];
 		this.state;
 		this.maxPlayer = 2;
+	}
+
+	createPhaseManager() {
+		var pm = new PhaseManager(this);
+		var phases = [];
+		phases[PHASE.DISTRIBUTION] = new DistributionPhase(pm);
+		phases[PHASE.WHO_BEGINS] = new WhoBeginsPhase(pm);
+		phases[PHASE.DEGAGEMENT] = new DegagementPhase(pm);
+		phases[PHASE.ENTRETIENT] = new EntretientPhase(pm);
+		phases[PHASE.PIOCHE] = new PiochePhase(pm);
+		phases[PHASE.PRINCIPALE] = new PrincipalePhase(pm);
+		phases[PHASE.DECLARATION_ATTAQUANT] = new DeclarationAttaquantPhase(pm);
+		phases[PHASE.DECLARATION_BLOQUEUR] = new DeclarationBloqueurPhase(pm);
+		phases[PHASE.ATTRIBUTION_BLESSURE] = new AttributionBlessurePhase(pm);
+		phases[PHASE.FIN] = new FinPhase(pm);
+		phases[PHASE.NETTOYAGE] = new NettoyagePhase(pm);
+		pm.initPhases(phases);
+		return pm;
 	}
 
 	/**
@@ -111,7 +129,19 @@ class Game extends Observable {
 		if(!this.isAuthorized('valid',{player:player})) 
 			return false;
 		this.pm.valid(player);
-		this.pm.next();
+		if(this.needResolve()) {
+			this.stack.resolve(game);
+			if(this.stack.hasCapacityToAdd()) {
+				this.stack.addCapacityUntilWait();
+			}
+		}
+		else if(this.pm.canGoNext()) {
+			do {} while(this.pm.next());
+		}
+	}
+
+	needResolve() {
+		return this.checkAllPass() && !this.stack.isEmpty();
 	}
 
 	poseCard(player, card) {
@@ -119,6 +149,7 @@ class Game extends Observable {
 			return false;
 		player.poseCard(card, this.stack);
 		this.unPassAll(player);
+		return true;
 	}
 
 	retirerCard(player, card) {
@@ -133,6 +164,14 @@ class Game extends Observable {
 		player.declareAttaquant(card);
 	}
 
+	setEffectNumber(player, effectNumber) {
+		if(this.isAuthorized('setEffectNumber', player)) {
+			if(this.stack.setEffectNumber(effectNumber)) {
+				this.stack.resolve();
+			}
+		}	
+	}
+
 	/**
 	 * 
 	 * @param {*} player 
@@ -143,18 +182,24 @@ class Game extends Observable {
 		}
 	}
 
-	validCible(player, cards) {
-		if (this.state != State.NEED_CIBLE)
-			return;
-		var event = {};
-		if (this.isPlayerWithToken(player)) {
-			if (this.stack.validCible(cards)) {
-				this.state = null;
+	setCible(player, cards) {
+		if(this.isAuthorized('setCible', player)) {
+			if(this.stack.setCible(cards)) {
+				this.stack.addCapacityUntilWait();
 			}
 		}
+		return false;
 	}
 
 	isAuthorized(action, data) {
+		if(action == 'setCible') {
+			return this.isPlayerWithToken(data) && this.stack.needCible();
+		}
+		else if(action == 'setEffectNumber') {
+			return this.isPlayerWithToken(data) && this.stack.needEffectNumber();
+		}
+		if(this.stack.waitInfo().return)
+			return false;
 		return this.pm.isAuthorized(action, data);
 	}
 }
