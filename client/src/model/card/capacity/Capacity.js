@@ -17,12 +17,11 @@ class Capacity {
 		return this.card;
 	}
 
-	execute(ctx) {
+	*execute(ctx) {
 		for(var i=0;i<this.effets.length;i++) {
 			this.currentEffect = i;
-			if(!this.effets[i].execute(ctx)) {
-				return;
-			}
+			yield* this.effets[i].execute(ctx); 
+	
 		}
 		this.finished = true;
 	}

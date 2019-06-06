@@ -4,7 +4,8 @@ class AddLifeEffect extends Effect {
 		this.life = life;
 	}
 	
-	execute() {
-		this.getCard().owner.addLife(this.life);
+	*execute() {
+		yield this.getCard().owner.addLife(this.life);
+		alert('on continue la resolution de l"effet :)');
 	}
 }

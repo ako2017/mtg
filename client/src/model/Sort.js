@@ -31,22 +31,16 @@ class Sort {
 	/**
 	 * méthode effectuant la résolution du sort
 	 */
-	resolve(game,stack) {
+	*resolve(game) {
+
 		if(this.obj.type == TypeCard.CREATURE) {
+			alert('creature');
 			this.obj.enterBattlefield();
 		}
 		if(this.obj.type == TypeCard.CAPACITY) {
-			this.obj.execute(game);
+			alert('capacite');
+			yield* this.obj.execute(game);
 		}
-
-/**		if(this.capacityRunning()) {
-			this.currentCapacity.execute(game);
-			return;
-		}
-		this.currentCapacity = this.getCapacity();
-		if(this.currentCapacity != null) {
-			this.currentCapacity.execute(game);
-		}*/
 	}
 
 	capacityRunning() {

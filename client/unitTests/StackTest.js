@@ -17,7 +17,7 @@ QUnit.module( "Stack", {
 	  // clean up once after all tests are done
 	}
 });
-
+/*
 QUnit.test('execute_resolve_addCreatureOnBattlefield', function(assert) {
 	//GIVEN
 	this.game.getPlayerActif().life = 0;
@@ -37,6 +37,20 @@ QUnit.test('execute_resolve_give10LifesToPlayer', function(assert) {
 	//WHEN
 	this.stack.resolve(this.game);
 	this.stack.resolve(this.game);
+	//THEN
+	assert.ok(this.game.getPlayerActif().life == 10);
+});
+*/
+QUnit.test('testIterator', function(assert) {
+	//GIVEN
+	this.game.getPlayerActif().life = 0;
+	this.game.getPlayerActif().battlefield.push(createCreatureTriggerOnEnterBattlefieldAddOneLife(this.game.getPlayerActif()));
+	var card = createCreatureTriggerOnEnterBattlefieldAddOneLife(this.game.getPlayerActif());
+	this.stack.push(card.capacities[0]);
+	//WHEN
+	this.stack.resolve(this.game);
+	this.stack.resolve(this.game);
+	//this.stack.resolve(this.game);
 	//THEN
 	assert.ok(this.game.getPlayerActif().life == 10);
 });

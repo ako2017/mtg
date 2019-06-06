@@ -4,8 +4,8 @@ class Stack extends Observable {
 		this.stack = [];
 		this.currentSort = null;
 		this.capacityToAdd = [];
+		this.iter = null;
 	}
-
 
 	/**
 	 * Résout un sort de la pile
@@ -14,14 +14,20 @@ class Stack extends Observable {
 	 * @returns true si il a été résolu
 	 */
 	resolve(game) {
-		if(this.currentSort != null && this.currentSort.isFinished() && this.isEmpty()) {
-			throw "la pile est vide!";
+		if(!this.isResolving()) {
+			this.iter = this.subResolve(game);
 		}
-		if(this.currentSort== null || this.currentSort.isFinished()) {
-			this.currentSort = this.stack.pop();
-		}		
-		this.currentSort.resolve(game,this);
-		//
+		this.iter.next();
+	}
+
+	isResolving() {
+		return this.iter != null;
+	}
+
+	*subResolve(game) {
+		this.currentSort = this.stack.pop();
+		yield* this.currentSort.resolve(game);
+		alert('on fait les evt apres resolution');
 		if(this.currentSort.getType() == TypeCard.CREATURE) {
 			this.addCapacitiesByTrigger(GameEvent.ON_ENTER_BATTLEFIELD,this.currentCard, game.players);
 		}
