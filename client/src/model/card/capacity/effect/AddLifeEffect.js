@@ -5,7 +5,9 @@ class AddLifeEffect extends Effect {
 	}
 	
 	*execute() {
-		yield this.getCard().owner.addLife(this.life);
-		alert('on continue la resolution de l"effet :)');
+		let prompt = new Prompt('entrez un chiffre:',function(value) {return value>0;});
+		let maValeur = yield* prompt.execute();
+		this.getCard().owner.addLife(maValeur);
+		console.log('on continue la resolution de l"effet :)');
 	}
 }

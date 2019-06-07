@@ -5,6 +5,7 @@ class Stack extends Observable {
 		this.currentSort = null;
 		this.capacityToAdd = [];
 		this.iter = null;
+		this.resultResolve = null;
 	}
 
 	/**
@@ -17,29 +18,29 @@ class Stack extends Observable {
 		if(!this.isResolving()) {
 			this.iter = this.subResolve(game);
 		}
-		this.iter.next();
+		this.resultResolve = this.iter.next();
 	}
 
 	isResolving() {
-		return this.iter != null;
+		return this.resultResolve != null && !this.resultResolve.done;
 	}
 
 	*subResolve(game) {
 		this.currentSort = this.stack.pop();
 		yield* this.currentSort.resolve(game);
-		alert('on fait les evt apres resolution');
+		console.log('on fait les evt apres resolution');
 		if(this.currentSort.getType() == TypeCard.CREATURE) {
 			this.addCapacitiesByTrigger(GameEvent.ON_ENTER_BATTLEFIELD,this.currentCard, game.players);
 		}
 	}
 
-	/**
-	 * 
-	 */
-	onFinishedSort() {
-		//this.addCapacitiesByTrigger(GameEvent.ON_ENTER_BATTLEFIELD,this.currentCard, game.players);
+	setResponse(response) {
+		this.iter.next(response);
 	}
 
+	waitResponse() {
+		return !this.resultResolve.done && this.resultResolve.value.prompt;
+	}
 	
 	addCapacitiesByTrigger(trigger, card, players) {
 		for (var i = 0; i < players.length; i++) {
@@ -52,46 +53,11 @@ class Stack extends Observable {
 			}
 		}
 	}
-
-	addCapacityUntilWait() {
-		var capacity;
-		do {
-			capacity = this.capacityToAdd.pop();
-			this.stack.push(this.capacityToAdd.pop());
-		}
-		while(this.capacityToAdd.length > 0 && capacity.waitInfo().resut);
-	}
 	
 	push(card) {
 		var sort = new Sort(card);
 		this.stack.push(sort);
 		sendEvent(GameEvent.STACK_CARD,{card:card},this);
-	}
-	
-	validCible(cards) {
-		var event = {};
-		if(this.isValidCible(cards)) {
-			this.setCible(cards);
-			event.type = GameEvent.CIBLE_VALID;
-			this.notify(event);
-			return true;
-		}
-		event.type = GameEvent.CIBLE_INVALID;
-		this.notify(event);
-		return false;	
-	}
-	
-	isValidCible(cibles) {
-		var elt = this.stack[this.stack.length-1];
-		return elt.isValidCible(cibles);
-	}
-	
-	setCible(cibles) {
-		if(this.needCible()) {
-			var elt = this.stack[this.stack.length-1];
-			return elt.setCibles(cibles);
-		}
-		return false;
 	}
 
 	needCible() {
@@ -107,14 +73,6 @@ class Stack extends Observable {
 			}
 		}
 		return false;
-	}
-
-	/**
-	 * Sélectionne l'effet désiré d'une liste d'effets proposée par une capacité de carte
-	 * @param {*} effectNumber 
-	 */
-	setEffectNumber(effectNumber) {
-		return this.currentSort.setEffectNumber(effectNumber);
 	}
 	
 	isEmpty() {

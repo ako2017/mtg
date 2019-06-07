@@ -49,8 +49,8 @@ QUnit.test('testIterator', function(assert) {
 	this.stack.push(card.capacities[0]);
 	//WHEN
 	this.stack.resolve(this.game);
-	this.stack.resolve(this.game);
-	//this.stack.resolve(this.game);
+	console.log('attente de reponse?' + this.stack.waitResponse());
+	this.stack.setResponse(10);
 	//THEN
 	assert.ok(this.game.getPlayerActif().life == 10);
 });
