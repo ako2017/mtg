@@ -17,30 +17,7 @@ QUnit.module( "Stack", {
 	  // clean up once after all tests are done
 	}
 });
-/*
-QUnit.test('execute_resolve_addCreatureOnBattlefield', function(assert) {
-	//GIVEN
-	this.game.getPlayerActif().life = 0;
-	card = createCreatureAddOneLife(this.game.getPlayerActif());
-	this.stack.push(card);
-	//WHEN
-	this.stack.resolve(this.game);
-	//THEN
-	assert.ok(this.game.getPlayerActif().battlefield[0] == card);
-});
 
-QUnit.test('execute_resolve_give10LifesToPlayer', function(assert) {
-	//GIVEN
-	this.game.getPlayerActif().life = 0;
-	this.game.getPlayerActif().battlefield.push(createCreatureTriggerOnEnterBattlefieldAddOneLife(this.game.getPlayerActif()));
-	this.stack.push(createCreatureAddOneLife(this.game.getPlayerActif()));
-	//WHEN
-	this.stack.resolve(this.game);
-	this.stack.resolve(this.game);
-	//THEN
-	assert.ok(this.game.getPlayerActif().life == 10);
-});
-*/
 QUnit.test('testIterator', function(assert) {
 	//GIVEN
 	this.game.getPlayerActif().life = 0;
@@ -48,9 +25,27 @@ QUnit.test('testIterator', function(assert) {
 	var card = createCreatureTriggerOnEnterBattlefieldAddOneLife(this.game.getPlayerActif());
 	this.stack.push(card.capacities[0]);
 	//WHEN
-	this.stack.resolve(this.game);
-	console.log('attente de reponse?' + this.stack.waitResponse());
-	this.stack.setResponse(10);
+	var iter = this.stack.resolve(this.game);
+	var response = iter.next();
+	console.log('attente de reponse?' + response.value.prompt);
+	iter.next(10);
 	//THEN
 	assert.ok(this.game.getPlayerActif().life == 10);
+});
+
+QUnit.test('addMarqueurToTarget', function(assert) {
+	//GIVEN
+	var card = createCreatureAddOneLife(this.game.getPlayerActif());
+	this.game.getPlayerActif().battlefield.push(card);
+	var capacity = new Capacity([0,0,0,0,0],null,new Prompt('tes',function(value){return true;}));
+	var effect = new AddMarqueurEffect(2,3,TimeToLive.INF);
+	capacity.addEffect(effect);
+	var iter = this.stack.askAndStack(capacity);
+	iter.next();
+	iter.next([card]);
+	//WHEN
+	iter = this.stack.resolve(this.game);
+	iter.next();
+	//THEN
+	assert.ok(card.getForce() == 2);
 });

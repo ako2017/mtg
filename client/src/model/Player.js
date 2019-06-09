@@ -173,6 +173,13 @@ class Player extends Observable {
 		return true;
 	};
 
+	poseTerrain(card) {
+		this.hasPoseTerrain = true;
+		this.terrains.push(card);
+		this.hand.removeByValue(card);
+		sendEvent(GameEvent.POSE_TERRAIN,{player:this,card:card},this);
+	}
+
 	/**
 	 * Engage la carte sélectionnée si elle n'est pas déjà engagée
 	 * @param {Card} card la carte à engager

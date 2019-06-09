@@ -1,6 +1,6 @@
 class AddCapacityEffect extends Effet {
-	constructor(cibleValidator,capacity, ttl) {
-		super(cibleValidator);
+	constructor(capacity, ttl) {
+		super();
 		this.capacity = capacity;
 		this.ttl = ttl;
 	}

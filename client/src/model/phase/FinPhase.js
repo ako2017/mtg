@@ -20,7 +20,7 @@ class FinPhase extends AbstractPhase {
 
 	isAuthorized(action, data) {
 		if('poseCard' == action) {
-			if(this.game.isPlayerWithToken(data.player) && (data.card.type == TypeCard.EPHEMERE || data.card.type == TypeCard.CAPACITY) && !this.game.stack.needCible() && data.player.canPoseCard(data.card)) {
+			if(this.game.isPlayerWithToken(data.player) && (data.card.type == TypeCard.EPHEMERE || data.card.type == TypeCard.CAPACITY) && data.player.canPoseCard(data.card)) {
 				return true;
 			}
 		}

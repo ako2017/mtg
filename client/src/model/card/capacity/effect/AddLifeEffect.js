@@ -1,6 +1,6 @@
 class AddLifeEffect extends Effect {
-	constructor(cibleValidator,life) {
-		super(cibleValidator);
+	constructor(life) {
+		super();
 		this.life = life;
 	}
 	

@@ -1,12 +1,18 @@
 class Effect {
-	constructor(targetValidator) {
+	constructor() {
 		this.capacity = null;
-		this.targetValidator = targetValidator;
-		this.cibles = [];
 	}
 
 	setCapacity(capacity) {
 		this.capacity = capacity;
+	}
+
+	getCapacity() {
+		return this.capacity;
+	}
+
+	getTargets() {
+		return this.getCapacity().targets;
 	}
 	
 	getCard() {
@@ -19,18 +25,6 @@ class Effect {
 
 	needCible() {
 		this.targetValidator != null;
-	}
-
-	waitInfo() {
-		return this.needCible() && this.cibles.length == 0;
-	}
-
-	setCible(cibles) {
-		if(this.targetValidator(cibles)) {
-			this.cibles = cibles;
-			return true;
-		}
-		return false;
 	}
 
 }

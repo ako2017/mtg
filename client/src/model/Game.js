@@ -9,6 +9,7 @@ class Game extends Observable {
 		this.selectedCards = [];
 		this.state;
 		this.maxPlayer = 2;
+		this.iter = null;
 	}
 
 	createPhaseManager() {
@@ -128,12 +129,14 @@ class Game extends Observable {
 	valid(player) {
 		if(!this.isAuthorized('valid',{player:player})) 
 			return false;
+		this.iter = this.subValid(player);
+		this.resultIter = this.iter.next();
+	}
+
+	*subValid(player) {
 		this.pm.valid(player);
 		if(this.needResolve()) {
-			this.stack.resolve(game);
-			if(this.stack.hasCapacityToAdd()) {
-				this.stack.addCapacityUntilWait();
-			}
+			yield* this.stack.resolve(game);
 		}
 		else if(this.pm.canGoNext()) {
 			do {} while(this.pm.next());
@@ -144,12 +147,27 @@ class Game extends Observable {
 		return this.checkAllPass() && !this.stack.isEmpty();
 	}
 
-	poseCard(player, card) {
-		if(!this.isAuthorized('poseCard',{player:player, card:card})) 
+	poseCard(player,card) {
+		if(!this.isAuthorized('poseCard',{player:player, card:card})) {
 			return false;
-		player.poseCard(card, this.stack);
+		}
+		this.iter = this.subPoseCard(player,card);
+		this.resultIter = this.iter.next();
+	}
+
+	*subPoseCard(player,card) {
+		player.payMana(card.mana);
+		if(card.type == TypeCard.TERRAIN) {
+			player.poseTerrain(card);
+		}
+		else if(card.type == TypeCard.CAPACITY){
+			yield* this.stack.askAndStack(card);
+		}
+		else {
+			yield* this.stack.askAndStack(card);
+			this.hand.removeByValue(card);
+		}
 		this.unPassAll(player);
-		return true;
 	}
 
 	retirerCard(player, card) {
@@ -164,14 +182,6 @@ class Game extends Observable {
 		player.declareAttaquant(card);
 	}
 
-	setEffectNumber(player, effectNumber) {
-		if(this.isAuthorized('setEffectNumber', player)) {
-			if(this.stack.setEffectNumber(effectNumber)) {
-				this.stack.resolve();
-			}
-		}	
-	}
-
 	/**
 	 * 
 	 * @param {*} player 
@@ -182,24 +192,20 @@ class Game extends Observable {
 		}
 	}
 
-	setCible(player, cards) {
-		if(this.isAuthorized('setCible', player)) {
-			if(this.stack.setCible(cards)) {
-				this.stack.addCapacityUntilWait();
-			}
+	waitResponse() {
+		return this.resultIter != null && !this.resultIter.done && this.resultIter.value.prompt;
+	}
+
+	setResponse(response) {
+		if(this.waitResponse()) {
+			this.iter.next(response);
 		}
-		return false;
 	}
 
 	isAuthorized(action, data) {
-		if(action == 'setCible') {
-			return this.isPlayerWithToken(data) && this.stack.needCible();
-		}
-		else if(action == 'setEffectNumber') {
-			return this.isPlayerWithToken(data) && this.stack.needEffectNumber();
-		}
-		if(this.stack.waitInfo().return)
+		if(this.waitResponse()) {
 			return false;
+		}
 		return this.pm.isAuthorized(action, data);
 	}
 }

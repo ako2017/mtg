@@ -51,7 +51,7 @@ function createCreatureAddOneLife(player) {
 	card.mana = [1,0,0,0,0,0];
 	card.type = TypeCard.CREATURE;
 	var capacity = new Capacity([1,0,0,0,0,0], null);
-	capacity.addEffect(new AddLifeEffect(null,5));
+	capacity.addEffect(new AddLifeEffect(5));
 	card.addCapacity(capacity);
 	return card;
 };
@@ -63,10 +63,12 @@ function createCreatureTriggerOnEnterBattlefieldAddOneLife(player) {
 	card.mana = [1,0,0,0,0,0];
 	card.type = TypeCard.CREATURE;
 	var capacity = new Capacity([0,0,0,0,0,0], function(trigger,source) {return trigger == GameEvent.ON_ENTER_BATTLEFIELD});
-	capacity.addEffect(new AddLifeEffect(null,10));
+	capacity.addEffect(new AddLifeEffect(10));
 	card.addCapacity(capacity);
 	return card;
 };
+
+
 
 var cardCreature = {
 		force : 0,

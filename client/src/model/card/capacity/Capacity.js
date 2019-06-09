@@ -1,12 +1,13 @@
 class Capacity {
-	constructor(mana, trigger) {
+	constructor(mana, trigger, prompt) {
 		this.card = null;
 		this.trigger = trigger;
 		this.type = TypeCard.CAPACITY;
 		this.mana = mana;
 		this.effets = [];
-		this.currentEffect = null;
-		this.finished = false;
+		this.finished = true;
+		this.prompt = prompt;
+		this.targets = [];
 	}
 
 	setCard(card) {
@@ -17,9 +18,17 @@ class Capacity {
 		return this.card;
 	}
 
+	waitResponse() {
+		return this.prompt != null;
+	}
+
+	*ask() {
+		this.targets = yield* this.prompt.execute();
+	}
+
 	*execute(ctx) {
+		this.finished = false;
 		for(var i=0;i<this.effets.length;i++) {
-			this.currentEffect = i;
 			yield* this.effets[i].execute(ctx); 
 	
 		}
@@ -34,22 +43,6 @@ class Capacity {
 	isFinished() {
 		return this.finished;
 	}
-
-	setEffectNumber(effectNumber) {
-		return this.effects[this.currentEffect].setEffectNumber(effectNumber);
-	}
-	
-	setCible(cibles) {
-		if(this.cibleValidator(cibles)) {
-			this.cibles = cibles;
-			return true;
-		}
-		return false;
-	}
-
-	needCible() {
-		return this.currentEffect.needCible();
-	}
 	
 	isTriggerActif(trigger, source) {
 		return this.trigger && this.trigger(trigger,source);
@@ -57,15 +50,5 @@ class Capacity {
 
 	reset() {
 
-	}
-
-	waitInfo() {
-		if(this.waitModal()) {
-			return {result:true,typeInfo:'modal'};
-		}
-		if(this.waitTarget()) {
-			return {result:true,typeInfo:'target'};
-		}
-		return {result:false}; 
 	}
 }

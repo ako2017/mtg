@@ -4,34 +4,27 @@ class Stack extends Observable {
 		this.stack = [];
 		this.currentSort = null;
 		this.capacityToAdd = [];
-		this.iter = null;
-		this.resultResolve = null;
+		this.resolving = false;
+	}
+
+	isResolving() {
+		return this.resolving;
 	}
 
 	/**
 	 * Résout un sort de la pile
 	 * Tant que le sort courant n'est pas résolu on ne peut pas faire d'autre action dans le jeu
 	 * @param {Game} game 
-	 * @returns true si il a été résolu
 	 */
-	resolve(game) {
-		if(!this.isResolving()) {
-			this.iter = this.subResolve(game);
-		}
-		this.resultResolve = this.iter.next();
-	}
-
-	isResolving() {
-		return this.resultResolve != null && !this.resultResolve.done;
-	}
-
-	*subResolve(game) {
+	*resolve(game) {
+		this.resolving = true;
 		this.currentSort = this.stack.pop();
 		yield* this.currentSort.resolve(game);
 		console.log('on fait les evt apres resolution');
 		if(this.currentSort.getType() == TypeCard.CREATURE) {
-			this.addCapacitiesByTrigger(GameEvent.ON_ENTER_BATTLEFIELD,this.currentCard, game.players);
+			yield* this.addCapacitiesByTrigger(GameEvent.ON_ENTER_BATTLEFIELD,this.currentCard, game.players);
 		}
+		this.resolving = false;
 	}
 
 	setResponse(response) {
@@ -41,14 +34,26 @@ class Stack extends Observable {
 	waitResponse() {
 		return !this.resultResolve.done && this.resultResolve.value.prompt;
 	}
+
+	*askAndStack(card) {
+		if(card.type == TypeCard.EPHEMERE || card.type == TypeCard.CAPACITY) {
+			if(!card.waitResponse()) {
+				this.push(card);
+			}
+			else {
+				yield* card.ask();
+				this.push(card);
+			}
+		}
+	}
 	
-	addCapacitiesByTrigger(trigger, card, players) {
+	*addCapacitiesByTrigger(trigger, card, players) {
 		for (var i = 0; i < players.length; i++) {
 			var battlefield = players[i].battlefield;
 			for (var j = 0; j < battlefield.length; j++) {
 				var capacity = battlefield[j].getCapacityByTrigger(trigger,card);
 				if(capacity) {
-					this.push(capacity);
+					yield* this.askAndStack(capacity);
 				}
 			}
 		}
@@ -58,11 +63,6 @@ class Stack extends Observable {
 		var sort = new Sort(card);
 		this.stack.push(sort);
 		sendEvent(GameEvent.STACK_CARD,{card:card},this);
-	}
-
-	needCible() {
-		var result = this.waitInfo();
-		return result.result && result.typeInfo == 'target';
 	}
 	
 	containsType(type) {
@@ -77,16 +77,5 @@ class Stack extends Observable {
 	
 	isEmpty() {
 		return this.stack.length == 0;
-	}
-
-	waitInfo() {
-		if(this.currentSort != null) {
-			return this.currentSort.waitInfo();
-		}
-		else if(this.stack.length != 0) {
-			var elt = this.stack[this.stack.length-1];
-			return elt.waitInfo();
-		}
-		return {result:false};
 	}
 }

@@ -256,22 +256,26 @@ class Card extends Observable {
 		sendEvent(GameEvent.ENTER_BATTLEFIELD, {value : this}, this);
 	}
 
-	needCible() {
+	waitResponse() {
 		for(var i=0;i<this.capacities.length;i++) {
-			if(this.capacities[i].isFree() && this.capacities[i].needCible()) {
+			if(this.capacities[i].isFree() && this.capacities[i].waitResponse()) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	setCible(cibles) {
+	*ask() {
+		var capacity = null;
 		for(var i=0;i<this.capacities.length;i++) {
-			if(this.capacities[i].isFree() && this.capacities[i].needCible()) {
-				return this.capacities[i].setCible(cibles);
+			if(this.capacities[i].isFree() && this.capacities[i].waitResponse()) {
+				capacity = this.capacities[i];
+				break;
 			}
 		}
-		return false;
+		if(capacity) {
+			yield* capacity.ask();
+		}
 	}
 
 }
