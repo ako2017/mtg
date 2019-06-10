@@ -8,6 +8,7 @@ class AttributionBlessurePhase extends AbstractPhase {
 		this.game.getPlayerActif().attaquants.forEach(function(card) {
 			card.attack(game.getPlayerNonActif());
 		});
+		this.game.addCapacitiesByTrigger();
 		return  PHASE.WAIT;
 	}
 
@@ -24,7 +25,7 @@ class AttributionBlessurePhase extends AbstractPhase {
 
 	isAuthorized(action, data) {
 		if('poseCard' == action) {
-			if(this.game.isPlayerWithToken(data.player) && (data.card.type == TypeCard.EPHEMERE || data.card.type == TypeCard.CAPACITY) && !this.game.stack.needCible() && data.player.canPoseCard(data.card)) {
+			if(this.game.isPlayerWithToken(data.player) && (data.card.type == TypeCard.EPHEMERE || data.card.type == TypeCard.CAPACITY) && data.player.canPoseCard(data.card)) {
 				return true;
 			}
 		}

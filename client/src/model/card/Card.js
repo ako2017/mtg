@@ -216,6 +216,7 @@ class Card extends Observable {
 	damage(force) {
 		this.enduranceCpt-=force;
 		if(this.enduranceCpt <= 0) {
+			sendEvent(GameEvent.CARD_DIE, {card : this}, this);
 			this.gotoCemetery();
 			this.owner.battlefield.removeByValues(this);
 		}

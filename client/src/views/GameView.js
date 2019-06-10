@@ -34,6 +34,12 @@ class GameView extends Phaser.Group {
 		this.cardSelected = null;
 		this.playerActifName = null;
 		this.playerTokenName = null;
+		this.infoCardGroup = this.game.add.group();
+		this.infoCardGroup.y=100;
+		this.infoCardGroup.x=100;
+		this.infoCardGroup.visible = false;
+		this.infoCardGroup.card = this.infoCardGroup.addChild(this.game.add.image(0, 0));
+		this.infoCardGroup.infoText = this.infoCardGroup.addChild(this.game.add.text(200, 0, '', {font: '10px Arial Black',fill: '#fff',strokeThickness: 4,wordWrap: true, wordWrapWidth: 400}));
 	}
 
 	init(players) {
@@ -350,6 +356,8 @@ class GameView extends Phaser.Group {
 			posY = this.game.world.centerY-104+52;
 		}
 		card.show(true);
+		card.front.crop(new Phaser.Rectangle(0,0,150,130));
+
 		this.playersView[enterBattlefieldAnimData.name].battlefield.push(card);
 		for(var i = 0;i<this.playersView[enterBattlefieldAnimData.name].battlefield.length;i++) {
 			this.game.add.tween(this.playersView[enterBattlefieldAnimData.name].battlefield[i]).to({y:posY,x:100+37+80*i},1000,Phaser.Easing.Linear.None,true);	
@@ -515,10 +523,12 @@ class GameView extends Phaser.Group {
 		this.playersView[malInvocationAnimData.name].getCardByIdAll(malInvocationAnimData.card);
 	}
 
-	showInfoCard(card) {
-		var text = this.game.add.text(200, 20, 'un exemple de texte, blablabla bliblibli btest 1234', {font: '14px Arial Black',fill: '#fff',strokeThickness: 4,wordWrap: true, wordWrapWidth: 250});
+	showInfoCard(cardId) {
+		this.infoCardGroup.visible = true;
+		this.infoCardGroup.card.loadTexture(cardTable[cardId].extension + '#' + cardTable[cardId].numero);
+		this.infoCardGroup.infoText.text = cardTable[cardId].nom + '\n' + cardTable[cardId].type + ":" + '\n'+cardTable[cardId].text;
 	}
-	
+
 	onReceive(event) {
 		this.events.push(event);
 	}
@@ -603,4 +613,4 @@ class GameView extends Phaser.Group {
 		}
 	}
 
-} 
+}

@@ -192,6 +192,11 @@ class Game extends Observable {
 		}
 	}
 
+	addCapacitiesByTrigger() {
+		this.iter = this.stack.addCapacitiesByTrigger();
+		this.resultIter = this.iter.next();
+	}
+
 	waitResponse() {
 		return this.resultIter != null && !this.resultIter.done && this.resultIter.value.prompt;
 	}

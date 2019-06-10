@@ -5,7 +5,7 @@ var cardTable = [
         force : 5,
         endurance : 1,
         nom:"nom",
-        text:"descriptif de la carte",
+        text:"Résilience : Mettez un marqueur +1/+1 sur cette créature. N’utilisez la résilience que lorsque vous pourriez lancer un rituel.)\nChaque créature que vous contrôlez avec un marqueur +1/+1 sur elle a le lien de vie.",
         mana: [1,0,0,0,0,0],
         typeLabel:"type de la carte",
         type:1,// TypeCard.CREATURE,

@@ -5,6 +5,7 @@ class Stack extends Observable {
 		this.currentSort = null;
 		this.capacityToAdd = [];
 		this.resolving = false;
+		this.game = null;
 	}
 
 	isResolving() {
@@ -21,9 +22,7 @@ class Stack extends Observable {
 		this.currentSort = this.stack.pop();
 		yield* this.currentSort.resolve(game);
 		console.log('on fait les evt apres resolution');
-		if(this.currentSort.getType() == TypeCard.CREATURE) {
-			yield* this.addCapacitiesByTrigger(GameEvent.ON_ENTER_BATTLEFIELD,this.currentCard, game.players);
-		}
+		yield* this.addCapacitiesByTrigger();
 		this.resolving = false;
 	}
 
@@ -47,18 +46,24 @@ class Stack extends Observable {
 		}
 	}
 	
-	*addCapacitiesByTrigger(trigger, card, players) {
+	*addCapacitiesByTrigger() {
+		for (var i = 0; i < this.capacityToAdd.length; i++) {
+			yield* this.askAndStack(this.capacityToAdd[i]);
+		}
+	}
+	
+	capacitiesByTriggerToAdd(trigger, card, players) {
 		for (var i = 0; i < players.length; i++) {
 			var battlefield = players[i].battlefield;
 			for (var j = 0; j < battlefield.length; j++) {
 				var capacity = battlefield[j].getCapacityByTrigger(trigger,card);
 				if(capacity) {
-					yield* this.askAndStack(capacity);
+					this.capacityToAdd.push(capacity);
 				}
 			}
 		}
 	}
-	
+
 	push(card) {
 		var sort = new Sort(card);
 		this.stack.push(sort);
@@ -77,5 +82,16 @@ class Stack extends Observable {
 	
 	isEmpty() {
 		return this.stack.length == 0;
+	}
+
+	onReceive(event) {
+		switch(event.type) {
+			case GameEvent.ENTER_BATTLEFIELD:
+				this.capacitiesByTriggerToAdd(event.type, event.data.card, this.game.getPlayers());
+				break;
+			case GameEvent.CARD_DIE:
+				this.capacitiesByTriggerToAdd(event.type, event.data.card, this.game.getPlayers());
+				break;
+		}		
 	}
 }
