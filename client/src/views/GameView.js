@@ -34,10 +34,17 @@ class GameView extends Phaser.Group {
 		this.cardSelected = null;
 		this.playerActifName = null;
 		this.playerTokenName = null;
+		this.createInfoWindow();
+	}
+
+	createInfoWindow() {
 		this.infoCardGroup = this.game.add.group();
 		this.infoCardGroup.y=100;
 		this.infoCardGroup.x=100;
 		this.infoCardGroup.visible = false;
+		var close = this.infoCardGroup.addChild(this.game.make.sprite(600, 0, 'cross'));
+		close.inputEnabled = true;
+		close.events.onInputDown.add(function() {this.infoCardGroup.visible=false}, this);
 		this.infoCardGroup.card = this.infoCardGroup.addChild(this.game.add.image(0, 0));
 		this.infoCardGroup.infoText = this.infoCardGroup.addChild(this.game.add.text(200, 0, '', {font: '10px Arial Black',fill: '#fff',strokeThickness: 4,wordWrap: true, wordWrapWidth: 400}));
 	}
@@ -524,6 +531,7 @@ class GameView extends Phaser.Group {
 	}
 
 	showInfoCard(cardId) {
+		this.game.world.bringToTop(this.infoCardGroup);
 		this.infoCardGroup.visible = true;
 		this.infoCardGroup.card.loadTexture(cardTable[cardId].extension + '#' + cardTable[cardId].numero);
 		this.infoCardGroup.infoText.text = cardTable[cardId].nom + '\n' + cardTable[cardId].type + ":" + '\n'+cardTable[cardId].text;
