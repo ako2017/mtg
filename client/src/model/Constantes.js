@@ -87,7 +87,8 @@ GameEvent = {
 	ATTACK_PLAYER : 31,
 	MAL_INVOCATION : 32,
 	WAIT_INFO : 33,
-	CARD_DIE : 34
+	CARD_DIE : 34,
+	SHOW_PROMPT : 35
 };
 
 const

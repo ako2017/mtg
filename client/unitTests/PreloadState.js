@@ -17,6 +17,7 @@ preloadState = {
 		this.game.load.image('logo', '../assets/logo-magic.png');
 		this.game.load.image('fond', '../assets/fond.jpg');
 		this.game.load.image('cross', '../assets/cross.png');
+		this.game.load.image('blueBtn', '../assets/blue_btn.png');
 		this.game.load.video('video', '../assets/defkp_EMN_Header_41.mp4');
 		var buttonImage = this.game.add.bitmapData(100, 20);
         buttonImage.ctx.fillStyle = '#e6dec7';

@@ -35,6 +35,18 @@ class GameView extends Phaser.Group {
 		this.playerActifName = null;
 		this.playerTokenName = null;
 		this.createInfoWindow();
+		this.createPrompt();
+	}
+
+	createPrompt() {
+		this.promptGroup = this.game.add.group();
+		this.promptGroup.y=100;
+		this.promptGroup.x=100;
+		this.promptGroup.visible = false;
+		/*var close = this.promptGroup.addChild(this.game.make.sprite(0, 0, 'cross'));
+		close.inputEnabled = true;
+		close.events.onInputDown.add(function() {this.promptGroup.visible=false}, this);*/
+		this.promptGroup.text = this.promptGroup.addChild(this.game.add.text(200, 0, '', {font: '10px Arial Black',fill: '#fff',strokeThickness: 4,wordWrap: true, wordWrapWidth: 400}));
 	}
 
 	createInfoWindow() {
@@ -71,11 +83,18 @@ class GameView extends Phaser.Group {
 		this.muligageBtn.player = this.playersView[this.myName];
 		this.muligageBtn.visible = false;
 		
-		this.validBtn = this.addChild(this.game.add.button(380, 270, this.game.cache.getBitmapData('buttonsmall'), function(button){gameController.validBtn();},this));
-		this.validBtn.text = this.validBtn.addChild(this.game.add.text(0, 0, 'valid', {font: '16px Arial Black'}));
+		this.validBtn = this.addChild(this.game.add.button(380, 270, 'blueBtn', function(button){gameController.validBtn();},this));
+		this.validBtn.text = this.validBtn.addChild(this.game.add.text(0, 0, 'valid', {font: '24px Arial Black'}));
+		this.validBtn.text.anchor.x = 0.5;
+		this.validBtn.text.anchor.y = 0.5;
 		this.validBtn.player = this.playersView[this.myName];
+		this.validBtn.scale.set(0.5, 0.5);
+		this.validBtn.anchor.x = 0.5;
+		this.validBtn.anchor.y = 0.5;
 		this.validBtn.visible = false;
-		
+		this.validBtn.x = this.game.world.width-this.validBtn.width;
+		this.validBtn.y = this.game.world.height/2;
+
 		this.actionCardGroup = this.game.add.group();
 		this.actionCardGroup.y=300;
 		this.actionCardGroup.visible = false;
@@ -537,6 +556,15 @@ class GameView extends Phaser.Group {
 		this.infoCardGroup.infoText.text = cardTable[cardId].nom + '\n' + cardTable[cardId].type + ":" + '\n'+cardTable[cardId].text;
 	}
 
+	showPromptAnim(promptAnimData) {
+		this.game.world.bringToTop(this.promptGroup);
+		this.promptGroup.visible = true;
+		this.promptGroup.text.text = promptAnimData.text;
+		this.validBtn.visible = true;
+		this.game.world.bringToTop(this.validBtn);
+	}
+
+
 	onReceive(event) {
 		this.events.push(event);
 	}
@@ -615,6 +643,9 @@ class GameView extends Phaser.Group {
 				break;
 			case GameEvent.MAL_INVOCATION:
 				this.malInvocationAnim(event.data);
+				break;
+			case GameEvent.SHOW_PROMPT: 
+				this.showPromptAnim(event.data);
 				break;
 			default :
 				alert('evenement inconnu');

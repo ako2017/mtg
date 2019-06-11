@@ -345,6 +345,13 @@
 						this.manaAnim('p1',[1,2,0,0,0]);
 					}
 
+					function showPromptTest() {
+						this.initPlayers();
+						var event = {type : GameEvent.SHOW_PROMPT, data : {text : 'veuillez sélectionner 2 cibles :'}};
+						gameState.view.onReceive(event);		
+					}
+
+
 				</script>
     </head> 
 
@@ -372,6 +379,7 @@
 			<a onClick ="gotoCemeteryTest();" href="#">19-GOTO CEMETERY</a><br/>
 			<a onClick ="showInfoCardTest();" href="#">20-SHOW INFO CARD</a><br/>
 			<a onClick ="manaAnimTest();" href="#">21-MANA ANIM</a><br/>
+			<a onClick ="showPromptTest();" href="#">22-SHOW PROMPT</a><br/>
     </body>
 
 </html>
