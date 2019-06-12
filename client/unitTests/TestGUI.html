@@ -4,7 +4,8 @@
         <title>Magic the Gathering TEST v1.0</title> 
         <meta charset="utf-8"  name="viewport" content="width=device-width, initial-scale=1"> 
 				<link rel="stylesheet" href="../src/styles/gui.css">
-				
+				<link rel="stylesheet" href="../libs/gui.css">
+
 				<script src="../libs/jquery-3.0.0.min.js"></script>
 				<script src="../libs/phaser.min.js"></script>
 				<script src="../libs/phaser-input.min.js"></script>
@@ -356,7 +357,20 @@
     </head> 
 
     <body bgcolor="grey">
-			<div id="game-area"></div>
+			<div id="game-area" class="container">
+				<div class='overlay'>
+					<div id="parties">
+						<ol>
+							<li>Partie</li>
+							<li>Partie</li>
+							<li>Partie</li>
+						</ol>
+					</div>
+					<div id="creer-partie">
+						partie en cours de création
+					</div>
+				</div>
+			</div>
 			<a onClick ="initPlayers();" href="#">01-TEST INIT</a><br/>
 			<a onClick ="distributionTest();" href="#">02-TEST DISTRIBUTION</a><br/>
 			<a onClick ="muliganeValidTest();" href="#">03-TEST MULIGANE VALID</a><br/>
