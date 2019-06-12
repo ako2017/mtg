@@ -74,7 +74,7 @@ class GameView extends Phaser.Group {
 		this.errorLabel.anchor.x = 0.5;
 		this.tokenLabel = this.game.add.image(800, 0, this.game.cache.getBitmapData('token'));
 		this.actifLabel = this.game.add.image(800, 0, this.game.cache.getBitmapData('actif'));
-		this.bandeau = this.game.add.image(0, 295, this.game.cache.getBitmapData('bandeau'));
+		this.bandeau = this.addChild(this.game.add.image(0, 295, this.game.cache.getBitmapData('bandeau')));
 
 		var gameController = new GameController(this);
 
