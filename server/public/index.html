@@ -37,18 +37,25 @@
 
     <body bgcolor="grey">
 		<div id="game-area" class="container">
-			<div class='overlay'>
-				<div id="parties">
+				<div id="parties" class='overlay'>
 					<ol>
 						<li>Partie</li>
 						<li>Partie</li>
 						<li>Partie</li>
 					</ol>
 				</div>
-				<div id="creer-partie">
-					partie en cours de création
+				<div id="jouer"  class='overlay'>
+					<button class="bouton6" onClick="$('#jouer').hide()">RETOUR</button>
+					<h1>Sélection du deck</h1>
+					<ol style="width:233px;margin: 0 auto;"> 
+						<li>Deck aggro</li>
+						<li>Deck magie</li>
+						<li>Deck en test</li>
+					</ol>
+					<button class="bouton6">JOUER</button><br/>
+					recherche d'un joueur <br/>
+					<div class="lds-default"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 				</div>
-			</div>
 		</div>
     </body>
 

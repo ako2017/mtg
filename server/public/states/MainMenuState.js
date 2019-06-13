@@ -15,8 +15,8 @@ mainMenuState = {
 		validBtn.anchor.setTo(0.5,0.5);
 		validBtn.x = this.game.width/2;
 
-		var creationDeckBtn = this.game.add.button(this.game.world.centerX - 100, this.game.world.centerY + 30, 'blueBtn',function(){$("#parties").hide()},this);
-		text = this.game.add.text(0,0, "CREER PARTIE", this.style);
+		var creationDeckBtn = this.game.add.button(this.game.world.centerX - 100, this.game.world.centerY + 30, 'blueBtn',function(){$("#jouer").show()},this);
+		text = this.game.add.text(0,0, "JOUER", this.style);
 		text.anchor.setTo(0.5,0.5);
 		creationDeckBtn.addChild(text);
 		creationDeckBtn.anchor.setTo(0.5,0.5);
