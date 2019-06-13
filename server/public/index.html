@@ -1,0 +1,55 @@
+<!DOCTYPE html> 
+<html> 
+    <head> 
+        <title>Magic the Gathering v1.0</title> 
+        <meta name="viewport" content="width=device-width, initial-scale=1"> 
+        <link rel="stylesheet" href="libs/gui.css">
+		<script src="libs/jquery-3.0.0.min.js"></script>
+
+    	<script src="libs/phaser.min.js"></script>
+    	<script src="libs/phaser-input.min.js"></script>
+		<script src="Constantes.js"></script>
+		<script src="CardBDD.js"></script>		
+		<script src="views/CardView.js"></script>
+		<script src="views/GameView.js"></script>
+		
+		<!--script src="src/controller/GameController.js"></script-->
+		
+		<script src="states/PreloadState.js"></script>
+		<script src="states/MainMenuState.js"></script>
+		<script src="states/GameState.js"></script>
+		<script>
+			$(document).ready(function() {
+				var game;
+				var socket;
+				var gameSize;
+
+				game = new Phaser.Game(800,600, Phaser.CANVAS, "game-area");
+				
+				gameState = new GameState();
+				game.state.add("Preload",preloadState);
+				game.state.add("MainMenu",mainMenuState);
+				game.state.add("Game",gameState);
+				game.state.start("Preload");
+			});
+		</script>
+    </head> 
+
+    <body bgcolor="grey">
+		<div id="game-area" class="container">
+			<div class='overlay'>
+				<div id="parties">
+					<ol>
+						<li>Partie</li>
+						<li>Partie</li>
+						<li>Partie</li>
+					</ol>
+				</div>
+				<div id="creer-partie">
+					partie en cours de création
+				</div>
+			</div>
+		</div>
+    </body>
+
+</html>
