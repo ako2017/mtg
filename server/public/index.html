@@ -31,7 +31,16 @@
 				game.state.add("MainMenu",mainMenuState);
 				game.state.add("Game",gameState);
 				game.state.start("Preload");
+
+
+				
 			});
+
+			function jouer() {
+					console.log("envoie demande au serveur");
+					$(".hide").show();
+				}
+
 		</script>
     </head> 
 
@@ -52,9 +61,11 @@
 						<li>Deck magie</li>
 						<li>Deck en test</li>
 					</ol>
-					<button class="bouton6">JOUER</button><br/>
+					<button class="bouton6" onClick="jouer()">JOUER</button><br/>
 					recherche d'un joueur <br/>
-					<div class="lds-default"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+					<div class="hide">
+						<div class="lds-default"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+					</div>
 				</div>
 		</div>
     </body>

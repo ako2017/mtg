@@ -23,6 +23,10 @@
     display:none;
 }
 
+.hide {
+  display:none;
+}
+
 .bouton6 {
 	border-radius:12px 0 12px 0;
 	background: #478bf9;
