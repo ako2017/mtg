@@ -5,6 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1"> 
         <link rel="stylesheet" href="libs/gui.css">
 		<script src="libs/jquery-3.0.0.min.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+
 
     	<script src="libs/phaser.min.js"></script>
     	<script src="libs/phaser-input.min.js"></script>
@@ -12,13 +14,15 @@
 		<script src="CardBDD.js"></script>		
 		<script src="views/CardView.js"></script>
 		<script src="views/GameView.js"></script>
-		
+		<script src="socketApi.js"></script>
+
 		<!--script src="src/controller/GameController.js"></script-->
 		
 		<script src="states/PreloadState.js"></script>
 		<script src="states/MainMenuState.js"></script>
 		<script src="states/GameState.js"></script>
 		<script>
+			var pseudo = null;
 			$(document).ready(function() {
 				var game;
 				var socket;
@@ -31,39 +35,44 @@
 				game.state.add("MainMenu",mainMenuState);
 				game.state.add("Game",gameState);
 				game.state.start("Preload");
-
-
-				
+				socketApi.gameState = gameState;
+				socketApi.game = game;
 			});
 
 			function jouer() {
-					console.log("envoie demande au serveur");
-					$(".hide").show();
+				if(pseudo == null) {
+					$("#pseudo-box").show();
 				}
-
+				else {
+					socketApi.play(pseudo);
+					$("#pseudo-box").hide();
+					$("#decks").hide();
+					$("#jouer-btn").hide();
+					$("#wait-player").show();
+				}			
+			}
 		</script>
     </head> 
 
     <body bgcolor="grey">
 		<div id="game-area" class="container">
-				<div id="parties" class='overlay'>
-					<ol>
-						<li>Partie</li>
-						<li>Partie</li>
-						<li>Partie</li>
-					</ol>
-				</div>
 				<div id="jouer"  class='overlay'>
 					<button class="bouton6" onClick="$('#jouer').hide()">RETOUR</button>
-					<h1>Sélection du deck</h1>
-					<ol style="width:233px;margin: 0 auto;"> 
-						<li>Deck aggro</li>
-						<li>Deck magie</li>
-						<li>Deck en test</li>
-					</ol>
-					<button class="bouton6" onClick="jouer()">JOUER</button><br/>
-					recherche d'un joueur <br/>
-					<div class="hide">
+					<div id="pseudo-box">
+						<br/><input type="text"></input>
+						<button class="bouton6" onClick="pseudo=$('#pseudo-box input').val();$('#pseudo-box').hide()">VALIDER</button>
+					</div>
+					<div id="decks">
+						<h1>Sélection du deck</h1>
+						<ol style="width:233px;margin: 0 auto;"> 
+							<li>Deck aggro</li>
+							<li>Deck magie</li>
+							<li>Deck en test</li>
+						</ol>
+					</div>
+					<button id="jouer-btn"class="bouton6" onClick="jouer()">JOUER</button><br/>
+					<div id="wait-player">
+						<h1>recherche d'un joueur</h1> <br/>
 						<div class="lds-default"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 					</div>
 				</div>

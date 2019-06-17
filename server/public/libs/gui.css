@@ -15,15 +15,19 @@
       background-color: #000;
 } 
 
-#parties{
-    display:none;
-}
-
 #jouer{
     display:none;
 }
 
-.hide {
+#pseudo-box {
+  display:none;
+}
+
+#decks {
+  --display:none;
+}
+
+#wait-player {
   display:none;
 }
 

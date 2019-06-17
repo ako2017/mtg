@@ -5,56 +5,15 @@ class GameState {
 
 	create() {
 		this.createGameView();
-	//	this.game.add.sprite(0, 0, 'logo');
-		//this.game.time.events.add(Phaser.Timer.SECOND * 1, function() {this.model.start();}, this);
-	}
-
-	createModel() {
-		var gameModel = new Game();
-		gameModel.addPlayer(this.createPlayer('lala'));
-		gameModel.addPlayer(this.createPlayer('pau'));
-		return gameModel;
 	}
 
 	createGameView() {
 		this.view = new GameView(this.game);
 		this.game.add.existing(this.view);
+		this.onCreateCallback();
 	}
 
 }
-
-
-
-/*
-
-	createGameView() {
-		this.view = new GameView(this.game);
-		view.gameCtrl = new GameController(this.model);
-		view.gameCtrl.view = view;
-		this.game.add.existing(view);
-	}
-
-	createPlayer(name) {
-		var player = new Player();
-		player.name = name;
-		var cards = [];
-		cards.push(cardCreature);
-		cards.push(cardEphemere);
-		cards.push(cardEphemere2);
-		cards.push(island);
-		for(var i=0;i<60;i++) {
-			this.createCard(player, cards[this.game.rnd.integerInRange(0, 3)]);
-		}
-		return player;
-	}
-
-	createCard(player, data) {
-		var card = new Card(player);
-		card.init(data);
-		player.deck.push(card);
-		return card;
-	}
-*/
 
 var cardCreature = {
 		extension : 0,

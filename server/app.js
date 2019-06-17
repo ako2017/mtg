@@ -9,6 +9,8 @@ var usersRouter = require('./routes/users');
 
 var app = express();
 
+global.UID = 0;
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -26,6 +28,31 @@ app.use('/users', usersRouter);
 app.use(function(req, res, next) {
   next(createError(404));
 });
+
+Array.prototype.removeByValue = function(val) {
+	for (var i = 0; i < this.length; i++) {
+		if (this[i] == val) {
+			this.splice(i, 1);
+			return val;
+		}
+	}
+	return null;
+}
+
+Array.prototype.contains = function(val) {
+	for (var i = 0; i < this.length; i++) {
+		if (this[i] == val) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Array.prototype.removeByValues = function(val) {
+	for (var i = 0; i < val.length; i++) {
+		this.removeByValue(val[i]);
+	}
+}
 
 // error handler
 app.use(function(err, req, res, next) {
