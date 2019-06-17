@@ -1,11 +1,3 @@
-function sendEvent(eventType,data,context) {
-	var event = {};
-	event.type = eventType;
-	event.data = data;
-	context.notify(event);
-	
-}
-
 function addzeros(number, length) {
 	var num = '' + number;
 	while (num.length < length) {
@@ -65,28 +57,6 @@ GameEvent = {
 };
 
 const
-Duration = {
-	WHO_BEGIN : 1000,
-	DEGAGEMENT : 2000,
-	ENTRETIENT : 0,
-	PIOCHE : 2000,
-	DECLARATION_ATTAQUANT : 0,
-	DECLARATION_BLOQUEUR : 2000,
-	ATTRIBUTION_BLESSURE : 2000,
-	FIN: 0,
-	NETTOYAGE : 0
-};
-
-const
-CardEvent = {
-	ENGAGEMENT : 0
-};
-const
-State = {
-	NEED_CIBLE : 0
-};
-
-const
 TypeCard = {
 	ARTEFACT : 0,
 	CREATURE : 1,
@@ -107,8 +77,6 @@ TypeMana = {
 	VERT : 4,
 	INCOLORE : 5
 };
-const
-ManaSize = 5;
 
 const
 PHASE = {
@@ -139,4 +107,13 @@ Capability = {
 	VOL : 0,
 	CELERITE : 1,
 	VIGILANCE : 2
+};
+
+module.exports = {
+	Capability : Capability,
+	TimeToLive : TimeToLive,
+	PHASE : PHASE,
+	TypeMana : TypeMana,
+	TypeCard : TypeCard,
+	GameEvent :  GameEvent
 };

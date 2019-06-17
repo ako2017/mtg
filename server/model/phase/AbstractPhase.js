@@ -1,3 +1,5 @@
+const Observable = require('../Observable.js');
+
 class AbstractPhase extends Observable{
 	constructor(pm, phaseId) {
 		super();
@@ -21,3 +23,5 @@ class AbstractPhase extends Observable{
 	}
 
 }
+
+module.exports = AbstractPhase;

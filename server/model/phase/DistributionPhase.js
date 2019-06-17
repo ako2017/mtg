@@ -1,3 +1,7 @@
+const PHASE = require('../Constantes').PHASE;
+const GameEvent = require('../Constantes').GameEvent;
+const AbstractPhase = require('./AbstractPhase');
+
 /**
  * Représente la phase de DISTRIBUTION du jeu
  * Dans celle-ci nous distribuons 7 cartes aux joueurs, il leur est possible de faire un muligane
@@ -9,6 +13,7 @@ class DistributionPhase extends AbstractPhase {
 	}
 
 	execute() {
+		console.log("distribution");
 		var players = this.game.getPlayers();
 		for (var i = 0; i < players.length; i++) {
 			var player = players[i];
@@ -50,3 +55,5 @@ class DistributionPhase extends AbstractPhase {
 	}
 
 }
+
+module.exports = DistributionPhase;

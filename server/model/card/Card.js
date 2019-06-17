@@ -1,12 +1,14 @@
+const Observable = require('../Observable.js');
+
 class Card extends Observable {
-	constructor(player) {
+	constructor() {
 		super();
 		this.force = 0;
 		this.endurance = 0;
 		this.nom="nom";
 		this.text="descriptif de la carte";
 		this.mana= [];
-		this.owner = player;
+		this.owner = null;
 		this.typeLabel="type de la carte";
 		this.type=null;
 		this.frontPic = "";

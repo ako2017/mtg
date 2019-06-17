@@ -1,10 +1,13 @@
-const Observable = require('./Observable.js');
-const Stack = require('./Stack.js');
+const PHASE = require('./Constantes').PHASE;
+const Observable = require('./Observable');
+const Stack = require('./Stack');
+const PhaseManager = require('./phase/PhaseManager');
+const DistributionPhase = require('./phase/DistributionPhase');
 
 class Game extends Observable {
 	constructor() {
 		super();
-		//this.pm = this.createPhaseManager();
+		this.pm = this.createPhaseManager();
 		this.playerActif = 0;
 		this.token = 0;
 		this.stack = new Stack();
@@ -19,7 +22,7 @@ class Game extends Observable {
 		var pm = new PhaseManager(this);
 		var phases = [];
 		phases[PHASE.DISTRIBUTION] = new DistributionPhase(pm);
-		phases[PHASE.WHO_BEGINS] = new WhoBeginsPhase(pm);
+		/*phases[PHASE.WHO_BEGINS] = new WhoBeginsPhase(pm);
 		phases[PHASE.DEGAGEMENT] = new DegagementPhase(pm);
 		phases[PHASE.ENTRETIENT] = new EntretientPhase(pm);
 		phases[PHASE.PIOCHE] = new PiochePhase(pm);
@@ -28,7 +31,7 @@ class Game extends Observable {
 		phases[PHASE.DECLARATION_BLOQUEUR] = new DeclarationBloqueurPhase(pm);
 		phases[PHASE.ATTRIBUTION_BLESSURE] = new AttributionBlessurePhase(pm);
 		phases[PHASE.FIN] = new FinPhase(pm);
-		phases[PHASE.NETTOYAGE] = new NettoyagePhase(pm);
+		phases[PHASE.NETTOYAGE] = new NettoyagePhase(pm);*/
 		pm.initPhases(phases);
 		return pm;
 	}
@@ -59,6 +62,7 @@ class Game extends Observable {
 	}
 
 	start() {
+		console.log("game start");
 		this.pm.start();
 	}
 

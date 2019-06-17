@@ -54,6 +54,14 @@ Array.prototype.removeByValues = function(val) {
 	}
 }
 
+global.sendEvent = function(eventType,data,context) {
+	var event = {};
+	event.type = eventType;
+	event.data = data;
+	context.notify(event);
+}
+
+
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development

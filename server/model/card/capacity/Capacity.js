@@ -1,8 +1,10 @@
+const cst = require('../../Constantes');
+
 class Capacity {
 	constructor(mana, trigger, prompt) {
 		this.card = null;
 		this.trigger = trigger;
-		this.type = TypeCard.CAPACITY;
+		this.type = cst.TypeCard.CAPACITY;
 		this.mana = mana;
 		this.effets = [];
 		this.finished = true;

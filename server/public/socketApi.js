@@ -15,12 +15,11 @@ socket.on('lets_go', function(playersData){
 });
 
 socketApi.viewCreated = function() {
+    socket.emit('viewCreated');
 }
 
 socketApi.play = function(pseudo) {
-    socket.emit('play', {name : pseudo,
-    life : 21,
-    deck : [{uid:1,id:1},{uid:2,id:1},{uid:3,id:1},{uid:4,id:1},{uid:5,id:1}]});
+    socket.emit('play', {name : pseudo, deck : [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]});
 }
 
 socketApi.pass = function() {

@@ -1,3 +1,7 @@
+const PHASE = require('../Constantes').PHASE;
+const GameEvent = require('../Constantes').GameEvent;
+const Observable = require('../Observable.js');
+
 class PhaseManager extends Observable {
 	constructor(game) {
 		super();
@@ -49,3 +53,5 @@ class PhaseManager extends Observable {
 	}
 
 }
+
+module.exports = PhaseManager;
