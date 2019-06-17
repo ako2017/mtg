@@ -27,7 +27,7 @@ class GameView extends Phaser.Group {
 	constructor(game) {
 		super(game);
 		this.playersView = [];
-		this.myName = '';
+		this.myName = null;
 		this.isRunningAnimation = false;
 		this.events = [];
 		this.phaseId = null;
@@ -62,7 +62,8 @@ class GameView extends Phaser.Group {
 	}
 
 	init(players) {
-		/*this.back = this.game.make.sprite(0, 0, 'fond');
+		/*console.log('ajout fond');
+		this.back = this.game.make.sprite(0, 0, 'fond');
 		this.back.scale.set(0.5, 0.5);
 		this.addChild(this.back);*/
 		this.initPlayers(players);
@@ -76,7 +77,7 @@ class GameView extends Phaser.Group {
 		this.actifLabel = this.game.add.image(800, 0, this.game.cache.getBitmapData('actif'));
 		this.bandeau = this.addChild(this.game.add.image(0, 295, this.game.cache.getBitmapData('bandeau')));
 
-		var gameController = new GameController(this);
+		var gameController = null;// new GameController(this);
 
 		this.muligageBtn = this.addChild(this.game.add.button(0, 110, this.game.cache.getBitmapData('buttonsmall'), function(button){gameController.muliganeBtn();},this));
 		this.muligageBtn.text = this.muligageBtn.addChild(this.game.add.text(0, 0, 'muligane', {font: '16px Arial Black'}));
@@ -200,7 +201,7 @@ class GameView extends Phaser.Group {
 			var isMe = players[i].name == this.myName;
 
 			// création du label de vie du joueur
-			this.playersView[players[i].name].lifeLabel = this.game.add.text(0, isMe?500:0, players[i].life, {font: '14px Arial Black',fill: '#fff',strokeThickness: 4});
+			this.playersView[players[i].name].lifeLabel = this.game.add.text(0, isMe?500:0, 21, {font: '14px Arial Black',fill: '#fff',strokeThickness: 4});
 			
 			//création des labels pour les 5 valeurs de mana
 			for(var j=0;j<5;j++) {
@@ -571,6 +572,9 @@ class GameView extends Phaser.Group {
 
 	handleEvent(event) {
 		switch(event.type) {
+			case GameEvent.INIT:
+				this.init(event.data);
+				break;
 			case GameEvent.DISTRIBUTION:
 				this.distributionAnim(event.data);
 				break;

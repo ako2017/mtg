@@ -84,8 +84,8 @@ io.on('connection', function(socket){
     });
 });
 
-socketApi.sendNotification = function() {
-    io.sockets.emit('hello', {msg: 'Hello World!'});
+socketApi.sendEvent = function(eventType,data) {
+    io.sockets.emit('event', {type:eventType, data:data});
 }
 
 module.exports = socketApi;

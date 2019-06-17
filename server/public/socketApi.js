@@ -5,11 +5,12 @@ socket.on('event', function(event){
     socketApi.gameState.view.onReceive(event);
 });
 
-socket.on('lets_go', function(playersData){
+socket.on('lets_go', function(){
     console.log('ca commence');
     $("#jouer").hide();
-    socketApi.game.state.start("Game", playersData);
+    socketApi.game.state.start("Game");
     socketApi.gameState.onCreateCallback = function() {
+        socketApi.gameState.view.myName = pseudo;
         socketApi.viewCreated();
     }
 });

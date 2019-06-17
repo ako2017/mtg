@@ -11,11 +11,14 @@ class GameEventHandler  {
 			case GameEvent.INIT:
 				this.handleInit(event.data);
 				break;
+			case GameEvent.CHANGE_PHASE:
+				this.socketApi.sendEvent(GameEvent.CHANGE_PHASE, {phase:event.data});
+				break;	
 			case GameEvent.DISTRIBUTION:
 			//	this.distributionAnim(event.data);
 				break;
 			default :
-				console.log('evenement non gere');
+				console.log('evenement non gere :' + event.type);
 		}
 	}
 
@@ -24,18 +27,17 @@ class GameEventHandler  {
 		console.log("handle init");
 		for(let i=0;i<handleInitData.length;i++) {
 			let player = handleInitData[i];
-			var playerData = {player:player};
-			var deckToSend = {};
+			var playerData = {name:player.name};
+			var deck = [];
 			for(let j=0;j<player.deck.length;j++) {
-				deckToSend.push({cardId:player.deck[j].id,uid:player.deck[j].uid});
+				deck.push({id:player.deck[j].id,uid:player.deck[j].uid});
 			}
-			playerData.deckToSend = deckToSend;
+			playerData.deck = deck;
 			dataToSend.push(playerData);
 		}
-		//socketApi.sendNotification(dataToSend);
+		this.socketApi.sendEvent(GameEvent.INIT, dataToSend);
 	}
 
-	
 }
 
 module.exports = GameEventHandler;
