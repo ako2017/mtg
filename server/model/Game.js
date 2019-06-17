@@ -44,6 +44,7 @@ class Game extends Observable {
 	 */
 	addPlayer(player) {
 		if (this.players.length < this.maxPlayer) {
+			player.game = this;
 			this.players.push(player);
 			return true;
 		}
@@ -195,7 +196,7 @@ class Game extends Observable {
 	 * @param {*} player 
 	 */
 	muligane(player) {
-		if(this.isAuthorized('muligane', player)) {
+		if(this.isAuthorized('muligane', {player:player})) {
 			player.muligane();
 		}
 	}

@@ -253,6 +253,7 @@ class GameView extends Phaser.Group {
 				this.game.add.tween(cardView).to({x: posX,y:posY},1000,Phaser.Easing.Linear.None,true);	
 			}	
 		}
+		$('#muligane').show();
 		this.unlockAnimation(1);
 	}
 
@@ -297,10 +298,12 @@ class GameView extends Phaser.Group {
 			for(var i=0;i<muliganeData.cards.length;i++) {
 				var card = player.getDeckById(muliganeData.cards[i], true);
 				this.game.add.tween(card).to({x: 100+37 + i*80, y:y},1000,Phaser.Easing.Linear.None,true);
-				card.show(true);
-				card.slot = i;
-				this.player.hand[i].push(card);
+				if(isMe) {
+					card.show(true);
+				}
+				player.hand.push(card);
 			}
+			$('#muligane').show();
 			}.bind(this,this.playersView[muliganeData.name]), 2000);
 	}
 	

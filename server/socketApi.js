@@ -71,7 +71,8 @@ io.on('connection', function(socket){
         
     });
 
-    socket.on('valid', function(msg){
+    socket.on('valid', function(){
+        games[socket.idGame].valid(socket.player);
     });
 
     socket.on('poseCard', function(msg){
@@ -80,7 +81,8 @@ io.on('connection', function(socket){
     socket.on('declareAttaquant', function(msg){
     });
 
-    socket.on('muligane', function(msg){
+    socket.on('muligane', function(){
+        games[socket.idGame].muligane(socket.player);
     });
 });
 

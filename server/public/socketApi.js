@@ -27,9 +27,8 @@ socketApi.pass = function() {
     socket.emit('pass');
 }
 
-
 socketApi.valid = function() {
-    socket.emit('hello', {msg: 'Hello World!'});
+    socket.emit('valid');
 }
 
 socketApi.poseCard = function() {
@@ -41,5 +40,5 @@ socketApi.declareAttaquant = function() {
 }
 
 socketApi.muligane = function() {
-    socket.emit('hello', {msg: 'Hello World!'});
+    socket.emit('muligane');
 }

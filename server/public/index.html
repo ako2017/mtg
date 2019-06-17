@@ -77,6 +77,11 @@
 						<div class="lds-default"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 					</div>
 				</div>
+				<div id="muligane"  class='overlay'>
+					<h1>Voulez-vous faire un muligane ?</h1>
+					<button class="bouton6" onClick="socketApi.muligane();">OUI</button>
+					<button class="bouton6" onClick="$('#muligane').hide();socketApi.valid();">NON</button>	
+				</div>
 		</div>
     </body>
 

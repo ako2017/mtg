@@ -1,3 +1,4 @@
+const GameEvent = require('./Constantes').GameEvent;
 const Observable = require('./Observable.js');
 
 /**
@@ -21,7 +22,7 @@ class Player extends Observable {
 		this.canPioche = true;
 		this.attaquants = [];
 		this.hasPass = false;
-		this.avatar = "";
+		this.game = null;
 		this.uid = UID++;
 	}
 

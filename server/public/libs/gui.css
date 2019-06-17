@@ -12,7 +12,7 @@
       height:600px;
       text-align:center;
       z-index: 1000;
-      background-color: #000;
+      --background-color: #000;
 } 
 
 #jouer{
@@ -25,6 +25,10 @@
 
 #decks {
   --display:none;
+}
+
+#muligane {
+  display:none;
 }
 
 #wait-player {
