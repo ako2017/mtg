@@ -22,7 +22,7 @@ class DistributionPhase extends AbstractPhase {
 				player.hand.push(card);
 			}
 		}
-		sendEvent(GameEvent.DISTRIBUTION, players, this);
+		sendEvent(GameEvent.DISTRIBUTION, players, this.game);
 		return PHASE.WAIT;
 	}
 	

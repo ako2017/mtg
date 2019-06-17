@@ -4,6 +4,8 @@ var socketApi = {};
 const Game = require('./model/Game');
 const CardFactory = require('./model/card/CardFactory');
 const Player = require('./model/Player');
+const GameEventHandler = require('./GameEventHandler');
+
 var games = [];
 
 socketApi.io = io;
@@ -21,7 +23,9 @@ function findFreeGame() {
 
 function createGame() {
     console.log("partie cree");
-    games.push(new Game());
+    var game = new Game();
+    game.addObserver(new GameEventHandler(socketApi));
+    games.push(game);
     return games.length - 1;
 }
 

@@ -14,10 +14,11 @@ function addMana(source, dest) {
 
 const
 GameEvent = {
-	CHANGE_PHASE : -6,
-	ERROR : -5,
-	WHO_BEGIN : -4,
-	DISTRIBUTION : -3,
+	INIT : -5,
+	CHANGE_PHASE : -4,
+	ERROR : -3,
+	WHO_BEGIN : -2,
+	DISTRIBUTION : -1,
 	POSE_CARD : 0,
 	CHANGE_CARD : 1,
 	POSE_CARD : 2,

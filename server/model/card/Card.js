@@ -5,13 +5,9 @@ class Card extends Observable {
 		super();
 		this.force = 0;
 		this.endurance = 0;
-		this.nom="nom";
-		this.text="descriptif de la carte";
 		this.mana= [];
 		this.owner = null;
-		this.typeLabel="type de la carte";
 		this.type=null;
-		this.frontPic = "";
 		this.isEngaged = false;
 		this.vol = false;
 		this.celerite = false;
@@ -23,6 +19,7 @@ class Card extends Observable {
 		this.malInvocation = false;
 		this.enduranceCpt = 0;
 		this.uid = UID++;
+		this.id = null;
 	}
 
 	addCapacity(capacity) {

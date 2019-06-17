@@ -1,4 +1,5 @@
 const PHASE = require('./Constantes').PHASE;
+const GameEvent = require('./Constantes').GameEvent;
 const Observable = require('./Observable');
 const Stack = require('./Stack');
 const PhaseManager = require('./phase/PhaseManager');
@@ -63,6 +64,7 @@ class Game extends Observable {
 
 	start() {
 		console.log("game start");
+		sendEvent(GameEvent.INIT,this.getPlayers(),this);
 		this.pm.start();
 	}
 
