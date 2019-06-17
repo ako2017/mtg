@@ -10,7 +10,7 @@ socketApi.io = io;
 
 function findFreeGame() {
     for(let i=0;i<games.length;i++) {
-        if(games[i].players.length != 2) {
+        if(!games[i].isFull()) {
             console.log("partie libre trouvee");
             return i;
         }
