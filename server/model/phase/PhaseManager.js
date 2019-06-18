@@ -34,7 +34,7 @@ class PhaseManager extends Observable {
 	}
 	
 	canGoNext() {
-		return this.game.stack.isEmpty() && this.game.checkAllPass();
+		return this.game.stack.isEmpty() && (this.game.checkAllPass() || this._next == PHASE.WHO_BEGINS);
 	}
 	
 	isAuthorized(action, data) {

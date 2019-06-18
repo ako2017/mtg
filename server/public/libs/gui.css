@@ -12,8 +12,10 @@
       height:600px;
       text-align:center;
       z-index: 1000;
-      --background-color: #000;
+      background-color: #000;
 } 
+
+.transparent { background-color:transparent; }
 
 #jouer{
     display:none;

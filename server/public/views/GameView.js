@@ -1,5 +1,6 @@
 CONFIG = {
 	pilelabel : [0,180],
+	namelabel : [[25,500],[25,0]],
 	pile : [37,248],
 	deck : [[37,548],[37,52]],
 	cemeterylabel : [[705,480],[705,100]],
@@ -228,6 +229,13 @@ class GameView extends Phaser.Group {
 				cardView.events.onInputOut.add(cardView.onOut, cardView);
 				this.addChild(cardView);
 			}
+			if(isMe) {
+				this.game.add.text(CONFIG.namelabel[0][0], CONFIG.namelabel[0][1], players[i].name, { font: '14px Arial Black',fill: '#fff',strokeThickness: 4 });
+			}
+			else {
+				this.game.add.text(CONFIG.namelabel[1][0], CONFIG.namelabel[1][1], players[i].name, { font: '14px Arial Black',fill: '#fff',strokeThickness: 4 });
+			}
+
 		}	
 	}
 	

@@ -1,3 +1,7 @@
+const PHASE = require('../Constantes').PHASE;
+const GameEvent = require('../Constantes').GameEvent;
+const AbstractPhase = require('./AbstractPhase');
+
 class WhoBeginsPhase extends AbstractPhase {
 	constructor(pm) {
 		super(pm, PHASE.WHO_BEGINS);
@@ -5,7 +9,7 @@ class WhoBeginsPhase extends AbstractPhase {
 
 	execute() {
 		this.setPlayerActif();
-		sendEvent(GameEvent.WHO_BEGIN,this.game.getPlayerActif(),this);
+		sendEvent(GameEvent.WHO_BEGIN,this.game.getPlayerActif(),this.game);
 		return PHASE.DEGAGEMENT;
 	}
 
@@ -23,3 +27,5 @@ class WhoBeginsPhase extends AbstractPhase {
 	}
 	
 }
+
+module.exports = WhoBeginsPhase;

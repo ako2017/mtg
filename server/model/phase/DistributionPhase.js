@@ -28,6 +28,7 @@ class DistributionPhase extends AbstractPhase {
 	
 	valid(player) {
 		player.doneDistrib = true;
+		sendEvent(GameEvent.MULIGANE_VALID, player, this.game);
 		var players = this.game.getPlayers();
 		for (var i = 0; i < players.length; i++) {
 			if (!players[i].doneDistrib) {

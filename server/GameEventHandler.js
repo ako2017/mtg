@@ -20,6 +20,12 @@ class GameEventHandler  {
 			case GameEvent.MULIGANE:
 				this.handleMuligane(event.data);
 				break;
+			case GameEvent.WHO_BEGIN:
+				this.handleWhoBegins(event.data);
+				break;
+			case GameEvent.MULIGANE_VALID:
+				this.handleMuliganeValid(event.data);
+				break;
 			default :
 				console.log('evenement non gere :' + event.type);
 		}
@@ -67,6 +73,18 @@ class GameEventHandler  {
 		}
 		playerData.cards = cards;
 		this.socketApi.sendEvent(GameEvent.MULIGANE, playerData);
+	}
+
+	handleMuliganeValid(muliganeValidData) {
+		console.log("handle muliganeValid");
+		var playerData = {name:muliganeValidData.name};
+		this.socketApi.sendEvent(GameEvent.MULIGANE_VALID, playerData);
+	}
+
+	handleWhoBegins(whoBeginsData) {
+		console.log("handle whoBegins");
+		var playerData = {name:whoBeginsData.name};
+		this.socketApi.sendEvent(GameEvent.WHO_BEGIN, playerData);
 	}
 
 }

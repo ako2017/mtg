@@ -38,6 +38,7 @@
 				game.state.start("Preload");
 				socketApi.gameState = gameState;
 				socketApi.game = game;
+				game.stage.disableVisibilityChange = true;
 			});
 
 			function jouer() {
@@ -77,7 +78,7 @@
 						<div class="lds-default"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 					</div>
 				</div>
-				<div id="muligane"  class='overlay'>
+				<div id="muligane"  class='overlay transparent'>
 					<h1>Voulez-vous faire un muligane ?</h1>
 					<button class="bouton6" onClick="socketApi.muligane();">OUI</button>
 					<button class="bouton6" onClick="$('#muligane').hide();socketApi.valid();">NON</button>	

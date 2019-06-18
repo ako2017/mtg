@@ -4,6 +4,9 @@ const Observable = require('./Observable');
 const Stack = require('./Stack');
 const PhaseManager = require('./phase/PhaseManager');
 const DistributionPhase = require('./phase/DistributionPhase');
+const WhoBeginsPhase = require('./phase/WhoBeginsPhase');
+const DegagementPhase = require('./phase/DegagementPhase');
+const EntretientPhase = require('./phase/EntretientPhase');
 
 class Game extends Observable {
 	constructor() {
@@ -23,10 +26,10 @@ class Game extends Observable {
 		var pm = new PhaseManager(this);
 		var phases = [];
 		phases[PHASE.DISTRIBUTION] = new DistributionPhase(pm);
-		/*phases[PHASE.WHO_BEGINS] = new WhoBeginsPhase(pm);
+		phases[PHASE.WHO_BEGINS] = new WhoBeginsPhase(pm);
 		phases[PHASE.DEGAGEMENT] = new DegagementPhase(pm);
 		phases[PHASE.ENTRETIENT] = new EntretientPhase(pm);
-		phases[PHASE.PIOCHE] = new PiochePhase(pm);
+		/*phases[PHASE.PIOCHE] = new PiochePhase(pm);
 		phases[PHASE.PRINCIPALE] = new PrincipalePhase(pm);
 		phases[PHASE.DECLARATION_ATTAQUANT] = new DeclarationAttaquantPhase(pm);
 		phases[PHASE.DECLARATION_BLOQUEUR] = new DeclarationBloqueurPhase(pm);
@@ -144,11 +147,17 @@ class Game extends Observable {
 
 	*subValid(player) {
 		this.pm.valid(player);
+		console.log('valid');
 		if(this.needResolve()) {
+			console.log('valid yield');
 			yield* this.stack.resolve(game);
 		}
 		else if(this.pm.canGoNext()) {
+			console.log('valid next');
 			do {} while(this.pm.next());
+		}
+		else {
+			console.log('valid non gere');
 		}
 	}
 
