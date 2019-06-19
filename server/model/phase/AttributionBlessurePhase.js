@@ -1,3 +1,7 @@
+const PHASE = require('../Constantes').PHASE;
+const GameEvent = require('../Constantes').GameEvent;
+const AbstractPhase = require('./AbstractPhase');
+
 class AttributionBlessurePhase extends AbstractPhase {
 	constructor(pm) {
 		super(pm,PHASE.ATTRIBUTION_BLESSURE);
@@ -37,3 +41,5 @@ class AttributionBlessurePhase extends AbstractPhase {
 	}
 	
 }
+
+module.exports = AttributionBlessurePhase;

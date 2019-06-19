@@ -7,6 +7,13 @@ const DistributionPhase = require('./phase/DistributionPhase');
 const WhoBeginsPhase = require('./phase/WhoBeginsPhase');
 const DegagementPhase = require('./phase/DegagementPhase');
 const EntretientPhase = require('./phase/EntretientPhase');
+const PiochePhase = require('./phase/PiochePhase');
+const PrincipalePhase = require('./phase/PrincipalePhase');
+const DeclarationAttaquantPhase = require('./phase/DeclarationAttaquantPhase');
+const DeclarationBloqueurPhase = require('./phase/DeclarationBloqueurPhase');
+const AttributionBlessurePhase = require('./phase/AttributionBlessurePhase');
+const FinPhase = require('./phase/FinPhase');
+const NettoyagePhase = require('./phase/NettoyagePhase');
 
 class Game extends Observable {
 	constructor() {
@@ -29,13 +36,13 @@ class Game extends Observable {
 		phases[PHASE.WHO_BEGINS] = new WhoBeginsPhase(pm);
 		phases[PHASE.DEGAGEMENT] = new DegagementPhase(pm);
 		phases[PHASE.ENTRETIENT] = new EntretientPhase(pm);
-		/*phases[PHASE.PIOCHE] = new PiochePhase(pm);
+		phases[PHASE.PIOCHE] = new PiochePhase(pm);
 		phases[PHASE.PRINCIPALE] = new PrincipalePhase(pm);
 		phases[PHASE.DECLARATION_ATTAQUANT] = new DeclarationAttaquantPhase(pm);
 		phases[PHASE.DECLARATION_BLOQUEUR] = new DeclarationBloqueurPhase(pm);
 		phases[PHASE.ATTRIBUTION_BLESSURE] = new AttributionBlessurePhase(pm);
 		phases[PHASE.FIN] = new FinPhase(pm);
-		phases[PHASE.NETTOYAGE] = new NettoyagePhase(pm);*/
+		phases[PHASE.NETTOYAGE] = new NettoyagePhase(pm);
 		pm.initPhases(phases);
 		return pm;
 	}

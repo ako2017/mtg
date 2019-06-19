@@ -1,3 +1,7 @@
+const PHASE = require('../Constantes').PHASE;
+const GameEvent = require('../Constantes').GameEvent;
+const AbstractPhase = require('./AbstractPhase');
+
 class PiochePhase extends AbstractPhase {
 	constructor(pm) {
 		super(pm,PHASE.PIOCHE);
@@ -40,3 +44,5 @@ class PiochePhase extends AbstractPhase {
 	}
 
 }
+
+module.exports = PiochePhase;

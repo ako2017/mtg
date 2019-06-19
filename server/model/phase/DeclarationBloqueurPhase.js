@@ -1,3 +1,7 @@
+const PHASE = require('../Constantes').PHASE;
+const GameEvent = require('../Constantes').GameEvent;
+const AbstractPhase = require('./AbstractPhase');
+
 class DeclarationBloqueurPhase extends AbstractPhase {
 	constructor(pm) {
 		super(pm,PHASE.DECLARATION_BLOQUEUR);
@@ -44,3 +48,5 @@ class DeclarationBloqueurPhase extends AbstractPhase {
 	}
 
 }
+
+module.exports = DeclarationBloqueurPhase;

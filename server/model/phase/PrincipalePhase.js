@@ -1,3 +1,7 @@
+const PHASE = require('../Constantes').PHASE;
+const GameEvent = require('../Constantes').GameEvent;
+const AbstractPhase = require('./AbstractPhase');
+
 class PrincipalePhase extends AbstractPhase {
 	constructor(pm) {
 		super(pm,PHASE.PRINCIPALE);
@@ -50,3 +54,5 @@ class PrincipalePhase extends AbstractPhase {
 	}
 
 }
+
+module.exports = PrincipalePhase;

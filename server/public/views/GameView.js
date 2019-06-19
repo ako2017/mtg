@@ -79,13 +79,8 @@ class GameView extends Phaser.Group {
 		this.bandeau = this.addChild(this.game.add.image(0, 295, this.game.cache.getBitmapData('bandeau')));
 
 		var gameController = null;// new GameController(this);
-
-		this.muligageBtn = this.addChild(this.game.add.button(0, 110, this.game.cache.getBitmapData('buttonsmall'), function(button){gameController.muliganeBtn();},this));
-		this.muligageBtn.text = this.muligageBtn.addChild(this.game.add.text(0, 0, 'muligane', {font: '16px Arial Black'}));
-		this.muligageBtn.player = this.playersView[this.myName];
-		this.muligageBtn.visible = false;
 		
-		this.validBtn = this.addChild(this.game.add.button(380, 270, 'blueBtn', function(button){gameController.validBtn();},this));
+		this.validBtn = this.addChild(this.game.add.button(380, 270, 'blueBtn', function(button){socketApi.valid();},this));
 		this.validBtn.text = this.validBtn.addChild(this.game.add.text(0, 0, 'valid', {font: '24px Arial Black'}));
 		this.validBtn.text.anchor.x = 0.5;
 		this.validBtn.text.anchor.y = 0.5;
@@ -94,8 +89,8 @@ class GameView extends Phaser.Group {
 		this.validBtn.anchor.x = 0.5;
 		this.validBtn.anchor.y = 0.5;
 		this.validBtn.visible = false;
-		this.validBtn.x = this.game.world.width-this.validBtn.width;
-		this.validBtn.y = this.game.world.height/2;
+		this.validBtn.x = this.game.world.width-this.validBtn.width/2;
+		this.validBtn.y = this.game.world.height/2+this.validBtn.height/2;
 
 		this.actionCardGroup = this.game.add.group();
 		this.actionCardGroup.y=300;
@@ -224,7 +219,7 @@ class GameView extends Phaser.Group {
 					cardView.y=CONFIG.deck[1][1];
 				}
 				cardView.inputEnabled = true;
-				cardView.events.onInputUp.add(cardView.onClick, cardView);
+				//cardView.events.onInputUp.add(cardView.onClick, cardView);
 				cardView.events.onInputOver.add(cardView.onOver, cardView);
 				cardView.events.onInputOut.add(cardView.onOut, cardView);
 				this.addChild(cardView);
@@ -452,6 +447,8 @@ class GameView extends Phaser.Group {
 	changePhaseAnim(changePhaseAnimData) {
 		this.phaseId = changePhaseAnimData.phase;
 		this.phaseLabel.text = phaseMapping[changePhaseAnimData.phase];
+		var phaseOk = [PHASE.ENTRETIENT,PHASE.PIOCHE,PHASE.PRINCIPALE,PHASE.DECLARATION_ATTAQUANT,PHASE.DECLARATION_BLOQUEUR,PHASE.ATTRIBUTION_BLESSURE,PHASE.FIN,PHASE.NETTOYAGE];
+		this.validBtn.visible = phaseOk.contains(this.phaseId);
 	}
 		
 	playerLifeAnim(playerLifeAnimData) {

@@ -1,3 +1,7 @@
+const PHASE = require('../Constantes').PHASE;
+const GameEvent = require('../Constantes').GameEvent;
+const AbstractPhase = require('./AbstractPhase');
+
 class DeclarationAttaquantPhase extends AbstractPhase {
 	constructor(pm) {
 		super(pm,PHASE.DECLARATION_ATTAQUANT);
@@ -63,3 +67,5 @@ class DeclarationAttaquantPhase extends AbstractPhase {
 	}
 
 }
+
+module.exports = DeclarationAttaquantPhase;
