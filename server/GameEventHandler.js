@@ -26,6 +26,15 @@ class GameEventHandler  {
 			case GameEvent.MULIGANE_VALID:
 				this.handleMuliganeValid(event.data);
 				break;
+			case GameEvent.RETIRER_CARD:
+				this.retirerCard(event.data);
+				break;
+			case GameEvent.NEXT_TOKEN:
+				this.nextToken(event.data);
+				break;
+			case GameEvent.PIOCHE_CARD:
+				this.piocheCard(event.data);
+				break;
 			default :
 				console.log('evenement non gere :' + event.type);
 		}
@@ -85,6 +94,24 @@ class GameEventHandler  {
 		console.log("handle whoBegins");
 		var playerData = {name:whoBeginsData.name};
 		this.socketApi.sendEvent(GameEvent.WHO_BEGIN, playerData);
+	}
+
+	retirerCard(retirerCard) {
+		console.log("handle retirerCard");
+		var playerData = {name:retirerCard.name};
+		this.socketApi.sendEvent(GameEvent.RETIRER_CARD, playerData);
+	}
+
+	nextToken(nextTokenData) {
+		console.log("handle nextToken");
+		var playerData = {name:nextTokenData.name};
+		this.socketApi.sendEvent(GameEvent.NEXT_TOKEN, playerData);
+	}
+
+	piocheCard(piocheCardData) {
+		console.log("handle piocheCard");
+		var playerData = {name:piocheCardData.player.name,card:piocheCardData.card.uid};
+		this.socketApi.sendEvent(GameEvent.PIOCHE_CARD, playerData);
 	}
 
 }

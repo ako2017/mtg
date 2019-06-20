@@ -33,6 +33,11 @@
   display:none;
 }
 
+#retirerCard {
+  display:none;
+  height:0px !important;;
+}
+
 #wait-player {
   display:none;
 }

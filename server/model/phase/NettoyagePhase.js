@@ -9,7 +9,7 @@ class NettoyagePhase extends AbstractPhase {
 
 	execute() {	
 		if (this.game.getPlayerActif().hand.length > 7) {
-			sendEvent(GameEvent.RETIRER_CARD,null,this);
+			sendEvent(GameEvent.RETIRER_CARD,this.game.getPlayerActif(),this.game);
 			return PHASE.WAIT;
 		} else {
 			return PHASE.DEGAGEMENT;
@@ -21,7 +21,7 @@ class NettoyagePhase extends AbstractPhase {
 			return PHASE.DEGAGEMENT;
 		}
 		else {
-			sendEvent(GameEvent.RETIRER_CARD,null,this);
+			sendEvent(GameEvent.RETIRER_CARD,player,this.game);
 		}
 		return PHASE.WAIT;
 	}

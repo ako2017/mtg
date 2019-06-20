@@ -357,7 +357,8 @@ class GameView extends Phaser.Group {
 		}
 		var card = this.playersView[piocheCardAnimData.name].getDeckById(piocheCardAnimData.card, true);
 		this.playersView[piocheCardAnimData.name].hand.push(card);
-		card.show(true);
+
+		card.show(isMe);
 
 		for(var i =0;i<this.playersView[piocheCardAnimData.name].hand.length;i++) {
 			this.game.add.tween(this.playersView[piocheCardAnimData.name].hand[i]).to({x:100+37+80*i, y:posY},1000,Phaser.Easing.Linear.None,true);
@@ -550,7 +551,7 @@ class GameView extends Phaser.Group {
 
 	retirerCardAnim(retirerCardAnimData) {
 		if(retirerCardAnimData.name == this.myName) {
-			this.errorLabel.text = 'veuillez retirer une carte';
+			$("#retirerCard").show();
 		}
 	}
 
