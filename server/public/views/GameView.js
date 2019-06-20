@@ -219,7 +219,7 @@ class GameView extends Phaser.Group {
 					cardView.y=CONFIG.deck[1][1];
 				}
 				cardView.inputEnabled = true;
-				//cardView.events.onInputUp.add(cardView.onClick, cardView);
+				cardView.events.onInputUp.add(cardView.onClick, cardView);
 				cardView.events.onInputOver.add(cardView.onOver, cardView);
 				cardView.events.onInputOut.add(cardView.onOut, cardView);
 				this.addChild(cardView);

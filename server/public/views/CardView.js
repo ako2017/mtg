@@ -47,10 +47,10 @@ class CardView extends Phaser.Sprite {
 		this.gameView.cardSelected = this;
 
 		if(oldCardSelected == this) {
-			this.gameView.hideActionCard();
+			//this.gameView.hideActionCard();
 		}
 		else {
-			this.gameView.showActionCard(this);
+			//this.gameView.showActionCard(this);
 		}
 	}
 
