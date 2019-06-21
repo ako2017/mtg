@@ -23,6 +23,10 @@ socketApi.play = function(pseudo) {
     socket.emit('play', {name : pseudo, deck : [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]});
 }
 
+socketApi.retirerCard = function(cardUid) {
+    socket.emit('retirerCard', cardUid);
+}
+
 socketApi.pass = function() {
     socket.emit('pass');
 }

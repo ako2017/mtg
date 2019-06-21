@@ -43,7 +43,9 @@ io.on('connection', function(socket){
         var player = new Player();
         player.name = playerInfo.name;
         for(var i=0;i<playerInfo.deck.length;i++) {
-            player.deck.push(cardFactory.create(playerInfo.deck[i]));
+            var card = cardFactory.create(playerInfo.deck[i]);
+            card.owner = player;
+            player.deck.push(card);
         }
         games[idGame].addPlayer(player);
         socket.player = player;
@@ -84,6 +86,12 @@ io.on('connection', function(socket){
     socket.on('muligane', function(){
         games[socket.idGame].muligane(socket.player);
     });
+
+    socket.on('retirerCard', function(cardUid){
+        games[socket.idGame].retirerCard(socket.player,socket.player.getCardById(cardUid));
+    });
+
+
 });
 
 socketApi.sendEvent = function(eventType,data) {

@@ -62,6 +62,16 @@ class GameView extends Phaser.Group {
 		this.infoCardGroup.infoText = this.infoCardGroup.addChild(this.game.add.text(200, 0, '', {font: '10px Arial Black',fill: '#fff',strokeThickness: 4,wordWrap: true, wordWrapWidth: 400}));
 	}
 
+
+	validHandler() {
+		if(this.retirerCard) {
+			socketApi.retirerCard(this.cardSelected.uid);
+		}
+		else {
+			socketApi.valid();
+		}
+	}
+
 	init(players) {
 		/*console.log('ajout fond');
 		this.back = this.game.make.sprite(0, 0, 'fond');
@@ -80,7 +90,7 @@ class GameView extends Phaser.Group {
 
 		var gameController = null;// new GameController(this);
 		
-		this.validBtn = this.addChild(this.game.add.button(380, 270, 'blueBtn', function(button){socketApi.valid();},this));
+		this.validBtn = this.addChild(this.game.add.button(380, 270, 'blueBtn', function(button){this.validHandler();},this));
 		this.validBtn.text = this.validBtn.addChild(this.game.add.text(0, 0, 'valid', {font: '24px Arial Black'}));
 		this.validBtn.text.anchor.x = 0.5;
 		this.validBtn.text.anchor.y = 0.5;
@@ -551,6 +561,7 @@ class GameView extends Phaser.Group {
 
 	retirerCardAnim(retirerCardAnimData) {
 		if(retirerCardAnimData.name == this.myName) {
+			this.retirerCard = true;
 			$("#retirerCard").show();
 		}
 	}

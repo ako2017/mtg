@@ -98,8 +98,8 @@ class Player extends Observable {
 	 */
 	getCardById(cardId) {
 		for(var i=0;i<this.hand.length;i++) {
-			if(this.hand[i].id == cardId) {
-				return this.hand[i]
+			if(this.hand[i].uid == cardId) {
+				return this.hand[i];
 			}
 		}
 		return null;

@@ -1,3 +1,5 @@
+const GameEvent = require('../Constantes').GameEvent;
+const TypeCard = require('../Constantes').TypeCard;
 const Observable = require('../Observable.js');
 
 class Card extends Observable {
