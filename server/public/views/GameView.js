@@ -32,7 +32,7 @@ class GameView extends Phaser.Group {
 		this.isRunningAnimation = false;
 		this.events = [];
 		this.phaseId = null;
-		this.cardSelected = null;
+		this.cardSelected = [];
 		this.playerActifName = null;
 		this.playerTokenName = null;
 		this.createInfoWindow();
@@ -65,7 +65,11 @@ class GameView extends Phaser.Group {
 
 	validHandler() {
 		if(this.retirerCard) {
-			socketApi.retirerCard(this.cardSelected.uid);
+			var uids = [];
+			this.cardSelected.forEach(function(card) {
+				uids.push(card.uid);
+			})
+			socketApi.retirerCard(uids);
 		}
 		else {
 			socketApi.valid();

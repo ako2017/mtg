@@ -8,6 +8,7 @@ class CardView extends Phaser.Sprite {
 		this.uid = uid;
 		this.gameView = gameView;
 		this.isEngaged = false;
+		this.tween = null;
 		this.init(cardData);
 	}
 
@@ -43,15 +44,28 @@ class CardView extends Phaser.Sprite {
 	 * @param {CardView} cardView la carte cliquée
 	 */
 	onClick() {
-		var oldCardSelected = this.gameView.cardSelected;
-		this.gameView.cardSelected = this;
+		if(this.gameView.cardSelected.contains(this)) {
+			this.gameView.cardSelected.removeByValue(this);
+			this.tween.stop();
+			return;
+		}
+		else {
+			this.gameView.cardSelected.push(this);
+			this.select();
+		}
 
+		/*
 		if(oldCardSelected == this) {
 			//this.gameView.hideActionCard();
 		}
 		else {
 			//this.gameView.showActionCard(this);
-		}
+		}*/
+	}
+
+	select() {
+		this.tween = this.game.add.tween(this.scale).to({x: 0.5,y:0.5},1000,Phaser.Easing.Linear.None,true,0,-1);
+		this.tween.yoyo(true);
 	}
 
 	onOver() {

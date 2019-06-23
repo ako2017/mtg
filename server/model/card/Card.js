@@ -164,13 +164,13 @@ class Card extends Observable {
 
 	engage() {
 		this.isEngaged = true;
-		sendEvent(GameEvent.ENGAGEMENT, this, this);
+		sendEvent(GameEvent.ENGAGEMENT, this, this.owner.game);
 	}
 
 	gotoCemetery() {
 		this.owner.cemetery.push(this);
 		this.degage();
-		sendEvent(GameEvent.GOTO_CEMETERY, this, this);
+		sendEvent(GameEvent.GOTO_CEMETERY, this, this.owner.game);
 	}
 
 	canDegage() {
@@ -180,7 +180,7 @@ class Card extends Observable {
 	degage() {
 		if(!this.canDegage()) return false;
 		this.isEngaged = false;
-		sendEvent(GameEvent.DEGAGEMENT, this, this);
+		sendEvent(GameEvent.DEGAGEMENT, this, this.owner.game);
 		return true;
 	}
 

@@ -196,6 +196,7 @@ class Game extends Observable {
 	}
 
 	retirerCard(player, card) {
+		console.log("retirerCard game");
 		if(!this.isAuthorized('retirerCard',{player:player, card:card})) 
 			return false;
 		player.retirerCard(card);

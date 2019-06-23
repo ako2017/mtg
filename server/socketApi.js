@@ -87,8 +87,8 @@ io.on('connection', function(socket){
         games[socket.idGame].muligane(socket.player);
     });
 
-    socket.on('retirerCard', function(cardUid){
-        games[socket.idGame].retirerCard(socket.player,socket.player.getCardById(cardUid));
+    socket.on('retirerCard', function(uids){
+        games[socket.idGame].retirerCard(socket.player,socket.player.getCardById(uids[0]));
     });
 
 

@@ -35,6 +35,9 @@ class GameEventHandler  {
 			case GameEvent.PIOCHE_CARD:
 				this.piocheCard(event.data);
 				break;
+			case GameEvent.GOTO_CEMETERY:
+				this.gotoCemetery(event.data);
+				break;
 			default :
 				console.log('evenement non gere :' + event.type);
 		}
@@ -112,6 +115,12 @@ class GameEventHandler  {
 		console.log("handle piocheCard");
 		var playerData = {name:piocheCardData.player.name,card:piocheCardData.card.uid};
 		this.socketApi.sendEvent(GameEvent.PIOCHE_CARD, playerData);
+	}
+
+	gotoCemetery(gotoCemeteryData) {
+		console.log("handle gotoCemetery");
+		var playerData = {name:gotoCemeteryData.owner.name,card:gotoCemeteryData.uid};
+		this.socketApi.sendEvent(GameEvent.GOTO_CEMETERY, playerData);
 	}
 
 }
