@@ -12,7 +12,6 @@ class CardView extends Phaser.Sprite {
 		this.init(cardData);
 	}
 
-	
 	init(cardData) {
 		this.back = this.addChild(this.game.make.sprite(0, 0, 'back'));
 		this.front = this.addChild(this.game.make.sprite(0, 0, cardData.extension + '#' + cardData.numero));
@@ -36,7 +35,14 @@ class CardView extends Phaser.Sprite {
 		return this.type == type;
 	}
 
-
+	reset() {
+		if(this.gameView.cardSelected.contains(this)) {
+			this.gameView.cardSelected.removeByValue(this);
+		}
+		if(this.tween) {
+			this.tween.stop()
+		}
+	}
 
 	/**
 	 * Lors du click sur une carte on affiche le menu des actions possibles 

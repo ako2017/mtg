@@ -429,6 +429,7 @@ class GameView extends Phaser.Group {
 			posY = 52;		
 		}
 		this.game.add.tween(card).to({y:posY,x:posX},1000,Phaser.Easing.Linear.None,true);
+		card.reset();
 		this.unlockAnimation(1);
 	}
 	
@@ -460,6 +461,8 @@ class GameView extends Phaser.Group {
 	}
 	
 	changePhaseAnim(changePhaseAnimData) {
+		this.retirerCard = false;
+		$("#retirerCard").hide();
 		this.phaseId = changePhaseAnimData.phase;
 		this.phaseLabel.text = phaseMapping[changePhaseAnimData.phase];
 		var phaseOk = [PHASE.ENTRETIENT,PHASE.PIOCHE,PHASE.PRINCIPALE,PHASE.DECLARATION_ATTAQUANT,PHASE.DECLARATION_BLOQUEUR,PHASE.ATTRIBUTION_BLESSURE,PHASE.FIN,PHASE.NETTOYAGE];

@@ -33,6 +33,10 @@
   display:none;
 }
 
+#actionCard {
+  display:none;
+}
+
 #retirerCard {
   display:none;
   height:0px !important;;

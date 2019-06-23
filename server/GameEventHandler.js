@@ -38,6 +38,9 @@ class GameEventHandler  {
 			case GameEvent.GOTO_CEMETERY:
 				this.gotoCemetery(event.data);
 				break;
+			case GameEvent.NEXT_PLAYER:
+				this.nextPlayer(event.data);
+				break;
 			default :
 				console.log('evenement non gere :' + event.type);
 		}
@@ -109,6 +112,12 @@ class GameEventHandler  {
 		console.log("handle nextToken");
 		var playerData = {name:nextTokenData.name};
 		this.socketApi.sendEvent(GameEvent.NEXT_TOKEN, playerData);
+	}
+
+	nextPlayer(nextPlayerData) {
+		console.log("handle nextPlayer");
+		var playerData = {name:nextPlayerData.name};
+		this.socketApi.sendEvent(GameEvent.NEXT_PLAYER, playerData);
 	}
 
 	piocheCard(piocheCardData) {

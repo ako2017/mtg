@@ -11,7 +11,7 @@ class PiochePhase extends AbstractPhase {
 	execute() {
 		if(this.firstPioche) {
 			this.firstPioche = false;
-			return PHASE.WAIT;
+			return PHASE.PRINCIPALE;
 		}
 		else {
 			this.game.getPlayerActif().pioche();

@@ -116,10 +116,7 @@ class Game extends Observable {
 
 	nextPlayer() {
 		this.playerActif = (this.playerActif + 1) % this.players.length;
-		var event = {};
-		event.type = GameEvent.NEXT_PLAYER;
-		event.data = this.getPlayerActif();
-		this.notify(event);
+		sendEvent(GameEvent.NEXT_PLAYER,this.getPlayerActif(),this);
 	}
 
 	/**
@@ -161,6 +158,7 @@ class Game extends Observable {
 		}
 		else if(this.pm.canGoNext()) {
 			console.log('valid next');
+			this.unPassAll();
 			do {} while(this.pm.next());
 		}
 		else {
@@ -199,7 +197,9 @@ class Game extends Observable {
 		console.log("retirerCard game");
 		if(!this.isAuthorized('retirerCard',{player:player, card:card})) 
 			return false;
-		player.retirerCard(card);
+		if(player.retirerCard(card)) {
+			this.valid(player);
+		}
 	}
 
 	declareAttaquant(player, card) {

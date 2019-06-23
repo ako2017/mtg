@@ -27,11 +27,13 @@ class NettoyagePhase extends AbstractPhase {
 	}
 	
 	end() {
-		this.game.getPlayerActif().newTurn();
-		this.game.getPlayerNonActif().battlefield.forEach(function(card, index) {
+		this.game.getPlayerNonActif().newTurn();
+		this.game.getPlayerActif().battlefield.forEach(function(card, index) {
 			card.restaure();
 		},this);
 		this.game.pm.phases[PHASE.PRINCIPALE].phaseNum = 0;
+		this.game.nextPlayer();
+		this.game.nextToken();
 	}
 
 	isAuthorized(action, data) {
