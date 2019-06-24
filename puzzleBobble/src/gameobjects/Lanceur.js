@@ -8,4 +8,16 @@ class Lanceur extends Phaser.Sprite {
 
 	}
 
+	moveLeft() {
+
+	}
+
+	moveRight() {
+
+	}
+
+	fire() {
+		
+	}
+
 } 
