@@ -61,7 +61,17 @@ class GameState {
 
 	hitWorldBounds(bille, up, down, left, right) {
 		if(up) {
-			alert("up");
+			console.log('ee');
+			//bille.body.enable=false;
+			bille.checkWorldBounds = false;
+			
+			bille.body.velocity.x=0;
+			bille.body.velocity.y=0;
+			//bille.x = this.math.snapToFloor(bille.x,32);
+			//bille.y=16;
+			bille.body.x= this.math.snapToFloor(bille.x,32);
+			bille.body.y=16
+			this.currentBille = null;
 		}
 	}
 
