@@ -3,6 +3,6 @@ class MainMenuState {
 	}
 	
   	create(){
-		this.game.state.start("MainMenu");
+		this.game.state.start("Game");
 	}
 }

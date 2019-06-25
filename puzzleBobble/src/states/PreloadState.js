@@ -3,7 +3,9 @@ class PreloadState {
 	}
 
 	preload(){ 
-		this.game.load.image('back', 'assets/back.png');
+		this.game.load.image('bille', 'assets/images/bille.png');
+		this.game.load.image('lanceur', 'assets/images/lanceur.png');
+		this.game.load.image('fleche', 'assets/images/fleche.png');
 	}
 
   	create(){
