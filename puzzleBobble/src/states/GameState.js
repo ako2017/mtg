@@ -6,9 +6,13 @@ class GameState {
 	}
 
 	create() {
-		this.cursors = this.game.input.keyboard.createCursorKeys();
+		this.creationCursors();
 		this.creationWalls();
 		this.creationLanceur();
+	}
+
+	creationCursors() {
+		this.cursors = this.game.input.keyboard.createCursorKeys();
 	}
 
 	creationWalls() {

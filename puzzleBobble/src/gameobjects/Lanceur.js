@@ -15,19 +15,20 @@ class Lanceur extends Phaser.Sprite {
 	moveLeft() {
 		if(this.fleche.angle < -180) return;
 		this.fleche.angle--;
-		console.log(this.fleche.angle+'r:'+this.fleche.rotation);
 	}
 
 	moveRight() {
 		if(this.fleche.angle > 0) return;
 		this.fleche.angle++;
-		console.log(this.fleche.angle+'r:'+this.fleche.rotation);
 	}
 
 	fire() {
-		let x = this.x + (Math.cos(this.fleche.rotation)*32);
-		let y = this.y + (Math.sin(this.fleche.rotation)*32);
-		return this.game.add.sprite(x, y, 'bille');
+		let x = this.x + (Math.cos(this.fleche.rotation)*48);
+		let y = this.y + (Math.sin(this.fleche.rotation)*48);	
+		var bille = new Bille(this.game);
+		bille.x=x;
+		bille.y=y;
+		return this.game.add.existing(bille);
 	}
 
 } 
