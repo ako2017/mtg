@@ -48,7 +48,8 @@ class GameState {
 		
 		if(this.cursors.up.isDown && this.currentBille == null) {
 			this.currentBille = this.lanceur.fire();
-			this.currentBille.events.onEnterBounds.add(this.hitWorldBounds, this);
+			this.currentBille.body.onWorldBounds = new Phaser.Signal();
+			this.currentBille.body.onWorldBounds.add(this.hitWorldBounds, this);
 		}
 	}
 
@@ -58,8 +59,10 @@ class GameState {
 		}
 	}
 
-	hitWorldBounds(bille) {
-		alert('touche');
+	hitWorldBounds(bille, up, down, left, right) {
+		if(up) {
+			alert("up");
+		}
 	}
 
 	handleCollisionWithBilles() {
