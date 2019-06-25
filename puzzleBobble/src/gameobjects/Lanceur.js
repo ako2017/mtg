@@ -8,6 +8,7 @@ class Lanceur extends Phaser.Sprite {
 		this.anchor.set(0.5,1);
 		this.fleche = game.make.sprite(0, 0, 'fleche');
 		this.fleche.anchor.set(0,0.5);
+		this.fleche.angle=-90;
 		this.addChild(this.fleche);
 
 	}
@@ -32,11 +33,11 @@ class Lanceur extends Phaser.Sprite {
 		bille.body.collideWorldBounds = true;
 		bille.checkWorldBounds = true;
 		bille.body.bounce.set(1);
+		bille.body.setCircle(16);
 		bille.body.velocity.x = Math.cos(this.fleche.rotation)*400;
 		bille.body.velocity.y = Math.sin(this.fleche.rotation)*400;
 		this.game.physics.arcade.enable(bille);
-
-		return this.game.add.existing(bille);
+		return bille;
 	}
 
 } 

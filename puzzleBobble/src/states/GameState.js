@@ -3,9 +3,15 @@ class GameState {
 		this.cursors = null;
 		this.lanceur = null;
 		this.currentBille = null;
+		this.billes = null;
+		this.billesAr = null;
 	}
 
 	create() {
+		this.billes = this.game.add.group();
+		var w= Math.floor(this.game.width/32);
+		var h= Math.floor(this.game.height/32);
+		this.billesAr = Array(h).fill(0).map(x => Array(w).fill(null));
 		this.initPhysicSystem();
 		this.creationCursors();
 		this.creationWalls();
@@ -15,6 +21,13 @@ class GameState {
 	update() {
 		this.handleInput();
 		this.handleCollision();
+	}
+
+	render() {
+		this.billes.forEach(function(item) {
+			this.game.debug.body(item);
+		},this);
+		
 	}
 
 	initPhysicSystem() {
@@ -48,6 +61,7 @@ class GameState {
 		
 		if(this.cursors.up.isDown && this.currentBille == null) {
 			this.currentBille = this.lanceur.fire();
+			this.game.add.existing(this.currentBille);
 			this.currentBille.body.onWorldBounds = new Phaser.Signal();
 			this.currentBille.body.onWorldBounds.add(this.hitWorldBounds, this);
 		}
@@ -61,22 +75,53 @@ class GameState {
 
 	hitWorldBounds(bille, up, down, left, right) {
 		if(up) {
-			console.log('ee');
-			//bille.body.enable=false;
-			bille.checkWorldBounds = false;
-			
+			bille.checkWorldBounds = false;	
 			bille.body.velocity.x=0;
 			bille.body.velocity.y=0;
-			//bille.x = this.math.snapToFloor(bille.x,32);
-			//bille.y=16;
 			bille.body.x= this.math.snapToFloor(bille.x,32);
-			bille.body.y=16
+			bille.body.y=0;
+			if(this.currentBille) {
+				this.billes.add(this.currentBille);
+				this.billesAr[0][bille.body.x/32] = this.currentBille;
+			}
 			this.currentBille = null;
 		}
 	}
 
 	handleCollisionWithBilles() {
+		this.game.physics.arcade.overlap(this.currentBille, this.billes, this.onCollisionBille, null, this);
+	}
 
+	onCollisionBille(billeA, billeB) {
+			var deg = this.game.math.radToDeg(this.game.physics.arcade.angleBetween(billeB,billeA));
+			console.log(deg);
+			billeA.checkWorldBounds = false;	
+			billeA.body.velocity.x=0;
+			billeA.body.velocity.y=0;
+
+			var x=0;
+			var y=0;
+			if(deg<45) {
+				y=billeB.body.y;
+				x=billeB.body.x+32;
+			}
+			else if(deg<90) {
+				y=billeB.body.y+32;
+				x=billeB.body.x+16;
+			}
+			else if(deg<135) {
+				y=billeB.body.y+32;
+				x=billeB.body.x-16;
+			}
+			else {
+				y=billeB.body.y;
+				x=billeB.body.x-32;
+			}
+			billeA.body.x=x;
+			billeA.body.y=y;
+			this.billesAr[billeA.body.y/32][billeA.body.x/32] = billeA;
+			this.billes.add(billeA);
+			this.currentBille = null;
 	}
 
 }
