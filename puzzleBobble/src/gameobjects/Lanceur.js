@@ -23,11 +23,19 @@ class Lanceur extends Phaser.Sprite {
 	}
 
 	fire() {
-		let x = this.x + (Math.cos(this.fleche.rotation)*48);
-		let y = this.y + (Math.sin(this.fleche.rotation)*48);	
+		let x = this.x + Math.cos(this.fleche.rotation)*48;
+		let y = this.y + Math.sin(this.fleche.rotation)*48;
 		var bille = new Bille(this.game);
 		bille.x=x;
 		bille.y=y;
+		this.game.physics.arcade.enable(bille);
+		bille.body.collideWorldBounds = true;
+		bille.checkWorldBounds = true;
+		bille.body.bounce.set(1);
+		bille.body.velocity.x = Math.cos(this.fleche.rotation)*400;
+		bille.body.velocity.y = Math.sin(this.fleche.rotation)*400;
+		this.game.physics.arcade.enable(bille);
+
 		return this.game.add.existing(bille);
 	}
 

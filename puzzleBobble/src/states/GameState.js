@@ -6,9 +6,19 @@ class GameState {
 	}
 
 	create() {
+		this.initPhysicSystem();
 		this.creationCursors();
 		this.creationWalls();
 		this.creationLanceur();
+	}
+
+	update() {
+		this.handleInput();
+		this.handleCollision();
+	}
+
+	initPhysicSystem() {
+		this.game.physics.startSystem(Phaser.Physics.ARCADE);
 	}
 
 	creationCursors() {
@@ -26,16 +36,34 @@ class GameState {
 		this.game.add.existing(this.lanceur);
 	}
 
-	update() {
+
+
+	handleInput() {
 		if(this.cursors.left.isDown) {
 			this.lanceur.moveLeft();
 		}
 		if(this.cursors.right.isDown) {
 			this.lanceur.moveRight();
 		}
-		if(this.cursors.up.isDown && this.currentBille == null ) {
+		
+		if(this.cursors.up.isDown && this.currentBille == null) {
 			this.currentBille = this.lanceur.fire();
+			this.currentBille.events.onEnterBounds.add(this.hitWorldBounds, this);
 		}
+	}
+
+	handleCollision() {
+		if(this.currentBille != null) {
+			this.handleCollisionWithBilles();
+		}
+	}
+
+	hitWorldBounds(bille) {
+		alert('touche');
+	}
+
+	handleCollisionWithBilles() {
+
 	}
 
 }
