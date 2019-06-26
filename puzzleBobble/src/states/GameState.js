@@ -5,9 +5,11 @@ class GameState {
 		this.currentBille = null;
 		this.billes = null;
 		this.billesAr = null;
+		this.line = null;
 	}
 
 	create() {
+		this.line = new Phaser.Line(240,0,240,600);
 		this.billes = this.game.add.group();
 		var w= Math.floor(this.game.width/32);
 		var h= Math.floor(this.game.height/32);
@@ -23,12 +25,12 @@ class GameState {
 		this.handleCollision();
 	}
 
-	render() {
+	/*render() {
 		this.billes.forEach(function(item) {
 			this.game.debug.body(item);
 		},this);
-		
-	}
+		this.game.debug.geom(this.line);
+	}*/
 
 	initPhysicSystem() {
 		this.game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -75,10 +77,11 @@ class GameState {
 
 	hitWorldBounds(bille, up, down, left, right) {
 		if(up) {
+			console.log("body:("+ bille.body.x+ ":"+bille.body.y+ ")bille:("+bille.x+ ":"+bille.y);
 			bille.checkWorldBounds = false;	
 			bille.body.velocity.x=0;
 			bille.body.velocity.y=0;
-			bille.body.x= this.math.snapToFloor(bille.x,32);
+			bille.body.x= this.math.snapToFloor(bille.body.x+16,32);
 			bille.body.y=0;
 			if(this.currentBille) {
 				this.billes.add(this.currentBille);
@@ -103,50 +106,83 @@ class GameState {
 		billeA.body.velocity.x=0;
 		billeA.body.velocity.y=0;
 
-		var x=0;
-		var y=0;
+		var cx=billeB.body.x+16;
+		var cy=billeB.body.y+16;
 
-
-		console.log("billeB:"+ billeB.body.x + "billeB:"+ billeB.x);
+		console.log("body:("+ billeB.body.x+ ":"+billeB.body.y+ ")bille:("+billeB.x+ ":"+billeB.y);
 		if(deg>315) {
-			y=billeB.body.y;
-			x=billeB.body.x+32;
+			cx+=32;
 		}
 		else if(deg>270) {
-			y=billeB.body.y+32;
-			x=billeB.body.x+16;
-			if(this.game.math.isOdd(y/32)) {
-				console.log("right odd");
-				if((x/32)==0) {
+			cx+=16;
+			cy+=32;
+			if(this.game.math.isOdd(Math.floor(cy/32))) {
+				if(cx==480) {
 					console.log("right odd correction");
-					x=billeB.body.x-16;
+					cx-=32;
 				}
 			}
 		}
 		else if(deg>225) {
-			y=billeB.body.y+32;
-			x=billeB.body.x-16;
-			if(this.game.math.isOdd(y/32)) {
-				console.log("left odd:" + x + "x/32:"+(x/32));
-				if((x/32)==0) {
+			cx-=16;
+			cy+=32;
+			if(this.game.math.isOdd(Math.floor(cy/32))) {
+				if(cx==0) {
 					console.log("left odd correction");
-					x=billeB.body.x+16;
+					cx+=32;
 				}
 			}
 		}
 		else if(deg>135){
-			y=billeB.body.y;
-			x=billeB.body.x-32;
+			cx-=32;
 		}
 		else {
-			y=billeB.body.y;
-			x=billeB.body.x+32;
+			cx+=32;
 		}
-		billeA.body.x=x;
-		billeA.body.y=y;
-		this.billesAr[billeA.body.y/32][billeA.body.x/32] = billeA;
+		billeA.body.x=cx-16;
+		billeA.body.y=cy-16;
+		if(this.game.math.isOdd(Math.floor(cy/32)))
+			this.billesAr[Math.floor(cy/32)][Math.floor(cx/32)-1] = billeA;
+		else
+			this.billesAr[Math.floor(cy/32)][Math.floor(cx/32)] = billeA;
 		this.billes.add(billeA);
 		this.currentBille = null;
+		var match = [];
+		if(this.game.math.isOdd(Math.floor(cy/32)))
+			this.handleMatch(Math.floor(cx/32)-1,Math.floor(cy/32), match);
+		else
+			this.handleMatch(Math.floor(cx/32),Math.floor(cy/32), match);
+		console.log('match:'+match.length);
+		this.billesAr.forEach(function(line){
+			line.forEach(function(x){
+				if(x != null) x.visited = false;
+			});
+		});
+	}
+
+	handleMatch(x,y,match) {
+		if(x<0 || x>=this.billesAr[0].length || y<0 || y>=this.billesAr.length || this.billesAr[y][x] == null || this.billesAr[y][x].visited)
+			return;
+		this.billesAr[y][x].visited = true;
+		match.push(this.billesAr[y][x]);
+
+		if(this.game.math.isOdd(y)) {
+			this.handleMatch(x-1,y,match);
+			this.handleMatch(x+1,y,match);
+			this.handleMatch(x,y+1,match);
+			this.handleMatch(x+1,y+1,match);
+			this.handleMatch(x,y-1,match);
+			this.handleMatch(x+1,y-1,match);
+		}
+		else {
+			this.handleMatch(x-1,y,match);
+			this.handleMatch(x+1,y,match);
+			this.handleMatch(x,y+1,match);
+			this.handleMatch(x-1,y+1,match);
+			this.handleMatch(x,y-1,match);
+			this.handleMatch(x-1,y-1,match);
+		}
+		
 	}
 
 }
