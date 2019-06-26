@@ -34,8 +34,8 @@ class Lanceur extends Phaser.Sprite {
 		bille.checkWorldBounds = true;
 		bille.body.bounce.set(1);
 		bille.body.setCircle(16);
-		bille.body.velocity.x = Math.cos(this.fleche.rotation)*400;
-		bille.body.velocity.y = Math.sin(this.fleche.rotation)*400;
+		bille.body.velocity.x = Math.cos(this.fleche.rotation)*500;
+		bille.body.velocity.y = Math.sin(this.fleche.rotation)*500;
 		this.game.physics.arcade.enable(bille);
 		return bille;
 	}
