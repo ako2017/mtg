@@ -92,6 +92,7 @@ class GameState {
 		this.game.physics.arcade.overlap(this.currentBille, this.billes, this.onCollisionBille, null, this);
 	}
 
+
 	onCollisionBille(billeA, billeB) {
 		var deg = this.game.math.radToDeg(this.game.physics.arcade.angleBetween(billeB,billeA));
 
@@ -147,61 +148,5 @@ class GameState {
 		this.billes.add(billeA);
 		this.currentBille = null;
 	}
-
-	/*onCollisionBille(billeA, billeB) {
-		var deg = this.game.math.radToDeg(this.game.physics.arcade.angleBetween(billeB,billeA));
-
-		deg = (deg<0)?-deg:360-deg;
-
-		console.log(deg);
-		billeA.checkWorldBounds = false;	
-		billeA.body.velocity.x=0;
-		billeA.body.velocity.y=0;
-
-		var x=0;
-		var y=0;
-
-
-		console.log("billeB:"+ billeB.body.x + "billeB:"+ billeB.x);
-		if(deg>315) {
-			y=billeB.body.y;
-			x=billeB.body.x+32;
-		}
-		else if(deg>270) {
-			y=billeB.body.y+32;
-			x=billeB.body.x+16;
-			if(this.game.math.isOdd(y/32)) {
-				console.log("right odd");
-				if((x/32)==0) {
-					console.log("right odd correction");
-					x=billeB.body.x-16;
-				}
-			}
-		}
-		else if(deg>225) {
-			y=billeB.body.y+32;
-			x=billeB.body.x-16;
-			if(this.game.math.isOdd(y/32)) {
-				console.log("left odd:" + x + "x/32:"+(x/32));
-				if((x/32)==0) {
-					console.log("left odd correction");
-					x=billeB.body.x+16;
-				}
-			}
-		}
-		else if(deg>135){
-			y=billeB.body.y;
-			x=billeB.body.x-32;
-		}
-		else {
-			y=billeB.body.y;
-			x=billeB.body.x+32;
-		}
-		billeA.body.x=x;
-		billeA.body.y=y;
-		this.billesAr[billeA.body.y/32][billeA.body.x/32] = billeA;
-		this.billes.add(billeA);
-		this.currentBille = null;
-	}*/
 
 }
