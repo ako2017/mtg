@@ -87,6 +87,8 @@ class GameState {
 			if(this.currentBille) {
 				this.billes.add(this.currentBille);
 				this.billesAr[0][bille.body.x/32] = this.currentBille;
+				this.currentBille.posX = bille.body.x/32;
+				this.currentBille.posY = 0;
 			}
 			this.currentBille = null;
 		}
@@ -175,7 +177,13 @@ class GameState {
 			orphans.forEach(function(bille) {
 				this.billesAr[bille.posY][bille.posX] = null;		
 				bille.body.allowGravity = true;
+				bille.body.bounce.set(0.5);
 			}, this);
+			this.billesAr.forEach(function(line){
+				line.forEach(function(x){
+					if(x != null) x.visited = false;
+				});
+			});
 		}
 
 	}
