@@ -26,7 +26,7 @@ class Lanceur extends Phaser.Sprite {
 	fire() {
 		let x = this.x + Math.cos(this.fleche.rotation)*48;
 		let y = this.y + Math.sin(this.fleche.rotation)*48;
-		var bille = new Bille(this.game);
+		var bille = BilleFactory.create(this.game,this.game.rnd.integerInRange(0,2));
 		bille.x=x;
 		bille.y=y;
 		this.game.physics.arcade.enable(bille);

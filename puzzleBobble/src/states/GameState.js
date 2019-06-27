@@ -77,7 +77,7 @@ class GameState {
 
 	hitWorldBounds(bille, up, down, left, right) {
 		if(up) {
-			console.log("body:("+ bille.body.x+ ":"+bille.body.y+ ")bille:("+bille.x+ ":"+bille.y);
+			//console.log("body:("+ bille.body.x+ ":"+bille.body.y+ ")bille:("+bille.x+ ":"+bille.y);
 			bille.checkWorldBounds = false;	
 			bille.body.velocity.x=0;
 			bille.body.velocity.y=0;
@@ -101,7 +101,6 @@ class GameState {
 
 		deg = (deg<0)?-deg:360-deg;
 
-		console.log(deg);
 		billeA.checkWorldBounds = false;	
 		billeA.body.velocity.x=0;
 		billeA.body.velocity.y=0;
@@ -109,7 +108,7 @@ class GameState {
 		var cx=billeB.body.x+16;
 		var cy=billeB.body.y+16;
 
-		console.log("body:("+ billeB.body.x+ ":"+billeB.body.y+ ")bille:("+billeB.x+ ":"+billeB.y);
+		//console.log("body:("+ billeB.body.x+ ":"+billeB.body.y+ ")bille:("+billeB.x+ ":"+billeB.y);
 		if(deg>315) {
 			cx+=32;
 		}
@@ -141,10 +140,17 @@ class GameState {
 		}
 		billeA.body.x=cx-16;
 		billeA.body.y=cy-16;
-		if(this.game.math.isOdd(Math.floor(cy/32)))
+		if(this.game.math.isOdd(Math.floor(cy/32))) {
 			this.billesAr[Math.floor(cy/32)][Math.floor(cx/32)-1] = billeA;
-		else
+			billeA.posX=Math.floor(cx/32)-1;
+			billeA.posY=Math.floor(cy/32);
+		}	
+		else {
 			this.billesAr[Math.floor(cy/32)][Math.floor(cx/32)] = billeA;
+			billeA.posX=Math.floor(cx/32);
+			billeA.posY=Math.floor(cy/32);
+		}
+			
 		this.billes.add(billeA);
 		this.currentBille = null;
 		var match = [];
@@ -158,12 +164,22 @@ class GameState {
 				if(x != null) x.visited = false;
 			});
 		});
+		if(match.length >=3) {
+			match.forEach(function(bille) {
+				this.billesAr[bille.posY][bille.posX] = null;		
+				bille.kill();
+			}, this);
+			var a=0;
+		}
+
 	}
 
 	handleMatch(x,y,match) {
 		if(x<0 || x>=this.billesAr[0].length || y<0 || y>=this.billesAr.length || this.billesAr[y][x] == null || this.billesAr[y][x].visited)
 			return;
 		this.billesAr[y][x].visited = true;
+		if(match.length != 0 && match[0].type != this.billesAr[y][x].type)
+			return;
 		match.push(this.billesAr[y][x]);
 
 		if(this.game.math.isOdd(y)) {
