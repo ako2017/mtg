@@ -34,6 +34,7 @@ class GameState {
 
 	initPhysicSystem() {
 		this.game.physics.startSystem(Phaser.Physics.ARCADE);
+		this.game.physics.arcade.gravity.y = 100;
 	}
 
 	creationCursors() {
@@ -169,7 +170,12 @@ class GameState {
 				this.billesAr[bille.posY][bille.posX] = null;		
 				bille.kill();
 			}, this);
-			var a=0;
+			var orphans = this.findOrphan();
+			console.log("orphans: " + orphans.length);
+			orphans.forEach(function(bille) {
+				this.billesAr[bille.posY][bille.posX] = null;		
+				bille.body.allowGravity = true;
+			}, this);
 		}
 
 	}
@@ -197,8 +203,46 @@ class GameState {
 			this.handleMatch(x-1,y+1,match);
 			this.handleMatch(x,y-1,match);
 			this.handleMatch(x-1,y-1,match);
+		}	
+	}
+
+	findOrphan() {
+		this.billesAr[0].forEach(function(bille) {
+			if(bille != null) {
+				this.parcoursBilles(bille.posX,bille.posY);	
+			}
+		}, this);
+		var orphans = [];
+		this.billesAr.forEach(function(line){
+			line.forEach(function(x){
+				if(x != null && !x.visited) {
+					orphans.push(x);
+				}
+			});
+		});
+		return orphans;
+	}
+
+	parcoursBilles(x,y) {
+		if(x<0 || x>=this.billesAr[0].length || y<0 || y>=this.billesAr.length || this.billesAr[y][x] == null || this.billesAr[y][x].visited)
+			return;
+		this.billesAr[y][x].visited = true;
+		if(this.game.math.isOdd(y)) {
+			this.parcoursBilles(x-1,y);
+			this.parcoursBilles(x+1,y);
+			this.parcoursBilles(x,y+1);
+			this.parcoursBilles(x+1,y+1);
+			this.parcoursBilles(x,y-1);
+			this.parcoursBilles(x+1,y-1);
 		}
-		
+		else {
+			this.parcoursBilles(x-1,y);
+			this.parcoursBilles(x+1,y);
+			this.parcoursBilles(x,y+1);
+			this.parcoursBilles(x-1,y+1);
+			this.parcoursBilles(x,y-1);
+			this.parcoursBilles(x-1,y-1);
+		}	
 	}
 
 }
