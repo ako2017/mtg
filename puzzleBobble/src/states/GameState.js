@@ -6,11 +6,30 @@ class GameState {
 		this.billes = null;
 		this.billesAr = null;
 		this.line = null;
+		this.filter = null;
+		this.sprite = null;
 	}
 
 	create() {
+		this.filter = new Phaser.Filter(this.game, null, this.game.cache.getShader('bacteria'));
+		this.filter.addToWorld(0, 0, 480, 600);
+
+
+		/*this.filter = new Phaser.Filter(this.game, null, this.game.cache.getShader('blueDots'));
+
+		this.filter.setResolution(480, 600);
+	
+		this.sprite = this.game.add.sprite();
+		this.sprite.width = 480;
+		this.sprite.height = 600;
+	
+		this.sprite.filters = [ this.filter ];
+		*/
+
+
 		this.line = new Phaser.Line(240,0,240,600);
 		this.billes = this.game.add.group();
+		this.falling = this.game.add.group();
 		var w= Math.floor(this.game.width/32);
 		var h= Math.floor(this.game.height/32);
 		this.billesAr = Array(h).fill(0).map(x => Array(w).fill(null));
@@ -21,8 +40,10 @@ class GameState {
 	}
 
 	update() {
+		
 		this.handleInput();
 		this.handleCollision();
+		this.filter.update();
 	}
 
 	/*render() {
@@ -47,6 +68,7 @@ class GameState {
 
 	creationLanceur() {
 		this.lanceur = new Lanceur(this.game);
+		this.lanceur.reload();
 		this.lanceur.x = this.game.width/2;
 		this.lanceur.y = this.game.height;
 		this.game.add.existing(this.lanceur);
@@ -64,6 +86,7 @@ class GameState {
 		
 		if(this.cursors.up.isDown && this.currentBille == null) {
 			this.currentBille = this.lanceur.fire();
+			this.lanceur.reload();
 			this.game.add.existing(this.currentBille);
 			this.currentBille.body.onWorldBounds = new Phaser.Signal();
 			this.currentBille.body.onWorldBounds.add(this.hitWorldBounds, this);
@@ -96,6 +119,7 @@ class GameState {
 
 	handleCollisionWithBilles() {
 		this.game.physics.arcade.overlap(this.currentBille, this.billes, this.onCollisionBille, null, this);
+		this.game.physics.arcade.overlap(this.currentBille, this.falling, null, null, this);	
 	}
 
 
@@ -175,6 +199,7 @@ class GameState {
 			var orphans = this.findOrphan();
 			console.log("orphans: " + orphans.length);
 			orphans.forEach(function(bille) {
+				this.falling.add(bille);
 				this.billesAr[bille.posY][bille.posX] = null;		
 				bille.body.allowGravity = true;
 				bille.body.bounce.set(0.5);

@@ -10,7 +10,7 @@ class Lanceur extends Phaser.Sprite {
 		this.fleche.anchor.set(0,0.5);
 		this.fleche.angle=-90;
 		this.addChild(this.fleche);
-		this.nextBille = this.addChild(BilleFactory.create(this.game,this.game.rnd.integerInRange(0,2)));
+		this.nextBille = null;
 	}
 
 	moveLeft() {
@@ -24,9 +24,11 @@ class Lanceur extends Phaser.Sprite {
 	}
 
 	fire() {
+		if(this.nextBille == null) return null;
 		let x = this.x + Math.cos(this.fleche.rotation)*48;
 		let y = this.y + Math.sin(this.fleche.rotation)*48;
 		var bille = this.nextBille;
+		this.nextBille = null;
 		bille.x=x;
 		bille.y=y;
 		this.game.physics.arcade.enable(bille);
@@ -38,8 +40,11 @@ class Lanceur extends Phaser.Sprite {
 		bille.body.velocity.x = Math.cos(this.fleche.rotation)*500;
 		bille.body.velocity.y = Math.sin(this.fleche.rotation)*500;
 		this.game.physics.arcade.enable(bille);
-		this.nextBille = this.addChild(BilleFactory.create(this.game,this.game.rnd.integerInRange(0,2)));
 		return bille;
+	}
+
+	reload() {
+		this.nextBille = this.addChild(BilleFactory.create(this.game,this.game.rnd.integerInRange(0,2)));
 	}
 
 } 

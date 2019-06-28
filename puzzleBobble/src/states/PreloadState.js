@@ -8,6 +8,8 @@ class PreloadState {
 		this.game.load.image('billeblue', 'assets/images/billeblue.png');
 		this.game.load.image('lanceur', 'assets/images/lanceur.png');
 		this.game.load.image('fleche', 'assets/images/fleche.png');
+		this.game.load.shader('bacteria', 'assets/shaders/bacteria.frag');
+		this.game.load.shader('blueDots', 'assets/shaders/blue-dots.frag');
 	}
 
   	create(){

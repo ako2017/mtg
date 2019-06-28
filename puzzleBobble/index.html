@@ -15,7 +15,7 @@
 		<script>
 			$(document).ready(function() {
 				var game;
-				game = new Phaser.Game(480,600, Phaser.CANVAS, "game-area");
+				game = new Phaser.Game(480,600, Phaser.AUTO, "game-area");
 				game.state.add("Preload",new PreloadState());
 				game.state.add("MainMenu",new MainMenuState());
 				game.state.add("Game",new GameState());
