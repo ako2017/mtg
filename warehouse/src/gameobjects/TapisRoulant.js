@@ -5,19 +5,12 @@ class TapisRoulant extends Link {
 
 	constructor(game, nodeA, nodeB) {
 		super(game, nodeA, nodeB);
-		this.items = [];
 	}
 
 	update() {
-
-	}
-
-	addItem(item) {
-		this.item.push(item);
-	}
-
-	transfertItem() {
-		
+		this.items.forEach(function(item) {
+			//calcul nouvelle position
+		},this);
 	}
 
 } 

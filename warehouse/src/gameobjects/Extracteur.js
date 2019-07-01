@@ -7,4 +7,10 @@ class Extracteur extends Node {
 		super(game, image, 1, 1);
 	}
 
+	update() {
+		while(this.items.length > 0) {
+			this.output[0].addItem(this.items.pop());
+		}
+	}
+
 } 

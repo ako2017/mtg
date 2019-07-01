@@ -9,6 +9,11 @@ class Node extends Phaser.Sprite {
 
 		this.input = new Array(nbInput);
 		this.output = new Array(nbOutput);
+		this.items = [];
+	}
+
+	addItem(item) {
+		this.items.puh(item);
 	}
 
 } 
