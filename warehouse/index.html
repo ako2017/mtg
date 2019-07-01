@@ -1,0 +1,31 @@
+<!DOCTYPE html> 
+<html> 
+    <head> 
+        <title>Puzzle Bobble v1.0</title> 
+        <meta name="viewport" content="width=device-width, initial-scale=1"> 
+        <link rel="stylesheet" href="styles/gui.css">
+		<script src="libs/jquery-3.0.0.min.js"></script>
+		<script src="libs/phaser.min.js"></script>	
+		<script src="src/gameobjects/Bille.js"></script>
+		<script src="src/gameobjects/BilleFactory.js"></script>
+		<script src="src/gameobjects/Lanceur.js"></script>
+		<script src="src/states/PreloadState.js"></script>
+		<script src="src/states/MainMenuState.js"></script>
+		<script src="src/states/GameState.js"></script>
+		<script>
+			$(document).ready(function() {
+				var game;
+				game = new Phaser.Game(480,600, Phaser.AUTO, "game-area");
+				game.state.add("Preload",new PreloadState());
+				game.state.add("MainMenu",new MainMenuState());
+				game.state.add("Game",new GameState());
+				game.state.start("Preload");
+			});
+		</script>
+    </head> 
+
+    <body bgcolor="grey">
+		<div id="game-area"></div>
+    </body>
+
+</html>
