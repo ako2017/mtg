@@ -13,7 +13,7 @@ class Node extends Phaser.Sprite {
 	}
 
 	addItem(item) {
-		this.items.puh(item);
+		this.items.push(item);
 	}
 
 } 

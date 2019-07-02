@@ -8,9 +8,12 @@ class Extracteur extends Node {
 	}
 
 	update() {
-		while(this.items.length > 0) {
-			this.output[0].addItem(this.items.pop());
-		}
+
+	}
+
+	addItem(item) {
+		super.addItem(item);
+		this.output[0].addItem(item);
 	}
 
 } 
