@@ -1,13 +1,17 @@
 /**
  * Repésente un lien enter 2 noeuds
  */
-class Link extends Phaser.Sprite {
+class Link extends Phaser.Line {
 
-	constructor(game, nodeA, nodeB) {
-		super(game,0,0);
+	constructor(nodeA, nodeB) {
+		super(nodeA.x,nodeA.y,nodeB.x,nodeB.y);
 		this.nodeA = nodeA;
 		this.nodeB = nodeB;
 		this.items = [];
+	}
+
+	update() {
+		this.fromSprite(this.nodeA, this.nodeB, true);
 	}
 
 	addItem(item) {
