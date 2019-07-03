@@ -30,7 +30,13 @@
     </head> 
 
     <body bgcolor="grey">
-		<div id="game-area"></div>
+		<div id="game-area" class="container">
+			<div id="node"  class='overlay transparent'>
+				<h1 style='color:#f00;'>Paramètre du noeud :</h1>
+				<button class="bouton6" onClick="socketApi.muligane();">OUI</button>
+				<button class="bouton6" onClick="$('#muligane').hide();socketApi.valid();">NON</button>	
+			</div>
+		</div>
     </body>
 
 </html>
