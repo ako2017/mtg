@@ -22,7 +22,7 @@ class Link extends Phaser.Line {
 	}
 
 	transfertItem(item) {
-		this.nodeB.addItem(item);
+		this.nodeB.addItem(this.items.removeByValue(item));
 	}
 
 } 

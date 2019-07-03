@@ -1,10 +1,17 @@
 /**
  * Repésente une mine
  */
-class Mine extends Node {
+class Forge extends Node {
 
 	constructor(game, image) {
-		super(game, image, 0, 1);
+		super(game, image, 1, 1);
+	}
+
+	update() {
+		if(this.items.length>1) {
+			this.items.pop().kill();
+			this.output[0].addItem(this.items.pop());
+		}
 	}
 
 	getItem() {
