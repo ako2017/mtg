@@ -10,7 +10,7 @@ class Forge extends Node {
 	update() {
 		if(this.items.length>1) {
 			this.items.pop().kill();
-			this.output[0].addItem(this.items.pop());
+			this.outputs[0].addItem(this.items.pop());
 		}
 	}
 

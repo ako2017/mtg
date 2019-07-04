@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1"> 
         <link rel="stylesheet" href="styles/gui.css">
 		<script src="libs/jquery-3.0.0.min.js"></script>
-		<script src="libs/phaser.min.js"></script>	
+		<script src="libs/phaser.js"></script>	
 		<script src="src/Constantes.js"></script>	
 		<script src="src/gameobjects/Node.js"></script>
 		<script src="src/gameobjects/Link.js"></script>
@@ -31,10 +31,25 @@
 
     <body bgcolor="grey">
 		<div id="game-area" class="container">
-			<div id="node"  class='overlay transparent'>
-				<h1 style='color:#f00;'>Paramètre du noeud :</h1>
-				<button class="bouton6" onClick="socketApi.muligane();">OUI</button>
-				<button class="bouton6" onClick="$('#muligane').hide();socketApi.valid();">NON</button>	
+			<div id="node-mine"  class='overlay transparent'>
+				<h1 style='color:#f00;'>Informations du noeud :</h1>
+				<p>type : Mine</p>
+				<p>élément : charbon</p>
+				<p>quantité : 324</p>
+				<button class="bouton6" onClick="$('#node-mine').hide()">FERMER</button>	
+			</div>
+			<div id="node-extracteur"  class='overlay transparent'>
+				<h1 style='color:#f00;'>Informations du noeud :</h1>
+				<p>type : Extracteur</p>
+				<p>élément : charbon</p>
+				<button class="bouton6" onClick="$('#node-extracteur').hide()">FERMER</button>	
+			</div>
+			<div id="node-forge"  class='overlay transparent'>
+				<h1 style='color:#f00;'>Informations du noeud :</h1>
+				<p>type : Forge</p>
+				<p>élément : charbon++</p>
+				<p>input : charbon (x2) </p>
+				<button class="bouton6" onClick="$('#node-forge').hide()">FERMER</button>	
 			</div>
 		</div>
     </body>

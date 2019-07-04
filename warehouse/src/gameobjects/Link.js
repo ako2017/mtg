@@ -7,8 +7,8 @@ class Link extends Phaser.Line {
 		super(nodeA.x,nodeA.y,nodeB.x,nodeB.y);
 		this.nodeA = nodeA;
 		this.nodeB = nodeB;
-		nodeA.output[outputA] = this;
-		nodeB.input[inputB] = this;
+		nodeA.outputs[outputA] = this;
+		nodeB.inputs[inputB] = this;
 		this.items = [];
 		this.game = game;
 	}

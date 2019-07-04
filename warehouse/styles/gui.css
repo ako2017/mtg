@@ -7,10 +7,22 @@
       top: 0%;
       left:0%;
       z-index: 1000;
-      /*background-color: #fff;*/
       border-radius: 30px;
-      background: linear-gradient(black, grey);
+      background: linear-gradient(#00ff00, grey);
+      opacity: 0.8;
 } 
+
+#node-mine {
+    display:none;
+}
+
+#node-extracteur {
+    display:none;
+}
+
+#node-forge {
+    display:none;
+}
 
 .bouton6 {
 	border-radius:12px 0 12px 0;

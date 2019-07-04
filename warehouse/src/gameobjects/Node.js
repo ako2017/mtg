@@ -7,13 +7,20 @@ class Node extends Phaser.Sprite {
 		super(game,0,0,image);
 		this.anchor.set(0.5,0.5);
 
-		this.input = new Array(nbInput);
-		this.output = new Array(nbOutput);
+		this.inputs = new Array(nbInput);
+		this.outputs = new Array(nbOutput);
 		this.items = [];
+
+		this.inputEnabled  = true;
+		this.events.onInputDown.add(this.onClick, this);
 	}
 
 	addItem(item) {
 		this.items.push(item);
+	}
+
+	onClick(event) {
+		$('#node-'+this.constructor.name.toLowerCase()).show();
 	}
 
 } 
