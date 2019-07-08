@@ -39,16 +39,32 @@ class LinkHandler {
         node.kill();
     }
 
+    onOverArrow(arrow) {
+        arrow.scale.set(2);
+    }
+
+    onOutArrow(arrow) {
+        arrow.scale.set(1);
+    }
+
     showIO(node) {
         var input = this.poolInput.getFirstDead();
         if(input != null) {
             input.reset();
+            input.inputEnabled  = true;
+            input.input.enableDrag(true);
+            input.events.onInputOver.add(this.onOverArrow, this);
+            input.events.onInputOut.add(this.onOutArrow, this);
+
             input.x = node.x-node.width/2-10;
             input.y = node.y;
         }
         var output = this.poolOutput.getFirstDead();
         if(output != null) {
             output.reset();
+            output.inputEnabled  = true;
+            output.events.onInputOver.add(this.onOverArrow, this);
+            output.events.onInputOut.add(this.onOutArrow, this);
             output.x = node.x+node.width/2;
             output.y = node.y;
         }
