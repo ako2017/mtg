@@ -12,7 +12,8 @@ class Node extends Phaser.Sprite {
 		this.items = [];
 
 		this.inputEnabled  = true;
-		this.events.onInputDown.add(this.onClick, this);
+		this.events.onInputDown.add(this.game.linkHandler.onClick, this.game.linkHandler);
+		this.events.onInputOver.add(this.game.linkHandler.onOver, this.game.linkHandler);
 	}
 
 	addItem(item) {
@@ -20,7 +21,7 @@ class Node extends Phaser.Sprite {
 	}
 
 	onClick(event) {
-		$('#node-'+this.constructor.name.toLowerCase()).show();
+		//$('#node-'+this.constructor.name.toLowerCase()).show();
 	}
 
 } 

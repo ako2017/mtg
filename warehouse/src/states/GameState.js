@@ -4,9 +4,11 @@ class GameState {
 	}
 
 	create() {
+		this.game.linkHandler = new LinkHandler(this.game);
 
 		for(let i=0;i<1;i++) {
 			var mineA = this.game.add.existing(new Mine(this.game,'billeblue'));
+
 			mineA.x=this.game.rnd.integerInRange(0,this.game.width);
 			mineA.y=this.game.rnd.integerInRange(0,this.game.height);
 			var extracteurA = this.game.add.existing(new Extracteur(this.game,'billered'));
