@@ -48,19 +48,6 @@ class LinkHandler {
         arrow.scale.set(1);
     }
 
-
-/*
-this.background.input.startDrag = function(pointer) {
-    pointer.playerStart = new Phaser.Point(self.player.x, self.player.y);
-    Phaser.InputHandler.prototype.startDrag.call(this, pointer);
-};
-this.background.input.updateDrag = function(pointer) {
-    self.player.x = pointer.playerStart.x - pointer.positionDown.x + pointer.x;
-    self.player.y = pointer.playerStart.y - pointer.positionDown.y + pointer.y;
-};
-*/
-
-
     showIO(node) {
         var input = this.poolInput.getFirstDead();
         if(input != null) {
@@ -72,24 +59,25 @@ this.background.input.updateDrag = function(pointer) {
 
             input.x = node.x-node.width/2-10;
             input.y = node.y;
-
+         //   this.game.world.swap(node,input);
             input.events.onDragStart.add(function(sprite, pointer) {
                 var dist = Phaser.Math.distance(input.x, input.y,input.x+50, input.y);
                 var deg = Phaser.Math.radToDeg(Phaser.Math.angleBetween(input.x, input.y,input.x+10, input.y));
                 this.line = this.game.add.tileSprite(input.x, input.y, dist, 5, 'line');
                 this.line.angle = deg;
             },this);
- 
 
-            input.events.onDragUpdate.add(function(sprite, pointer) {
-                this.line.width = pointer.x;
+            input.events.onDragUpdate.add(function(sprite, pointer,  newX, newY) {
+                if(this.line != null) {
+                    var dist = Phaser.Math.distance(this.line.x, this.line.y, newX, newY);
+                    var deg = Phaser.Math.radToDeg(Phaser.Math.angleBetween(this.line.x, this.line.y,newX, newY));
+                    this.line.angle = deg;
+                    this.line.width = dist;
+                }
             },this);
 
             input.events.onDragStop.add(function(sprite, pointer) {
-                this.line.width=200;
-            },this);
-
-            
+            },this);          
         }
         var output = this.poolOutput.getFirstDead();
         if(output != null) {
