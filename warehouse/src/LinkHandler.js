@@ -49,7 +49,13 @@ class LinkHandler {
     }
 
     onClickArrow(arrow) {
+        if(this.line != null) {
+            if(this.line.arrow != arrow && this.line.arrow.type != arrow.type) 
+                alert("generate line");
+            return;
+        }
         this.line = this.game.add.tileSprite(arrow.x, arrow.y, 1, 3, 'line');
+        this.line.arrow = arrow;
     }
 
     onMove(pointer,newX, newY, isClick) {
@@ -61,28 +67,31 @@ class LinkHandler {
         }
     }
 
-    showIO(node) {
-        var input = this.poolInput.getFirstDead();
+    showIO(node) {     
         node.arrow = [];
-        if(input != null) {
+        for(var i=0;i<node.inputs.length;i++) {
+            var input = this.poolInput.getFirstDead();
             input.reset();
+            input.type='input';
             input.inputEnabled  = true;
             input.events.onInputOver.add(this.onOverArrow, this);
             input.events.onInputOut.add(this.onOutArrow, this);
             input.events.onInputDown.add(this.onClickArrow, this);
             input.x = node.x-node.width/2-10;
-            input.y = node.y;   
+            input.y = node.y+i*15;   
             node.arrow.push(input);    
         }
-        var output = this.poolOutput.getFirstDead();
-        if(output != null) {
+   
+        for(var i=0;i<node.outputs.length;i++) {
+            var output = this.poolOutput.getFirstDead();
             output.reset();
+            output.type='output';
             output.inputEnabled  = true;
             output.events.onInputOver.add(this.onOverArrow, this);
             output.events.onInputOut.add(this.onOutArrow, this);
             output.events.onInputDown.add(this.onClickArrow, this);
             output.x = node.x+node.width/2;
-            output.y = node.y;
+            output.y = node.y+i*15;
             node.arrow.push(output);   
         }
     }
