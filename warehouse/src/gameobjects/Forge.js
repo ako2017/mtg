@@ -1,10 +1,10 @@
 /**
  * Repésente une mine
  */
-class Forge extends Node {
+class Forge extends Machine {
 
 	constructor(game, image) {
-		super(game, image, 1, 1);
+		super(game, image);
 	}
 
 	update() {

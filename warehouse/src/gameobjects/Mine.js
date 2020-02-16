@@ -1,10 +1,11 @@
 /**
  * Repésente une mine
  */
-class Mine extends Node {
+class Mine extends Machine {
 
 	constructor(game, image) {
-		super(game, image, 0, 1);
+		super(game, image);
+		this.addOutputNode(20,0,image,1);
 	}
 
 	getItem() {

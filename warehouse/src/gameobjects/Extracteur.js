@@ -1,20 +1,24 @@
 /**
  * Repésente un extracteur
  */
-class Extracteur extends Node {
+class Extracteur extends Machine {
 
 	constructor(game, image) {
-		super(game, image, 1, 1);
+		super(game, image);
 		this.timer = 0;
+
+		this.addInputNode(-20,0,image,1);
+		this.addOutputNode(20,0,image,1);
 	}
 
 	update() {
-		while(this.items.length>0) {
-			this.outputs[0].addItem(this.items.pop());
+		if(!this.isWorking()) return;
+		while(this.inputs[0].items.length>0) {
+			this.outputs[0].link.addItem(this.inputs[0].items.pop());
 		}
 		if(this.game.time.totalElapsedSeconds() > this.timer) {
-			var item = this.inputs[0].nodeA.getItem();
-			this.inputs[0].addItem(this.game.add.existing(item));
+			var item = this.inputs[0].link.nodeA.parent.getItem();
+			this.inputs[0].link.addItem(this.game.add.existing(item));
 			this.timer = this.game.time.totalElapsedSeconds()+5;
 		}
 	}

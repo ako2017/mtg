@@ -13,27 +13,85 @@ class LinkHandler {
         this.poolOutput.createMultiple(4,'output');
         this.line = null;
         this.game.input.addMoveCallback(this.onMove,this);
-	}
+
+        this.cursorDrag = this.game.add.sprite(0, 0, 'billered');
+        this.cursorDrag.inputEnabled = true;
+        this.cursorDrag.input.enableDrag();
+        this.cursorDrag.events.onDragStop.add(this.onDragStop, this);
+        this.cursorDrag.anchor.set(0.5,0.5);
+        this.nodeGroup = null;
+    }
+    
+    onDragStop(sprite, pointer) {
+        sprite.x=0;
+        var triggerDistance = 20;
+        var _this = this;
+
+        var tmpArray = [];
+
+        this.nodeGroup.forEachAlive(function(sprite) {     
+            sprite.inputs.forEach(function(node) {
+                tmpArray.push(node);
+            });
+            sprite.outputs.forEach(function(node) {
+                tmpArray.push(node);
+            });
+        });
+
+        tmpArray.forEach(function(sprite) {
+            if (Phaser.Math.distance(sprite.world.x, sprite.world.y, pointer.x, pointer.y) <= triggerDistance) {
+                // do something to this sprite, as it lies within the trigger distance  
+                _this.destNode = sprite;
+            }
+        });
+        if(this.sourceNode != null && this.destNode != null){
+       
+            if(this.sourceNode.type == this.destNode.type && this.sourceNode.isInput != this.destNode.isInput) {
+                var nodeA = null;
+                var nodeB = null;
+
+                if(this.sourceNode.isInput) {
+                    nodeA = this.destNode;
+                    nodeB = this.sourceNode;
+                }
+                else {
+                    nodeA = this.sourceNode;
+                    nodeB = this.destNode;
+                }
+
+                var link = new Link(this.game, nodeA, nodeB);
+                this.links.push(link);
+                this.sourceNode.addLink(link);
+                this.destNode.addLink(link);
+            }    
+        }
+        this.sourceNode = null;
+        this.destNode = null;
+    }
+
+
+    onUp(node, pointer) {
+        this.cursorDrag.input.stopDrag(this.game.input.activePointer);      
+    }
 
     onClick(node) {      
         if(this.sourceNode == null) {
             this.sourceNode = node;
-            this.showIO(node);
-        }
-        else if(this.sourceNode != node) {
-//            this.poolInput.forEachAlive(this.destroy,this);
-//           this.poolOutput.forEachAlive(this.destroy,this);
+            this.cursorDrag.x=node.world.x;
+            this.cursorDrag.y=node.world.y;
+            this.game.world.bringToTop(this.cursorDrag);
+            this.cursorDrag.input.startDrag(this.game.input.activePointer);
         }
     }
 
     onOver(node) {
-        if(this.sourceNode != null) {
+      /*  if(this.sourceNode != null) {
             if(this.destNode != null) {
                 this.hideIO(this.destNode);
             }
             this.destNode = node;
             this.showIO(node);
-        }
+        }*/
     }
 
     destroy(node) {
@@ -64,41 +122,6 @@ class LinkHandler {
             var deg = Phaser.Math.radToDeg(Phaser.Math.angleBetween(this.line.x, this.line.y,newX, newY));
             this.line.angle = deg;
             this.line.width = dist;
-        }
-    }
-
-    showIO(node) {     
-        node.arrow = [];
-        for(var i=0;i<node.inputs.length;i++) {
-            var input = this.poolInput.getFirstDead();
-            input.reset();
-            input.type='input';
-            input.inputEnabled  = true;
-            input.events.onInputOver.add(this.onOverArrow, this);
-            input.events.onInputOut.add(this.onOutArrow, this);
-            input.events.onInputDown.add(this.onClickArrow, this);
-            input.x = node.x-node.width/2-10;
-            input.y = node.y+i*15;   
-            node.arrow.push(input);    
-        }
-   
-        for(var i=0;i<node.outputs.length;i++) {
-            var output = this.poolOutput.getFirstDead();
-            output.reset();
-            output.type='output';
-            output.inputEnabled  = true;
-            output.events.onInputOver.add(this.onOverArrow, this);
-            output.events.onInputOut.add(this.onOutArrow, this);
-            output.events.onInputDown.add(this.onClickArrow, this);
-            output.x = node.x+node.width/2;
-            output.y = node.y+i*15;
-            node.arrow.push(output);   
-        }
-    }
-
-    hideIO(node) {
-        for(let i=0;i<node.arrow.length;i++) {
-            this.destroy(node.arrow[i]);
         }
     }
 

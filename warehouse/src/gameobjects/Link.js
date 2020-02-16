@@ -3,19 +3,19 @@
  */
 class Link extends Phaser.Line {
 
-	constructor(game,nodeA, nodeB,outputA,inputB) {
-		super(nodeA.x,nodeA.y,nodeB.x,nodeB.y);
+	constructor(game,nodeA, nodeB) {
+		super(nodeA.world.x,nodeA.world.y,nodeB.world.x,nodeB.world.y);
 		this.nodeA = nodeA;
 		this.nodeB = nodeB;
-		nodeA.outputs[outputA] = this;
-		nodeB.inputs[inputB] = this;
 		this.items = [];
 		this.game = game;
 	}
 
 	addItem(item) {
 		this.items.push(item);
-		this.game.add.tween(item).to({x:this.nodeB.x,y:this.nodeB.y},2000,Phaser.Easing.Linear.None,true)
+		item.x = this.nodeA.world.x;
+		item.y = this.nodeA.world.y;
+		this.game.add.tween(item).to({x:this.nodeB.world.x,y:this.nodeB.world.y},2000,Phaser.Easing.Linear.None,true)
 		.onComplete.add(function(){
 			this.transfertItem(item);
 		},this);		
