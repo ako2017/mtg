@@ -21,6 +21,10 @@ class Link extends Phaser.Line {
 		},this);		
 	}
 
+	calculLine() {
+		this.setTo(this.nodeA.world.x,this.nodeA.world.y,this.nodeB.world.x,this.nodeB.world.y);
+	}
+
 	transfertItem(item) {
 		this.nodeB.addItem(this.items.removeByValue(item));
 	}

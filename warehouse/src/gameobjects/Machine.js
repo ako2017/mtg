@@ -9,6 +9,7 @@ class Machine extends Phaser.Sprite {
 		this.inputs = [];
 		this.outputs = [];
 		this.inputEnabled  = true;
+        this.input.enableDrag();
 
 		this.name = this.addChild(this.game.add.text(0, this.height/2, this.constructor.name.toLowerCase(), { font: '12px Arial Black',fill: '#fff',strokeThickness: 4 }));
 		this.name.anchor.set(0.5,0.5);

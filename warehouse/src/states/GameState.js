@@ -30,6 +30,7 @@ class GameState {
 
 	render() {
 		this.links.forEach(function(item) {
+			item.calculLine();
 			this.game.debug.geom(item);
 		},this);
 	}
