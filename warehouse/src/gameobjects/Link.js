@@ -25,6 +25,10 @@ class Link extends Phaser.Line {
 		this.setTo(this.nodeA.world.x,this.nodeA.world.y,this.nodeB.world.x,this.nodeB.world.y);
 	}
 
+	isFull() {
+		return this.nodeB.isFull();
+	}
+
 	transfertItem(item) {
 		this.nodeB.addItem(this.items.removeByValue(item));
 	}

@@ -20,6 +20,9 @@ class GameState {
 			var stockerNode = this.nodeGroup.add(new Stocker(this.game,'billered'));
 			stockerNode.x=this.game.rnd.integerInRange(0,this.game.width);
 			stockerNode.y=this.game.rnd.integerInRange(0,this.game.height);
+			var forgeNode = this.nodeGroup.add(new Forge(this.game,'billered'));
+			forgeNode.x=this.game.rnd.integerInRange(0,this.game.width);
+			forgeNode.y=this.game.rnd.integerInRange(0,this.game.height);
 		}
 
 	}

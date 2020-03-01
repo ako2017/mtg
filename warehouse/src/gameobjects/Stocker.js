@@ -14,18 +14,13 @@ class Stocker extends Machine {
 	}
 
 	update() {
+		super.update();
 		this.cpt+=this.inputs[0].items.length;
 		this.counter.setText(this.cpt);
 		this.inputs[0].items.forEach(function(item) {
 			item.kill();
 		});
 		this.inputs[0].items.length = 0;
-	}
-
-	addItem(item) {
-		super.addItem(item);
-		item.kill();
-		this.counter.setText(this.items.length);
 	}
 
 } 

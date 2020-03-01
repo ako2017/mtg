@@ -12,13 +12,12 @@ class Extracteur extends Machine {
 	}
 
 	update() {
+		super.update();
 		if(!this.isWorking()) return;
-		while(this.inputs[0].items.length>0) {
-			this.outputs[0].link.addItem(this.inputs[0].items.pop());
-		}
+
 		if(this.game.time.totalElapsedSeconds() > this.timer) {
 			var item = this.inputs[0].link.nodeA.parent.getItem();
-			this.inputs[0].link.addItem(this.game.add.existing(item));
+			this.outputs[0].addItem(this.game.add.existing(item));
 			this.timer = this.game.time.totalElapsedSeconds()+5;
 		}
 	}

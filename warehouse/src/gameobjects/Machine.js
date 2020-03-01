@@ -51,4 +51,10 @@ class Machine extends Phaser.Sprite {
 		//$('#node-'+this.constructor.name.toLowerCase()).show();
 	}
 
+	update() {
+		this.outputs.forEach(function(node){
+			node.update();
+		});
+	}
+
 } 
