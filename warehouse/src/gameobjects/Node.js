@@ -3,11 +3,12 @@
  */
 class Node extends Phaser.Sprite {
 
-	constructor(game, image, isInput, type) {
+	constructor(game, isInput, type) {
 		super(game,0,0,'output');
 		this.anchor.set(0.5,0.5);
 		this.isInput = isInput;
 		this.type = type;
+		this.automaticTransfert = true;
 		this.link = null;
 		this.items = [];
 		this.maxItem = 3;
@@ -25,8 +26,12 @@ class Node extends Phaser.Sprite {
 		return this.items.length >= this.maxItem;
 	}
 
+	getNbItem() {
+		return this.items.length;
+	}
+
 	update() {
-		if(!this.isInput && this.link != null && this.items.length > 0 && !this.link.isFull()) {
+		if(!this.isInput && this.automaticTransfert && this.link != null && this.getNbItem() > 0 && !this.link.isFull()) {
 			this.link.addItem(this.popItem());
 		}
 	}
@@ -37,6 +42,8 @@ class Node extends Phaser.Sprite {
 
 	addItem(item) {
 		this.items.push(item);
+		item.x = this.world.x;
+		item.y = this.world.y;
 	}
 
 } 

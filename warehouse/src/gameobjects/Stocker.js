@@ -9,15 +9,16 @@ class Stocker extends Machine {
 		this.counter.anchor.set(0.5,0.5);
 		this.cpt = 0;
 
-		this.addInputNode(-20,0,image,1);
-		this.addOutputNode(20,0,image,1);
+		this.addInputNode(-20,0,1,0);
+		this.addOutputNode(20,0,1,1);
 	}
 
 	update() {
 		super.update();
-		this.cpt+=this.inputs[0].items.length;
-		this.counter.setText(this.cpt);
+		this.counter.setText(this.outputs[0].getNbItem());
+		var _this = this
 		this.inputs[0].items.forEach(function(item) {
+			_this.outputs[0].addItem(item);
 			item.kill();
 		});
 		this.inputs[0].items.length = 0;

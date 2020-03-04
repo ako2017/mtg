@@ -15,20 +15,30 @@ class Machine extends Phaser.Sprite {
 		this.name.anchor.set(0.5,0.5);
 	}
 
-	addInputNode(x,y,image,type) {
-		var node = new Node(this.game, image, true, type);
+	addInputNode(x,y,type,typeNode) {
+		var node = null;
+		if(typeNode == 0) 
+			node = new Node(this.game, true, type);
+		else
+			node = new NodeCounter(this.game, true, type);
 		node.x  = x;
 		node.y  = y;
 		this.inputs.push(node);
 		this.addChild(node);
+		return node;
 	}
 
-	addOutputNode(x,y,image,type) {
-		var node = new Node(this.game, image, false, type);
+	addOutputNode(x,y,type,typeNode) {
+		var node = null;
+		if(typeNode == 0) 
+			node = new Node(this.game, false, type);
+		else
+			node = new NodeCounter(this.game, false, type);
 		node.x  = x;
 		node.y  = y;
 		this.outputs.push(node);
 		this.addChild(node);
+		return node;
 	}
 
 	isWorking() {

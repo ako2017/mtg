@@ -26,7 +26,7 @@ class Link extends Phaser.Line {
 	}
 
 	isFull() {
-		return this.nodeB.isFull();
+		return this.nodeB.isFull() || this.items.length >= this.nodeB.maxItem;
 	}
 
 	transfertItem(item) {

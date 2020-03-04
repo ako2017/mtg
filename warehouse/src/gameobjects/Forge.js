@@ -7,16 +7,17 @@ class Forge extends Machine {
 		super(game, image);
 
 		this.timer = 0;
-		this.addInputNode(-20,0,image,1);
-		this.addOutputNode(20,0,image,2);
+		this.addInputNode(-20,0,1,0);
+		//this.inputs[0].maxItem=10;
+		this.addOutputNode(20,0,2,0);
 	}
 
 	update() {
-		if(this.inputs[0].items.length>1 && this.game.time.totalElapsedSeconds() > this.timer) {
-			this.inputs[0].items.pop().kill();
-			this.inputs[0].items.pop().kill();
+		if(this.inputs[0].getNbItem()>1 && this.game.time.totalElapsedSeconds() > this.timer) {
+			this.inputs[0].popItem().kill();
+			this.inputs[0].popItem().kill();
 			this.outputs[0].addItem(this.getItem());
-			this.timer = this.game.time.totalElapsedSeconds()+20;
+			this.timer = this.game.time.totalElapsedSeconds()+10;
 		}
 	}
 

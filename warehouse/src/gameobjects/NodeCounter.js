@@ -4,8 +4,12 @@
 class NodeCounter extends Node {
 
 	constructor(game, isInput, type) {
-		super(game, '', isInput, type);
+		super(game, isInput, type);
 		this.itemCounter = 0;
+	}
+
+	getNbItem() {
+		return this.itemCounter;
 	}
 
 	popItem() {
@@ -13,6 +17,7 @@ class NodeCounter extends Node {
 		var item =  new Item(this.game,'billegreen');
 		item.x = this.x;
 		item.y = this.y;
+		this.game.add.existing(item);
 		return item;
 	}
 
