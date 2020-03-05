@@ -6,6 +6,7 @@
         <link rel="stylesheet" href="styles/gui.css">
 		<script src="libs/jquery-3.0.0.min.js"></script>
 		<script src="libs/phaser.js"></script>	
+		<script src="libs/phaser-input.min.js"></script>	
 		<script src="src/Constantes.js"></script>	
 		<script src="src/LinkHandler.js"></script>	
 		<script src="src/gameobjects/Machine.js"></script>
@@ -20,10 +21,13 @@
 		<script src="src/states/PreloadState.js"></script>
 		<script src="src/states/MainMenuState.js"></script>
 		<script src="src/states/GameState.js"></script>
+		<script src="src/gui/Gui.js"></script>		
+		<script src="src/gui/InfoView.js"></script>
 		<script>
 			$(document).ready(function() {
 				var game;
 				game = new Phaser.Game(800,600, Phaser.AUTO, "game-area");
+				
 				game.state.add("Preload",new PreloadState());
 				game.state.add("MainMenu",new MainMenuState());
 				game.state.add("Game",new GameState());

@@ -46,4 +46,8 @@ class Node extends Phaser.Sprite {
 		item.y = this.world.y;
 	}
 
+	toString() {
+		return (this.isInput ? 'input : ':'output : ') + this.type + '\n';
+	}
+
 } 

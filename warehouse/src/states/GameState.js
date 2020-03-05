@@ -1,3 +1,4 @@
+var GUI;
 class GameState {
 	constructor() {
 		this.links = [];
@@ -24,7 +25,13 @@ class GameState {
 			forgeNode.x=this.game.rnd.integerInRange(0,this.game.width);
 			forgeNode.y=this.game.rnd.integerInRange(0,this.game.height);
 		}
+		this.initGui();
+	}
 
+
+	initGui() {
+		GUI = new Gui(this.game);
+		GUI.init();
 	}
 
 	update() {

@@ -10,7 +10,7 @@ class Machine extends Phaser.Sprite {
 		this.outputs = [];
 		this.inputEnabled  = true;
         this.input.enableDrag();
-
+		this.events.onInputDown.add(this.onClick, this);
 		this.name = this.addChild(this.game.add.text(0, this.height/2, this.constructor.name.toLowerCase(), { font: '12px Arial Black',fill: '#fff',strokeThickness: 4 }));
 		this.name.anchor.set(0.5,0.5);
 	}
@@ -58,13 +58,24 @@ class Machine extends Phaser.Sprite {
 	}
 
 	onClick(event) {
-		//$('#node-'+this.constructor.name.toLowerCase()).show();
+		GUI.infoView.showMachine(this);
 	}
 
 	update() {
 		this.outputs.forEach(function(node){
 			node.update();
 		});
+	}
+
+	toString() {
+		var str = 'type : ' + this.constructor.name.toLowerCase() + '\n';
+		this.inputs.forEach(function(node){
+			str+=node.toString();
+		});
+		this.outputs.forEach(function(node){
+			str+=node.toString();
+		});
+		return str;
 	}
 
 } 
