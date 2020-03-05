@@ -15,4 +15,8 @@ class Mine extends Machine {
 		this.counter.setText(this.outputs[0].getNbItem());
 	}
 
+	toString() {
+		return super.toString()+ 'ressources : ' + this.outputs[0].getNbItem();
+	}
+
 } 

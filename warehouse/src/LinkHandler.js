@@ -18,12 +18,13 @@ class LinkHandler {
         this.cursorDrag.inputEnabled = true;
         this.cursorDrag.input.enableDrag();
         this.cursorDrag.events.onDragStop.add(this.onDragStop, this);
+        this.cursorDrag.x=-20;
         this.cursorDrag.anchor.set(0.5,0.5);
         this.nodeGroup = null;
     }
     
     onDragStop(sprite, pointer) {
-        sprite.x=0;
+        sprite.x=-20;
         var triggerDistance = 20;
         var _this = this;
 
