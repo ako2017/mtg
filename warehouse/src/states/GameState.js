@@ -32,6 +32,7 @@ class GameState {
 	initGui() {
 		GUI = new Gui(this.game);
 		GUI.init();
+		GUI.panelMachine.y= this.game.height - 100;
 	}
 
 	update() {
