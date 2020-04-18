@@ -5,7 +5,7 @@ class FinPhase extends AbstractPhase {
 
 	execute() {
 		return PHASE.WAIT;
-	}
+	}//
 	
 	valid(player) {
 		this.game.pass(player);
