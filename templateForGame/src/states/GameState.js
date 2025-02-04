@@ -1,8 +1,0 @@
-class GameState {
-	constructor() {
-	}
-
-	create() {
-	}
-
-}
